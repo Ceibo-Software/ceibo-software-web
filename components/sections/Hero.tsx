@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, MessageSquare, ChevronDown } from 'lucide-react'
+import { ArrowUpRight, MessageSquare } from 'lucide-react'
 import { sounds } from '@/lib/sound'
 
 const ROTATING_WORDS = [
@@ -37,7 +37,7 @@ export function Hero({ onOpenChat }: HeroProps) {
   return (
     <section
       id="top"
-      className="relative z-20 mx-auto flex min-h-[calc(100dvh-4.5rem)] max-w-7xl flex-col items-center justify-between px-5 pt-10 pb-6 md:px-8 md:pt-14 md:pb-8"
+      className="relative z-20 mx-auto flex min-h-[calc(100dvh-5rem)] max-w-7xl flex-col items-center justify-center px-5 py-14 md:px-8 md:py-20"
     >
       {/* Decorative ambient background mesh */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-rose-900/25 via-rose-950/15 to-transparent blur-[140px]" />
@@ -132,19 +132,6 @@ export function Hero({ onOpenChat }: HeroProps) {
         </motion.div>
       </div>
 
-      {/* Down indicator anchored at bottom */}
-      <div className="w-full pt-4 pb-2 flex justify-center">
-        <button
-          onClick={() => handleScroll('servicios')}
-          aria-label="Ver servicios"
-          className="group flex flex-col items-center gap-2 text-xs text-zinc-500 transition hover:text-rose-400"
-        >
-          <span className="text-[11px] font-mono tracking-wider uppercase text-zinc-500 group-hover:text-rose-400">Descubrí lo que hacemos</span>
-          <div className="grid size-9 place-items-center rounded-full border border-white/10 bg-white/[0.02] text-zinc-400 backdrop-blur-sm transition group-hover:border-rose-500/40 group-hover:text-white">
-            <ChevronDown size={16} className="animate-bounce" />
-          </div>
-        </button>
-      </div>
     </section>
   )
 }
