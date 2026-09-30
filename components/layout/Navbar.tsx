@@ -43,11 +43,15 @@ export function Navbar({ onOpenChat }: NavbarProps) {
   ]
 
   return (
-    <header className="sticky top-0 z-40 w-full px-3 pt-3 transition-all duration-500 ease-out sm:px-6 md:px-8">
+    <header
+      className={`sticky top-0 z-40 w-full px-3 transition-all duration-300 ease-out sm:px-6 md:px-8 ${
+        isScrolled ? 'pt-3 md:pt-6' : 'pt-3 md:pt-5'
+      }`}
+    >
       <div
-        className={`mx-auto flex items-center justify-between transition-all duration-500 ease-out ${
+        className={`mx-auto flex items-center justify-between transition-all duration-300 ease-out ${
           isScrolled
-            ? 'max-w-5xl rounded-full border border-white/15 bg-[#09090b]/85 px-5 py-2.5 shadow-[0_15px_40px_rgba(0,0,0,0.8)] backdrop-blur-2xl ring-1 ring-white/10 sm:px-6'
+            ? 'max-w-5xl rounded-full border border-white/15 bg-[#09090b]/85 px-5 py-2.5 shadow-[0_15px_40px_rgba(0,0,0,0.8)] backdrop-blur-2xl ring-1 ring-white/10 sm:px-6 md:px-7 md:py-3'
             : 'max-w-7xl rounded-full border border-transparent bg-transparent px-4 py-3 sm:px-6'
         }`}
       >
