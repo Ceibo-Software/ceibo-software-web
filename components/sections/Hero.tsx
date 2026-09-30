@@ -12,12 +12,33 @@ const ROTATING_WORDS = [
   'soluciones sin vueltas.',
 ]
 
+const TARGET_WORD = 'Construimos'
+
 interface HeroProps {
   onOpenChat?: () => void
 }
 
 export function Hero({ onOpenChat }: HeroProps) {
   const [wordIndex, setWordIndex] = useState(0)
+  const [displayText, setDisplayText] = useState('')
+  const [showCursor, setShowCursor] = useState(true)
+
+  // Typewriter effect for 'Construimos'
+  useEffect(() => {
+    let index = 0
+    const timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        index++
+        setDisplayText(TARGET_WORD.slice(0, index))
+        if (index >= TARGET_WORD.length) {
+          clearInterval(interval)
+          setTimeout(() => setShowCursor(false), 2400)
+        }
+      }, 85)
+    }, 120)
+
+    return () => clearTimeout(timeout)
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -51,7 +72,26 @@ export function Hero({ onOpenChat }: HeroProps) {
           transition={{ duration: 0.6 }}
           className="text-4xl font-extrabold tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-8xl"
         >
-          Construimos{' '}
+          <span className="sr-only">Construimos</span>
+          <span aria-hidden="true" className="inline-flex items-baseline">
+            <span>{displayText}</span>
+            <AnimatePresence>
+              {showCursor && (
+                <motion.span
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: [1, 0] }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    repeat: Infinity,
+                    repeatType: 'reverse',
+                    ease: 'easeInOut',
+                  }}
+                  className="ml-1 inline-block h-[0.78em] w-[3px] rounded-full bg-rose-500 sm:w-[4px] md:w-[5px]"
+                />
+              )}
+            </AnimatePresence>
+          </span>{' '}
           <span className="block mt-2 min-h-[1.25em]">
             <AnimatePresence mode="wait">
               <motion.span
