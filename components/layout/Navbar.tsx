@@ -51,7 +51,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
       <div
         className={`mx-auto flex items-center justify-between transition-all duration-300 ease-out ${
           isScrolled
-            ? 'max-w-5xl rounded-full border border-white/15 bg-[#09090b]/85 px-5 py-2.5 shadow-[0_15px_40px_rgba(0,0,0,0.8)] backdrop-blur-2xl ring-1 ring-white/10 sm:px-6 md:px-7 md:py-3'
+            ? 'max-w-6xl lg:max-w-7xl rounded-full border border-white/15 bg-[#09090b]/85 px-5 py-2.5 shadow-[0_15px_40px_rgba(0,0,0,0.8)] backdrop-blur-2xl ring-1 ring-white/10 sm:px-6 md:px-8 md:py-3'
             : 'max-w-7xl rounded-full border border-transparent bg-transparent px-4 py-3 sm:px-6'
         }`}
       >
@@ -59,7 +59,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
         <a
           href="#top"
           onClick={() => sounds.playClick()}
-          className="group flex items-center gap-3 text-sm font-semibold tracking-tight text-white"
+          className="group flex shrink-0 items-center gap-3 text-sm font-semibold tracking-tight text-white"
         >
           <div className="relative size-11 overflow-hidden rounded-xl border border-white/20 bg-white p-1 shadow-md transition-transform duration-300 group-hover:scale-105 sm:size-12">
             <img
@@ -73,8 +73,12 @@ export function Navbar({ onOpenChat }: NavbarProps) {
           </span>
         </a>
 
-        {/* Desktop Links */}
-        <nav className="hidden items-center gap-8 text-sm font-medium text-zinc-400 md:flex">
+        {/* Desktop Links with generous separation */}
+        <nav
+          className={`hidden items-center justify-center text-sm font-medium text-zinc-400 md:flex md:flex-1 transition-all duration-300 ${
+            isScrolled ? 'gap-8 px-8 lg:px-16' : 'gap-8 px-6 lg:px-10'
+          }`}
+        >
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -88,7 +92,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-3">
           {/* Sound toggle */}
           <button
             onClick={handleSoundToggle}
