@@ -2,59 +2,58 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MessageSquare, X, Send, Sparkles, User, Bot, Check, ArrowRight, CornerDownLeft } from 'lucide-react'
+import {
+  MessageSquare,
+  X,
+  Send,
+  Sparkles,
+  Bot,
+  ArrowUpRight,
+  RefreshCw,
+} from 'lucide-react'
 import { sounds } from '@/lib/sound'
 
-interface Message {
+interface ActionChip {
+  label: string
+  actionType: 'navigate' | 'message' | 'whatsapp'
+  payload?: string
+}
+
+interface ChatMessage {
   id: string
   sender: 'bot' | 'user'
   text: string
   time: string
+  actionChips?: ActionChip[]
 }
 
-const KNOWLEDGE_BASE: { keywords: string[]; response: string }[] = [
-  {
-    keywords: ['servicio', 'servicios', 'hacen', 'hace', 'que hacen', 'desarrollo', 'haceis'],
-    response:
-      'En Ceibo Software desarrollamos soluciones digitales completas:\n\n• **Software a medida**: Plataformas web y sistemas para optimizar tu empresa.\n• **Apps móviles**: Aplicaciones modernas e intuitivas para iOS y Android.\n• **Diseño UI/UX**: Interfaces visualmente atractivas y fáciles de usar.\n• **Automatización e IA**: Chatbots y flujos inteligentes para ahorrar tiempo.\n\n¿Te gustaría profundizar en alguno de estos?',
-  },
-  {
-    keywords: ['tiempo', 'tardan', 'demora', 'plazos', 'duracion', 'cuanto tarda'],
-    response:
-      'Depende del tamaño del proyecto, pero trabajamos con metodología ágil por sprints:\n\n• **Un MVP (producto mínimo viable)** suele estar listo entre **4 y 6 semanas**.\n• **Proyectos más complejos o plataformas completas** toman entre **8 y 12 semanas**.\n\nLo mejor es que hacemos entregas semanales para que veas el avance real en todo momento.',
-  },
-  {
-    keywords: ['proceso', 'metodologia', 'como trabajan', 'pasos', 'forma de trabajo'],
-    response:
-      'Nuestro proceso es 100% transparente y directo:\n\n1. **Descubrimiento**: Nos reunimos para entender tu negocio, definir requerimientos y diseñar la experiencia visual.\n2. **Desarrollo iterativo**: Construimos en sprints semanales con demos reales.\n3. **Lanzamiento & Acompañamiento**: Ponemos tu producto online y te brindamos soporte continuo.\n\n¡Sin intermediarios ni burocracia!',
-  },
-  {
-    keywords: ['precio', 'costo', 'cotizar', 'presupuesto', 'cuanto cuesta', 'tarifa', 'cotizacion'],
-    response:
-      'Cada proyecto es único y adaptamos la propuesta a tu presupuesto y objetivos de negocio. Generalmente armamos paquetes por etapas para que puedas lanzar rápido y validar con clientes reales sin arriesgar de más.\n\nSi me dejas tu **email o WhatsApp**, el equipo de Ceibo se comunicará contigo hoy mismo con un presupuesto estimado sin compromiso.',
-  },
-  {
-    keywords: ['hola', 'buenas', 'que tal', 'saludos', 'buen dia', 'buenas tardes'],
-    response:
-      '¡Hola! Qué gusto saludarte. ¿Estás pensando en desarrollar un producto digital, modernizar un sistema existente o tienes una idea de app?',
-  },
-]
+const INITIAL_BOT_MESSAGE: ChatMessage = {
+  id: 'welcome',
+  sender: 'bot',
+  text: '¡Hola! 👋 Soy el asistente de **Ceibo Software**.\n¿En qué podemos ayudarte?',
+  time: 'Ahora',
+  actionChips: [
+    { label: '🚀 Ver servicios', actionType: 'navigate', payload: 'servicios' },
+    { label: '📁 Ver proyectos', actionType: 'navigate', payload: 'proyectos' },
+    { label: '👥 Conocer al equipo', actionType: 'navigate', payload: 'equipo' },
+    { label: '💬 WhatsApp directo', actionType: 'whatsapp' },
+  ],
+}
 
-export function CeiboChatbot({ isOpenExternal, onCloseExternal }: { isOpenExternal?: boolean; onCloseExternal?: () => void }) {
+export function CeiboChatbot({
+  isOpenExternal,
+  onCloseExternal,
+}: {
+  isOpenExternal?: boolean
+  onCloseExternal?: () => void
+}) {
   const [isOpen, setIsOpen] = useState(false)
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [unreadCount, setUnreadCount] = useState(1)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      sender: 'bot',
-      text: '¡Hola! 👋 Soy el asistente virtual de **Ceibo Software**.\n¿En qué podemos ayudarte hoy?',
-      time: 'Ahora',
-    },
-  ])
+  const [messages, setMessages] = useState<ChatMessage[]>([INITIAL_BOT_MESSAGE])
 
   useEffect(() => {
     if (isOpenExternal !== undefined) {
@@ -73,12 +72,36 @@ export function CeiboChatbot({ isOpenExternal, onCloseExternal }: { isOpenExtern
     }
   }, [messages, isOpen, isTyping])
 
-  const quickQuestions = [
-    '¿Qué servicios ofrecen?',
-    '¿Cuánto tardan en desarrollar un proyecto?',
-    '¿Cómo es el proceso de trabajo?',
-    'Quiero cotizar una idea',
-  ]
+  const handleActionChipClick = (chip: ActionChip) => {
+    sounds.playClick()
+
+    if (chip.actionType === 'navigate' && chip.payload) {
+      const el = document.getElementById(chip.payload)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+      }
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          sender: 'bot',
+          text: `Te llevé a la sección de **${chip.label.replace(/^[^\s]+\s/, '')}**. ¿Tenés alguna otra consulta?`,
+          time: 'Ahora',
+          actionChips: [
+            { label: '📝 Contactar al equipo', actionType: 'navigate', payload: 'contacto' },
+            { label: '💬 WhatsApp directo', actionType: 'whatsapp' },
+          ],
+        },
+      ])
+    } else if (chip.actionType === 'whatsapp') {
+      window.open(
+        'https://wa.me/5491155555555?text=Hola%20Ceibo%20Software,%20me%20gustar%C3%ADa%20hacerles%20una%20consulta.',
+        '_blank'
+      )
+    } else if (chip.actionType === 'message' && chip.payload) {
+      handleSendMessage(chip.payload)
+    }
+  }
 
   const handleSendMessage = (textToSend?: string) => {
     const query = (textToSend || input).trim()
@@ -86,7 +109,7 @@ export function CeiboChatbot({ isOpenExternal, onCloseExternal }: { isOpenExtern
 
     sounds.playKey()
 
-    const userMsg: Message = {
+    const userMsg: ChatMessage = {
       id: Date.now().toString(),
       sender: 'user',
       text: query,
@@ -97,41 +120,89 @@ export function CeiboChatbot({ isOpenExternal, onCloseExternal }: { isOpenExtern
     setInput('')
     setIsTyping(true)
 
-    // Simulate smart bot thinking and typing
     setTimeout(() => {
       const lower = query.toLowerCase()
       let answer = ''
+      let chips: ActionChip[] = []
 
-      // Check if user provided contact info
+      // 1. Email or phone contact
       if (lower.includes('@') || lower.match(/\b\d{8,}\b/)) {
-        answer =
-          '¡Perfecto! Hemos recibido tus datos de contacto con éxito. 🚀\nUn miembro de nuestro equipo te escribirá en menos de 24 horas para coordinar una llamada corta de 15 minutos.'
+        answer = '¡Datos recibidos! 🚀 Nos pondremos en contacto con vos hoy mismo.'
         sounds.playSuccess()
-      } else {
-        // Search knowledge base
-        const match = KNOWLEDGE_BASE.find((item) =>
-          item.keywords.some((kw) => lower.includes(kw))
-        )
-
-        if (match) {
-          answer = match.response
-        } else {
-          answer =
-            '¡Excelente consulta! Podemos ayudarte con eso. ¿Te gustaría agendar una breve llamada de 15 minutos con nuestro equipo, o prefieres dejarnos tu email o número para enviarte más información detallada?'
-        }
+        chips = [
+          { label: '💬 Escribir por WhatsApp', actionType: 'whatsapp' },
+          { label: '📁 Ver proyectos', actionType: 'navigate', payload: 'proyectos' },
+        ]
+      }
+      // 2. Services
+      else if (
+        lower.includes('servicio') ||
+        lower.includes('hacen') ||
+        lower.includes('desarrollo') ||
+        lower.includes('web') ||
+        lower.includes('app')
+      ) {
+        answer = 'Desarrollamos plataformas web a medida, aplicaciones móviles (iOS/Android) y arquitectura cloud de alto rendimiento.'
+        chips = [
+          { label: '📁 Ver proyectos reales', actionType: 'navigate', payload: 'proyectos' },
+          { label: '📝 Cotizar idea', actionType: 'navigate', payload: 'contacto' },
+        ]
+      }
+      // 3. Team
+      else if (
+        lower.includes('equipo') ||
+        lower.includes('quienes') ||
+        lower.includes('staff') ||
+        lower.includes('tomas') ||
+        lower.includes('matias')
+      ) {
+        answer = 'Somos un equipo técnico directo compuesto por especialistas senior en DevOps, arquitectura backend, UI/UX y frontend. Sin intermediarios.'
+        chips = [
+          { label: '👥 Ver equipo en la web', actionType: 'navigate', payload: 'equipo' },
+          { label: '💬 Hablar con el equipo', actionType: 'navigate', payload: 'contacto' },
+        ]
+      }
+      // 4. Budget / Timeline
+      else if (
+        lower.includes('precio') ||
+        lower.includes('costo') ||
+        lower.includes('cuanto') ||
+        lower.includes('tiempo') ||
+        lower.includes('presupuesto')
+      ) {
+        answer = 'Adaptamos cada propuesta a los objetivos y escala del proyecto. Los primeros sprints suelen lanzarse en 4 a 6 semanas.'
+        chips = [
+          { label: '📝 Iniciar consulta', actionType: 'navigate', payload: 'contacto' },
+          { label: '💬 WhatsApp directo', actionType: 'whatsapp' },
+        ]
+      }
+      // 5. Default
+      else {
+        answer = '¡Contanos más sobre tu idea o elegí una de estas opciones para ayudarte rápido:'
+        chips = [
+          { label: '🚀 Ver servicios', actionType: 'navigate', payload: 'servicios' },
+          { label: '📁 Ver proyectos', actionType: 'navigate', payload: 'proyectos' },
+          { label: '💬 WhatsApp directo', actionType: 'whatsapp' },
+        ]
       }
 
-      const botMsg: Message = {
+      const botMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'bot',
         text: answer,
         time: 'Ahora',
+        actionChips: chips,
       }
 
       setIsTyping(false)
       setMessages((prev) => [...prev, botMsg])
       sounds.playClick()
-    }, 600)
+    }, 550)
+  }
+
+  const resetChat = () => {
+    sounds.playSwitch()
+    setMessages([INITIAL_BOT_MESSAGE])
   }
 
   const toggleChat = () => {
@@ -176,11 +247,11 @@ export function CeiboChatbot({ isOpenExternal, onCloseExternal }: { isOpenExtern
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            initial={{ opacity: 0, y: 25, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 30, scale: 0.95 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-x-4 bottom-24 z-50 mx-auto max-h-[580px] w-auto overflow-hidden rounded-3xl border border-white/15 bg-[#0f0f15]/95 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] backdrop-blur-2xl sm:right-6 sm:left-auto sm:w-[380px]"
+            exit={{ opacity: 0, y: 25, scale: 0.96 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="fixed inset-x-4 bottom-24 z-50 mx-auto max-h-[580px] w-auto overflow-hidden rounded-3xl border border-white/15 bg-[#0f0f15]/95 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.95)] backdrop-blur-2xl sm:right-6 sm:left-auto sm:w-[380px]"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-white/10 bg-gradient-to-r from-rose-950/60 to-black/60 px-5 py-4">
@@ -195,39 +266,66 @@ export function CeiboChatbot({ isOpenExternal, onCloseExternal }: { isOpenExtern
                 </div>
               </div>
 
-              <button
-                onClick={toggleChat}
-                className="grid size-8 place-items-center rounded-full text-zinc-400 transition hover:bg-white/10 hover:text-white"
-                aria-label="Cerrar chat"
-              >
-                <X size={18} />
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={resetChat}
+                  title="Reiniciar chat"
+                  className="grid size-8 place-items-center rounded-full text-zinc-400 transition hover:bg-white/10 hover:text-white"
+                >
+                  <RefreshCw size={14} />
+                </button>
+                <button
+                  onClick={toggleChat}
+                  className="grid size-8 place-items-center rounded-full text-zinc-400 transition hover:bg-white/10 hover:text-white"
+                  aria-label="Cerrar chat"
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             {/* Messages Body */}
-            <div className="h-[340px] space-y-3 overflow-y-auto p-4 text-xs leading-relaxed sm:text-sm">
+            <div className="h-[380px] space-y-3.5 overflow-y-auto p-4 text-xs leading-relaxed sm:text-sm">
               {messages.map((m) => {
                 const isBot = m.sender === 'bot'
                 return (
                   <div
                     key={m.id}
-                    className={`flex gap-2.5 ${isBot ? 'items-start' : 'items-end justify-end'}`}
+                    className={`flex flex-col ${isBot ? 'items-start' : 'items-end'}`}
                   >
-                    {isBot && (
-                      <div className="mt-1 grid size-7 place-items-center rounded-full bg-rose-950/70 text-rose-300 shrink-0">
-                        <Bot size={14} />
+                    <div className={`flex gap-2.5 ${isBot ? 'items-start' : 'items-end flex-row-reverse'}`}>
+                      {isBot && (
+                        <div className="mt-1 grid size-7 place-items-center rounded-full bg-rose-950/70 text-rose-300 shrink-0">
+                          <Bot size={14} />
+                        </div>
+                      )}
+
+                      <div
+                        className={`max-w-[85%] rounded-2xl px-4 py-3 whitespace-pre-line ${
+                          isBot
+                            ? 'border border-white/10 bg-white/[0.05] text-zinc-200'
+                            : 'bg-rose-600 text-white shadow-md font-medium'
+                        }`}
+                      >
+                        {m.text}
+                      </div>
+                    </div>
+
+                    {/* Interactive Action Chips directly under bot message */}
+                    {m.actionChips && m.actionChips.length > 0 && (
+                      <div className="mt-2 ml-9 flex flex-wrap gap-1.5">
+                        {m.actionChips.map((chip, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleActionChipClick(chip)}
+                            className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/30 hover:text-white active:scale-95"
+                          >
+                            <span>{chip.label}</span>
+                            <ArrowUpRight size={11} className="opacity-60" />
+                          </button>
+                        ))}
                       </div>
                     )}
-
-                    <div
-                      className={`max-w-[85%] rounded-2xl px-4 py-3 whitespace-pre-line ${
-                        isBot
-                          ? 'border border-white/10 bg-white/[0.05] text-zinc-200'
-                          : 'bg-rose-600 text-white shadow-md'
-                      }`}
-                    >
-                      {m.text}
-                    </div>
                   </div>
                 )
               })}
@@ -249,24 +347,6 @@ export function CeiboChatbot({ isOpenExternal, onCloseExternal }: { isOpenExtern
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Questions Pills */}
-            <div className="border-t border-white/5 bg-black/40 px-3 py-2">
-              <p className="px-1 text-[10px] font-medium uppercase tracking-wider text-zinc-400">
-                Preguntas sugeridas:
-              </p>
-              <div className="mt-1.5 flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                {quickQuestions.map((q, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleSendMessage(q)}
-                    className="shrink-0 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/20 hover:text-white"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Input Bar */}
             <form
               onSubmit={(e) => {
@@ -277,7 +357,7 @@ export function CeiboChatbot({ isOpenExternal, onCloseExternal }: { isOpenExtern
             >
               <input
                 type="text"
-                placeholder="Escribe tu mensaje o consulta..."
+                placeholder="Escribe tu consulta o idea..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 className="w-full bg-transparent px-2 text-xs text-white placeholder:text-zinc-500 outline-none focus:ring-0 sm:text-sm"
