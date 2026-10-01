@@ -32,15 +32,13 @@ export function Team() {
 
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const isInteractingRef = useRef(false)
-  const isUserTouchingRef = useRef(false)
-  const isProgrammaticScrollRef = useRef(false)
   const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const touchStartPos = useRef<{ x: number; y: number } | null>(null)
   const isDraggingRef = useRef(false)
+  const currentScrollPos = useRef(0)
 
   // Pause auto-scroll immediately on touch / interaction
   const pauseAutoScroll = () => {
-    isUserTouchingRef.current = true
     isInteractingRef.current = true
     if (resumeTimeoutRef.current) {
       clearTimeout(resumeTimeoutRef.current)
@@ -48,16 +46,19 @@ export function Team() {
     }
   }
 
-  // Resume auto-scroll exactly after 2.5s (in the 2-3s range) once the user releases touch and scroll stops
+  // Resume auto-scroll after 2.5s once user interaction settles
   const resumeAutoScrollWithDelay = () => {
-    isUserTouchingRef.current = false
+    if (scrollRef.current) {
+      currentScrollPos.current = scrollRef.current.scrollLeft
+    }
     if (resumeTimeoutRef.current) {
       clearTimeout(resumeTimeoutRef.current)
     }
     resumeTimeoutRef.current = setTimeout(() => {
-      if (!isUserTouchingRef.current) {
-        isInteractingRef.current = false
+      if (scrollRef.current) {
+        currentScrollPos.current = scrollRef.current.scrollLeft
       }
+      isInteractingRef.current = false
     }, 2500)
   }
 
@@ -68,12 +69,7 @@ export function Team() {
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    isUserTouchingRef.current = true
-    isInteractingRef.current = true
-    if (resumeTimeoutRef.current) {
-      clearTimeout(resumeTimeoutRef.current)
-      resumeTimeoutRef.current = null
-    }
+    pauseAutoScroll()
     if (touchStartPos.current) {
       const diffX = Math.abs(e.touches[0].clientX - touchStartPos.current.x)
       const diffY = Math.abs(e.touches[0].clientY - touchStartPos.current.y)
@@ -87,10 +83,10 @@ export function Team() {
     resumeAutoScrollWithDelay()
     setTimeout(() => {
       isDraggingRef.current = false
-    }, 80)
+    }, 100)
   }
 
-  // Track active dot indicator on scroll and ensure inertia scrolling respects the pause
+  // Handle scroll events: update active dot index and track inertia
   const handleScroll = () => {
     const el = scrollRef.current
     if (!el) return
@@ -102,17 +98,16 @@ export function Team() {
       setActiveMobileIdx(current)
     }
 
-    // If scroll occurred from human touch / swipe (not auto-scroll tick):
-    if (!isProgrammaticScrollRef.current) {
-      isInteractingRef.current = true
-      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current)
-
-      // Only count down 2.5s AFTER the user finishes touching or inertial scrolling stops
-      if (!isUserTouchingRef.current) {
+    // If user is actively touching or scrolling, synchronize position and restart timer
+    if (isInteractingRef.current) {
+      currentScrollPos.current = el.scrollLeft
+      if (resumeTimeoutRef.current) {
+        clearTimeout(resumeTimeoutRef.current)
         resumeTimeoutRef.current = setTimeout(() => {
-          if (!isUserTouchingRef.current) {
-            isInteractingRef.current = false
+          if (scrollRef.current) {
+            currentScrollPos.current = scrollRef.current.scrollLeft
           }
+          isInteractingRef.current = false
         }, 2500)
       }
     }
@@ -124,51 +119,56 @@ export function Team() {
     pauseAutoScroll()
     const cardWidth = 227
     const oneSetWidth = cardWidth * TEAM_MEMBERS.length
-    el.scrollTo({ left: oneSetWidth + idx * cardWidth, behavior: 'smooth' })
+    const target = oneSetWidth + idx * cardWidth
+    currentScrollPos.current = target
+    el.scrollTo({ left: target, behavior: 'smooth' })
     resumeAutoScrollWithDelay()
   }
 
-  // Auto-scroll loop: very slow, gentle and strictly paused during touch
+  // Auto-scroll loop: continuous smooth movement using float accumulator
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
 
     let animationFrameId: number
-    const SPEED = 0.22 // Ultra-slow and gentle ambient drift
+    const SPEED = 0.5 // Visibly and smoothly moving on mobile (~30px/sec)
+
+    const initScroll = () => {
+      if (el && el.scrollWidth > 0) {
+        const oneThird = el.scrollWidth / 3
+        if (el.scrollLeft < oneThird * 0.5 || el.scrollLeft > oneThird * 2.5) {
+          currentScrollPos.current = oneThird
+          el.scrollLeft = oneThird
+        } else {
+          currentScrollPos.current = el.scrollLeft
+        }
+      }
+    }
+
+    initScroll()
+    const timer = setTimeout(initScroll, 120)
 
     const step = () => {
-      if (el && !isInteractingRef.current && !isUserTouchingRef.current) {
-        isProgrammaticScrollRef.current = true
-        el.scrollLeft += SPEED
-
+      if (el && !isInteractingRef.current) {
+        currentScrollPos.current += SPEED
         const oneThird = el.scrollWidth / 3
         if (oneThird > 0) {
-          if (el.scrollLeft >= oneThird * 2) {
-            el.scrollLeft -= oneThird
-          } else if (el.scrollLeft <= 0) {
-            el.scrollLeft += oneThird
+          if (currentScrollPos.current >= oneThird * 2) {
+            currentScrollPos.current -= oneThird
+          } else if (currentScrollPos.current <= 0) {
+            currentScrollPos.current += oneThird
           }
         }
-
-        // Reset programmatic flag so real touch/inertial scrolls can be captured
-        Promise.resolve().then(() => {
-          isProgrammaticScrollRef.current = false
-        })
+        el.scrollLeft = currentScrollPos.current
       }
       animationFrameId = requestAnimationFrame(step)
     }
-
-    const initTimer = setTimeout(() => {
-      if (el && el.scrollWidth > 0) {
-        el.scrollLeft = el.scrollWidth / 3
-      }
-    }, 60)
 
     animationFrameId = requestAnimationFrame(step)
 
     return () => {
       cancelAnimationFrame(animationFrameId)
-      clearTimeout(initTimer)
+      clearTimeout(timer)
       if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current)
     }
   }, [])
