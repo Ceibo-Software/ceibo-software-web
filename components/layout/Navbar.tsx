@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, Menu, X, MessageSquare } from 'lucide-react'
 import { CEIBO_BRAND } from '@/lib/data'
-import { sounds } from '@/lib/sound'
 
 interface NavbarProps {
   onOpenChat?: () => void
@@ -73,13 +72,15 @@ export function Navbar({ onOpenChat }: NavbarProps) {
         {/* Brand logo */}
         <a
           href="#top"
-          onClick={() => sounds.playClick()}
           className="group flex shrink-0 items-center gap-3 text-sm font-semibold tracking-tight text-white"
         >
           <div className="relative size-11 overflow-hidden rounded-xl border border-white/20 bg-white p-1 shadow-md transition-transform duration-300 group-hover:scale-105 sm:size-12">
             <img
               src={CEIBO_BRAND.logoUrl}
               alt="Ceibo Software Logo"
+              width={48}
+              height={48}
+              decoding="async"
               className="size-full object-contain"
             />
           </div>
@@ -98,7 +99,6 @@ export function Navbar({ onOpenChat }: NavbarProps) {
             <a
               key={link.href}
               href={link.href}
-              onClick={() => sounds.playClick()}
               className="transition hover:text-white"
             >
               {link.label}
@@ -111,10 +111,9 @@ export function Navbar({ onOpenChat }: NavbarProps) {
           {/* Chatbot trigger */}
           <button
             onClick={() => {
-              sounds.playClick()
               if (onOpenChat) onOpenChat()
             }}
-            className="flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-950/30 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-900/40 hover:text-white"
+            className="flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-950/30 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-900/40 hover:text-white cursor-pointer"
           >
             <MessageSquare size={13} />
             <span className="hidden sm:inline">Asistente IA</span>
@@ -123,8 +122,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
           {/* Primary CTA */}
           <a
             href="#contacto"
-            onClick={() => sounds.playClick()}
-            className="group hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-rose-600 to-rose-700 px-5 py-2 text-xs font-semibold text-white shadow-md transition-all duration-300 hover:brightness-110 md:inline-flex"
+            className="group hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-rose-600 to-rose-700 px-5 py-2 text-xs font-semibold text-white shadow-md transition-all duration-300 hover:brightness-110 md:inline-flex cursor-pointer"
           >
             <span>Hablemos</span>
             <ArrowUpRight
@@ -136,10 +134,9 @@ export function Navbar({ onOpenChat }: NavbarProps) {
           {/* Mobile hamburger button */}
           <button
             onClick={() => {
-              sounds.playSwitch()
               setMenuOpen(!menuOpen)
             }}
-            className="grid size-9 place-items-center rounded-full border border-white/10 text-zinc-300 transition hover:border-white/20 md:hidden"
+            className="grid size-9 place-items-center rounded-full border border-white/10 text-zinc-300 transition hover:border-white/20 md:hidden cursor-pointer"
             aria-label="Menú principal"
           >
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
@@ -163,7 +160,6 @@ export function Navbar({ onOpenChat }: NavbarProps) {
                   key={link.href}
                   href={link.href}
                   onClick={() => {
-                    sounds.playClick()
                     setMenuOpen(false)
                   }}
                   className="flex items-center justify-between py-1 transition hover:text-rose-400"
@@ -177,7 +173,6 @@ export function Navbar({ onOpenChat }: NavbarProps) {
                 <a
                   href="#contacto"
                   onClick={() => {
-                    sounds.playClick()
                     setMenuOpen(false)
                   }}
                   className="flex w-full items-center justify-center gap-2 rounded-full bg-rose-600 py-3 text-center text-sm font-semibold text-white shadow-lg"

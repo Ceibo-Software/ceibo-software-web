@@ -41,15 +41,6 @@ export interface ProjectItem {
   liveSimulationType: 'fintech' | 'health' | 'ops'
 }
 
-export interface EstimatorOption {
-  id: string
-  title: string
-  category: 'platform' | 'scope' | 'speed'
-  description: string
-  weeks: number
-  badge?: string
-}
-
 export const CEIBO_BRAND = {
   name: 'Ceibo Software',
   tagline: 'Desarrollo de software y productos digitales',
@@ -293,43 +284,4 @@ export const PROJECTS: ProjectItem[] = [
     accentColor: 'amber',
     liveSimulationType: 'ops',
   },
-]
-
-export const ESTIMATOR_OPTIONS: {
-  platforms: EstimatorOption[]
-  features: EstimatorOption[]
-  timeline: EstimatorOption[]
-} = {
-  platforms: [
-    { id: 'web-app', title: 'Plataforma Web SaaS', category: 'platform', description: 'Next.js, panel admin, dashboard responsivo y backend escalable', weeks: 4 },
-    { id: 'mobile-app', title: 'App Móvil iOS & Android', category: 'platform', description: 'React Native con interfaces nativas y soporte offline', weeks: 5 },
-    { id: 'full-ecosystem', title: 'Ecosistema Completo (Web + Mobile)', category: 'platform', description: 'Suite sincronizada en la nube con experiencia unificada', weeks: 8, badge: 'Recomendado' },
-    { id: 'ai-system', title: 'Sistema con IA & Automatizaciones', category: 'platform', description: 'Agentes autónomos, canalizaciones RAG y flujos de trabajo', weeks: 4 },
-  ],
-  features: [
-    { id: 'auth-rbac', title: 'Autenticación & Roles Avanzados', category: 'scope', description: 'OAuth, Magic Links, MFA y permisos granulares', weeks: 1 },
-    { id: 'payments', title: 'Pasarela de Pagos & Facturación', category: 'scope', description: 'Stripe, Mercado Pago, suscripciones y facturación fiscal', weeks: 1.5 },
-    { id: 'analytics', title: 'Telemetría & Analítica en Vivo', category: 'scope', description: 'Gráficos interactivos, pipelines de eventos y reportes en tiempo real', weeks: 1.5 },
-    { id: 'ai-copilot', title: 'Asistente IA / Motor Conversacional', category: 'scope', description: 'Integración LLM con memoria vectorial y prompts optimizados', weeks: 2, badge: 'Popular' },
-    { id: 'design-system', title: 'Design System & UI Artesanal', category: 'scope', description: 'Figma tokens, componentes reutilizables y micro-interacciones', weeks: 2 },
-  ],
-  timeline: [
-    { id: 'normal', title: 'Velocidad Estándar', category: 'speed', description: 'Sprints de 2 semanas con revisiones iterativas continuas', weeks: 0 },
-    { id: 'fastrack', title: 'Fast-Track / Sprint Intensivo', category: 'speed', description: 'Equipo dedicado full focus para lanzar en tiempo récord', weeks: -1.5, badge: 'High Priority' },
-  ],
-}
-
-export const TECH_STACK = [
-  { name: 'TypeScript', category: 'Core' },
-  { name: 'Next.js 16', category: 'Frontend' },
-  { name: 'React 19', category: 'Frontend' },
-  { name: 'Tailwind CSS', category: 'Styles' },
-  { name: 'Node.js', category: 'Backend' },
-  { name: 'Go', category: 'Backend' },
-  { name: 'Rust', category: 'Systems' },
-  { name: 'PostgreSQL', category: 'Database' },
-  { name: 'Redis', category: 'Cache' },
-  { name: 'Docker', category: 'DevOps' },
-  { name: 'Kubernetes', category: 'Cloud' },
-  { name: 'AWS & Cloudflare', category: 'Infra' },
 ]

@@ -608,17 +608,34 @@ export function CeiboRootsBackground() {
       petals.push(p)
     }
 
-    // --- EVENT LISTENERS ---
+    // --- EVENT LISTENERS & LIFECYCLE OPTIMIZATION ---
+    let isPaused = false
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        isPaused = true
+        cancelAnimationFrame(animationFrameId)
+      } else {
+        if (isPaused) {
+          isPaused = false
+          animationFrameId = requestAnimationFrame(render)
+        }
+      }
+    }
+
     const handleScroll = () => {
       targetScrollY = window.scrollY || 0
     }
 
+    let lastBranchScanTime = 0
     const handleMouseMove = (e: MouseEvent) => {
       mouse.targetX = e.clientX
       mouse.targetY = e.clientY
       mouse.isHovered = true
 
-      if (Math.random() < 0.25) {
+      const now = performance.now()
+      if (now - lastBranchScanTime > 80 && Math.random() < 0.35) {
+        lastBranchScanTime = now
         const cameraY = smoothScrollY * 0.85
         const worldMouseY = mouse.targetY + cameraY
 
@@ -646,16 +663,21 @@ export function CeiboRootsBackground() {
       mouse.isHovered = false
     }
 
+    let resizeTimer: ReturnType<typeof setTimeout>
     const handleResize = () => {
-      setupCanvas()
-      generateCeiboEcosystem()
-      allBranches.length = 0
-      allTreesAndStems.forEach(flattenBranches)
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(() => {
+        setupCanvas()
+        generateCeiboEcosystem()
+        allBranches.length = 0
+        allTreesAndStems.forEach(flattenBranches)
+      }, 150)
     }
 
+    document.addEventListener('visibilitychange', handleVisibilityChange)
     window.addEventListener('scroll', handleScroll, { passive: true })
     window.addEventListener('resize', handleResize)
-    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
     window.addEventListener('mouseleave', handleMouseLeave)
 
     // Math helpers for curves
@@ -1210,6 +1232,8 @@ export function CeiboRootsBackground() {
 
     return () => {
       cancelAnimationFrame(animationFrameId)
+      clearTimeout(resizeTimer)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('mousemove', handleMouseMove)

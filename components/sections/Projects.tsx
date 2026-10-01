@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, TrendingUp, X, Check } from 'lucide-react'
-import { sounds } from '@/lib/sound'
 import { Reveal } from '@/components/ui/Reveal'
 import { Magnetic } from '@/components/ui/Magnetic'
 
@@ -265,7 +264,6 @@ export function Projects() {
                     transition: { duration: 0.7, ease: 'easeInOut' },
                   }}
                   onClick={() => {
-                    sounds.playClick()
                     setActiveProject(project)
                   }}
                   className={`group relative w-full cursor-pointer flex flex-col justify-between overflow-hidden rounded-3xl border bg-gradient-to-b from-[#101018] via-[#0c0c13] to-[#09090e] p-6 pt-7 shadow-2xl backdrop-blur-xl transition-all duration-300 ${
@@ -355,7 +353,6 @@ export function Projects() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => {
-                    sounds.playClick()
                     setActiveProject(null)
                   }}
                   className="fixed inset-0 bg-black/85 backdrop-blur-xl"
@@ -371,7 +368,6 @@ export function Projects() {
                   <Magnetic strength={0.35} className="absolute right-5 top-5">
                     <button
                       onClick={() => {
-                        sounds.playClick()
                         setActiveProject(null)
                       }}
                       className="grid size-8 place-items-center rounded-full border border-white/10 bg-white/5 text-zinc-400 transition hover:border-white/20 hover:text-white cursor-pointer"
@@ -419,7 +415,6 @@ export function Projects() {
                       <a
                         href="#contacto"
                         onClick={() => {
-                          sounds.playClick()
                           setActiveProject(null)
                         }}
                         className="inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-5 py-2 text-xs font-bold text-white shadow-lg transition hover:bg-rose-500"

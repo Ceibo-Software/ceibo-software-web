@@ -2,14 +2,12 @@
 
 import React, { useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring, useTransform, HTMLMotionProps } from 'framer-motion'
-import { sounds } from '@/lib/sound'
 
 interface TiltCardProps extends HTMLMotionProps<'div'> {
   children: React.ReactNode
   className?: string
   intensity?: number
   spotlightColor?: string
-  enableSound?: boolean
 }
 
 export function TiltCard({
@@ -17,7 +15,6 @@ export function TiltCard({
   className = '',
   intensity = 15,
   spotlightColor = 'rgba(225, 29, 72, 0.15)',
-  enableSound = false,
   ...props
 }: TiltCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
@@ -30,22 +27,21 @@ export function TiltCard({
   const rotateX = useSpring(useTransform(mouseY, [0, 1], [intensity, -intensity]), springConfig)
   const rotateY = useSpring(useTransform(mouseX, [0, 1], [-intensity, intensity]), springConfig)
 
-  const [coords, setCoords] = useState({ x: 0, y: 0 })
-
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return
     const rect = cardRef.current.getBoundingClientRect()
-    const x = (e.clientX - rect.left) / rect.width
-    const y = (e.clientY - rect.top) / rect.height
+    const relX = e.clientX - rect.left
+    const relY = e.clientY - rect.top
 
-    mouseX.set(x)
-    mouseY.set(y)
-    setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+    mouseX.set(relX / rect.width)
+    mouseY.set(relY / rect.height)
+
+    cardRef.current.style.setProperty('--card-x', `${relX}px`)
+    cardRef.current.style.setProperty('--card-y', `${relY}px`)
   }
 
   const handleMouseEnter = () => {
     setIsHovered(true)
-    if (enableSound) sounds.playClick()
   }
 
   const handleMouseLeave = () => {
@@ -68,15 +64,16 @@ export function TiltCard({
       className={`relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/60 backdrop-blur-md transition-shadow duration-300 hover:border-rose-500/30 hover:shadow-[0_0_30px_rgba(225,29,72,0.12)] ${className}`}
       {...props}
     >
-      {/* Radial Spotlight on hover */}
+      {/* Radial Spotlight on hover - rendered via direct CSS variable without React re-renders */}
       <div
         className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{
           opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(400px circle at ${coords.x}px ${coords.y}px, ${spotlightColor}, transparent 80%)`,
+          background: `radial-gradient(400px circle at var(--card-x, 50%) var(--card-y, 50%), ${spotlightColor}, transparent 80%)`,
         }}
       />
       <div className="relative z-10 h-full">{children}</div>
     </motion.div>
   )
 }
+

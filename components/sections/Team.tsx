@@ -5,7 +5,6 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, X, Briefcase } from 'lucide-react'
 import { TEAM_MEMBERS, TeamMember } from '@/lib/data'
-import { sounds } from '@/lib/sound'
 import { Reveal } from '@/components/ui/Reveal'
 import { Magnetic } from '@/components/ui/Magnetic'
 
@@ -88,7 +87,6 @@ export function Team() {
           <Reveal key={member.name} delay={idx * 0.05}>
             <div
               onClick={() => {
-                sounds.playClick()
                 setSelectedMember(member)
               }}
               className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl sm:rounded-2xl border border-white/10 bg-[#0d0d14]/75 p-2 sm:p-3.5 backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:border-rose-500/50 hover:bg-[#0d0d14]/95 hover:shadow-[0_12px_28px_-6px_rgba(225,29,72,0.25)]"
@@ -103,8 +101,9 @@ export function Team() {
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="size-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                       loading="lazy"
+                      decoding="async"
+                      className="size-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                     />
                   ) : (
                     <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-base sm:text-xl font-bold text-rose-400">
@@ -167,7 +166,6 @@ export function Team() {
                       href={member.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => sounds.playClick()}
                       className="grid size-5 sm:size-6 place-items-center rounded-md border border-white/10 bg-black/40 text-zinc-400 transition hover:border-rose-500/40 hover:text-white"
                       aria-label={`LinkedIn de ${member.name}`}
                     >
@@ -179,7 +177,6 @@ export function Team() {
                       href={member.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => sounds.playClick()}
                       className="grid size-5 sm:size-6 place-items-center rounded-md border border-white/10 bg-black/40 text-zinc-400 transition hover:border-rose-500/40 hover:text-white"
                       aria-label={`GitHub de ${member.name}`}
                     >
@@ -220,7 +217,6 @@ export function Team() {
                   <Magnetic strength={0.35} className="absolute top-5 right-5">
                     <button
                       onClick={() => {
-                        sounds.playClick()
                         setSelectedMember(null)
                       }}
                       className="grid size-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-400 transition hover:border-white/20 hover:bg-white/10 hover:text-white cursor-pointer"
@@ -237,6 +233,7 @@ export function Team() {
                         <img
                           src={selectedMember.image}
                           alt={selectedMember.name}
+                          decoding="async"
                           className="size-full object-cover"
                         />
                       ) : (
@@ -275,7 +272,6 @@ export function Team() {
                           href={selectedMember.portfolio}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onClick={() => sounds.playClick()}
                           className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/40 bg-rose-950/30 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-900/50 hover:text-white"
                         >
                           <span>Portafolio</span>
@@ -289,7 +285,6 @@ export function Team() {
                           href={selectedMember.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onClick={() => sounds.playClick()}
                           className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-semibold text-zinc-300 transition hover:border-white/25 hover:text-white"
                         >
                           <LinkedInIcon />
@@ -303,7 +298,6 @@ export function Team() {
                           href={selectedMember.github}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onClick={() => sounds.playClick()}
                           className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-semibold text-zinc-300 transition hover:border-white/25 hover:text-white"
                         >
                           <GitHubIcon />
@@ -355,7 +349,6 @@ export function Team() {
                     <Magnetic strength={0.25}>
                       <button
                         onClick={() => {
-                          sounds.playClick()
                           setSelectedMember(null)
                         }}
                         className="rounded-xl border border-white/15 px-4 py-2 text-xs font-semibold text-zinc-300 transition hover:bg-white/10 hover:text-white cursor-pointer"
