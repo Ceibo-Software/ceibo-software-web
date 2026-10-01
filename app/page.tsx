@@ -16,7 +16,7 @@ export default function Page() {
   const [isChatOpen, setIsChatOpen] = useState(false)
 
   return (
-    <div className="relative min-h-screen bg-[#09090b] text-zinc-100 selection:bg-rose-500/30 selection:text-white">
+    <div className="relative min-h-screen w-full max-w-full overflow-x-clip bg-[#09090b] text-zinc-100 selection:bg-rose-500/30 selection:text-white">
       {/* Ambient Radial Gradient & Grid Overlays */}
       <div
         aria-hidden="true"
@@ -37,7 +37,7 @@ export default function Page() {
       <Navbar onOpenChat={() => setIsChatOpen(true)} />
 
       {/* Main Content Flow */}
-      <main className="relative z-10">
+      <main className="relative z-10 w-full max-w-full overflow-x-clip">
         <Hero onOpenChat={() => setIsChatOpen(true)} />
         <Services />
         <Projects />

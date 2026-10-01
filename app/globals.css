@@ -153,7 +153,11 @@
   }
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+  max-width: 100%;
+}
 
 .light main { background-color: #fafafc; color: #171419; }
 .light main .text-white { color: #171419; }
@@ -172,6 +176,9 @@ html { scroll-behavior: smooth; }
   }
   body {
     @apply bg-[#09090b] text-zinc-100;
+    overflow-x: clip;
+    max-width: 100%;
+    width: 100%;
   }
   input,
   textarea,

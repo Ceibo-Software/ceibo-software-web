@@ -202,7 +202,7 @@ export function Team() {
   }, [selectedMember])
 
   return (
-    <section id="equipo" className="relative z-20 mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
+    <section id="equipo" className="relative z-20 mx-auto w-full max-w-7xl overflow-hidden px-5 py-20 md:px-8 md:py-28">
       {/* Header with Scroll Reveal */}
       <Reveal className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
@@ -362,7 +362,7 @@ export function Team() {
       </div>
 
       {/* Mobile Auto-moving & Touch-Draggable Carousel ("muy lento", se queda quieto al deslizar, reanuda a los 2-3s) */}
-      <div className="relative mt-3 flex md:hidden overflow-hidden py-2">
+      <div className="relative mt-3 flex md:hidden w-full max-w-full overflow-hidden py-2">
         {/* Soft edge gradient masks */}
         <div className="pointer-events-none absolute left-0 inset-y-0 z-10 w-6 bg-gradient-to-r from-[#09090b] to-transparent" />
         <div className="pointer-events-none absolute right-0 inset-y-0 z-10 w-6 bg-gradient-to-l from-[#09090b] to-transparent" />
@@ -378,7 +378,7 @@ export function Team() {
           onPointerUp={resumeAutoScrollWithDelay}
           onPointerLeave={resumeAutoScrollWithDelay}
           onPointerCancel={resumeAutoScrollWithDelay}
-          className="flex gap-3 overflow-x-auto scrollbar-none px-4 py-1 touch-pan-x overscroll-x-contain cursor-grab active:cursor-grabbing select-none"
+          className="flex w-full max-w-full gap-3 overflow-x-auto scrollbar-none px-4 py-1 touch-pan-x overscroll-x-contain cursor-grab active:cursor-grabbing select-none"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {[...TEAM_MEMBERS, ...TEAM_MEMBERS, ...TEAM_MEMBERS].map((member, idx) => (
