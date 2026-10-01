@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Mail, Phone, MapPin, Send, CheckCircle2, ArrowUpRight, Sparkles, MessageSquare } from 'lucide-react'
 import { CEIBO_BRAND } from '@/lib/data'
-import { sounds } from '@/lib/sound'
 import { Reveal } from '@/components/ui/Reveal'
 
 interface ContactProps {
@@ -32,14 +31,12 @@ export function Contact({ initialMessage = '' }: ContactProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    sounds.playSwitch()
     setIsSubmitting(true)
 
     // Simulate reliable dispatch
     setTimeout(() => {
       setIsSubmitting(false)
       setSubmitted(true)
-      sounds.playSuccess()
     }, 900)
   }
 
@@ -63,7 +60,6 @@ export function Contact({ initialMessage = '' }: ContactProps) {
               <div className="mt-8 space-y-4 text-xs text-zinc-300">
                 <a
                   href={`mailto:${CEIBO_BRAND.email}`}
-                  onClick={() => sounds.playClick()}
                   className="group flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-3.5 transition hover:border-rose-500/40 hover:text-white"
                 >
                   <div className="grid size-9 place-items-center rounded-lg bg-rose-950/40 text-rose-400">
@@ -77,7 +73,6 @@ export function Contact({ initialMessage = '' }: ContactProps) {
 
                 <a
                   href={`tel:${CEIBO_BRAND.phone.replace(/\s+/g, '')}`}
-                  onClick={() => sounds.playClick()}
                   className="group flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-3.5 transition hover:border-rose-500/40 hover:text-white"
                 >
                   <div className="grid size-9 place-items-center rounded-lg bg-rose-950/40 text-rose-400">
@@ -115,11 +110,10 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                 </p>
                 <button
                   onClick={() => {
-                    sounds.playClick()
                     setSubmitted(false)
-                    setForm({ name: '', email: '', company: '', budget: '$10k - $25k', message: '' })
+                    setForm({ name: '', email: '', company: '', budget: '$1.000 - $3.000 USD', message: '' })
                   }}
-                  className="mt-6 rounded-xl border border-white/20 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-white/10"
+                  className="mt-6 rounded-xl border border-white/20 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-white/10 cursor-pointer"
                 >
                   Enviar otra consulta
                 </button>
@@ -171,10 +165,9 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                         type="button"
                         key={b}
                         onClick={() => {
-                          sounds.playClick()
                           setForm({ ...form, budget: b })
                         }}
-                        className={`rounded-lg border px-2 py-2 text-center font-mono text-[11px] transition ${
+                        className={`rounded-lg border px-2 py-2 text-center font-mono text-[11px] transition cursor-pointer ${
                           form.budget === b
                             ? 'border-rose-500 bg-rose-600 text-white'
                             : 'border-white/10 bg-black/30 text-zinc-400 hover:border-white/20 hover:text-white'
@@ -187,14 +180,7 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-zinc-300">Mensaje o Alcance *</label>
-                    {form.message && form.message.includes('•') && (
-                      <span className="font-mono text-[10px] text-rose-400">
-                        ✓ Datos importados del estimador
-                      </span>
-                    )}
-                  </div>
+                  <label className="block text-xs font-semibold text-zinc-300">Mensaje o Alcance *</label>
                   <textarea
                     required
                     rows={4}

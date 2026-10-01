@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { Hero } from '@/components/sections/Hero'
@@ -8,9 +9,13 @@ import { Services } from '@/components/sections/Services'
 import { Projects } from '@/components/sections/Projects'
 import { Team } from '@/components/sections/Team'
 import { Contact } from '@/components/sections/Contact'
-import { CeiboChatbot } from '@/components/chat/CeiboChatbot'
 import { CeiboRootsBackground } from '@/components/canvas/CeiboRootsBackground'
 import { MouseSpotlight } from '@/components/ui/Spotlight'
+
+const CeiboChatbot = dynamic(
+  () => import('@/components/chat/CeiboChatbot').then((mod) => mod.CeiboChatbot),
+  { ssr: false }
+)
 
 export default function Page() {
   const [isChatOpen, setIsChatOpen] = useState(false)

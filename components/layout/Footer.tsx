@@ -2,12 +2,10 @@
 
 import { ArrowUpRight, Terminal, Heart } from 'lucide-react'
 import { CEIBO_BRAND } from '@/lib/data'
-import { sounds } from '@/lib/sound'
 import { Reveal } from '@/components/ui/Reveal'
 
 export function Footer() {
   const scrollToTop = () => {
-    sounds.playClick()
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -22,6 +20,10 @@ export function Footer() {
                 <img
                   src={CEIBO_BRAND.logoUrl}
                   alt="Ceibo Software Logo"
+                  width={28}
+                  height={28}
+                  loading="lazy"
+                  decoding="async"
                   className="size-full rounded-md object-cover"
                 />
               </div>
@@ -47,7 +49,6 @@ export function Footer() {
               <li>
                 <a
                   href="#servicios"
-                  onClick={() => sounds.playClick()}
                   className="transition hover:text-rose-400"
                 >
                   Servicios de Ingeniería
@@ -56,7 +57,6 @@ export function Footer() {
               <li>
                 <a
                   href="#proyectos"
-                  onClick={() => sounds.playClick()}
                   className="transition hover:text-rose-400"
                 >
                   Proyectos Destacados
@@ -65,7 +65,6 @@ export function Footer() {
               <li>
                 <a
                   href="#contacto"
-                  onClick={() => sounds.playClick()}
                   className="transition hover:text-rose-400"
                 >
                   Contacto
@@ -74,7 +73,6 @@ export function Footer() {
               <li>
                 <a
                   href="#equipo"
-                  onClick={() => sounds.playClick()}
                   className="transition hover:text-rose-400"
                 >
                   Staff

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, MessageSquare } from 'lucide-react'
-import { sounds } from '@/lib/sound'
 import { Magnetic } from '@/components/ui/Magnetic'
 
 const ROTATING_WORDS = [
@@ -71,7 +70,6 @@ export function Hero({ onOpenChat }: HeroProps) {
   }, [])
 
   const handleScroll = (id: string) => {
-    sounds.playClick()
     const el = document.getElementById(id)
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' })
@@ -158,7 +156,6 @@ export function Hero({ onOpenChat }: HeroProps) {
           <Magnetic strength={0.22}>
             <button
               onClick={() => {
-                sounds.playClick()
                 if (onOpenChat) onOpenChat()
               }}
               className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.04] px-6 py-3 text-sm font-medium text-zinc-200 backdrop-blur-md transition-all duration-300 hover:border-rose-500/40 hover:bg-white/[0.08] hover:text-white active:scale-95 cursor-pointer"

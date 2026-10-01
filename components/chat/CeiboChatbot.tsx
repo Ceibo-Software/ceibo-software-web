@@ -11,7 +11,6 @@ import {
   ArrowUpRight,
   RefreshCw,
 } from 'lucide-react'
-import { sounds } from '@/lib/sound'
 
 interface ActionChip {
   label: string
@@ -73,8 +72,6 @@ export function CeiboChatbot({
   }, [messages, isOpen, isTyping])
 
   const handleActionChipClick = (chip: ActionChip) => {
-    sounds.playClick()
-
     if (chip.actionType === 'navigate' && chip.payload) {
       const el = document.getElementById(chip.payload)
       if (el) {
@@ -107,8 +104,6 @@ export function CeiboChatbot({
     const query = (textToSend || input).trim()
     if (!query) return
 
-    sounds.playKey()
-
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
       sender: 'user',
@@ -128,7 +123,6 @@ export function CeiboChatbot({
       // 1. Email or phone contact
       if (lower.includes('@') || lower.match(/\b\d{8,}\b/)) {
         answer = '¡Datos recibidos! 🚀 Nos pondremos en contacto con vos hoy mismo.'
-        sounds.playSuccess()
         chips = [
           { label: '💬 Escribir por WhatsApp', actionType: 'whatsapp' },
           { label: '📁 Ver proyectos', actionType: 'navigate', payload: 'proyectos' },
@@ -196,17 +190,14 @@ export function CeiboChatbot({
 
       setIsTyping(false)
       setMessages((prev) => [...prev, botMsg])
-      sounds.playClick()
     }, 550)
   }
 
   const resetChat = () => {
-    sounds.playSwitch()
     setMessages([INITIAL_BOT_MESSAGE])
   }
 
   const toggleChat = () => {
-    sounds.playSwitch()
     const next = !isOpen
     setIsOpen(next)
     if (onCloseExternal && !next) {
