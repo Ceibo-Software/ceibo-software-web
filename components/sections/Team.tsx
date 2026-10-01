@@ -27,7 +27,6 @@ function GitHubIcon({ className }: { className?: string }) {
 
 export function Team() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
-  const [activeIdx, setActiveIdx] = useState<number>(0)
   const [isMobilePaused, setIsMobilePaused] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -76,183 +75,123 @@ export function Team() {
         </p>
       </Reveal>
 
-      {/* Desktop Horizontal Expanding Cards Accordion (Compact, all 6 together in one view) */}
-      <Reveal className="mt-10 hidden md:flex h-[385px] w-full items-stretch gap-2.5">
-        {TEAM_MEMBERS.map((member, idx) => {
-          const isActive = activeIdx === idx
-          return (
-            <div
-              key={member.name}
-              onMouseEnter={() => {
-                if (activeIdx !== idx) {
-                  sounds.playKey()
-                  setActiveIdx(idx)
-                }
-              }}
-              onClick={() => {
-                sounds.playClick()
-                setSelectedMember(member)
-              }}
-              className={`group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                isActive
-                  ? 'flex-[2.6] border-rose-500/50 bg-[#0d0d14]/90 shadow-[0_0_35px_rgba(225,29,72,0.2)]'
-                  : 'flex-1 border-white/10 bg-[#0d0d14]/60 hover:border-white/25 hover:bg-[#0d0d14]/80'
-              }`}
-            >
-              {/* Card Background Image or Gradient */}
-              <div className="absolute inset-0 size-full overflow-hidden">
+      {/* Desktop 6-Member Unified Grid (Compact, all 6 visible together, ultra-fluid 120fps hover) */}
+      <Reveal className="mt-10 hidden md:grid md:grid-cols-6 gap-3 lg:gap-3.5 group/team">
+        {TEAM_MEMBERS.map((member, idx) => (
+          <div
+            key={member.name}
+            onClick={() => {
+              sounds.playClick()
+              setSelectedMember(member)
+            }}
+            className="group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/75 p-3 backdrop-blur-sm transition-[transform,border-color,box-shadow,opacity] duration-200 ease-out hover:-translate-y-1.5 hover:border-rose-500/50 hover:bg-[#0d0d14]/95 hover:shadow-[0_12px_28px_-6px_rgba(225,29,72,0.25)] group-hover/team:opacity-75 hover:!opacity-100"
+          >
+            {/* Top liquid shimmer highlight */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/0 to-transparent transition-opacity duration-300 group-hover:via-rose-500/60" />
+
+            <div>
+              {/* Photo Container */}
+              <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-white/10 bg-black/60">
                 {member.image ? (
                   <img
                     src={member.image}
                     alt={member.name}
-                    className={`size-full object-cover transition-all duration-700 ${
-                      isActive
-                        ? 'scale-105 grayscale-0'
-                        : 'scale-100 grayscale brightness-60 group-hover:brightness-85'
-                    }`}
+                    className="size-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   />
                 ) : (
-                  <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-2xl font-bold text-rose-400">
+                  <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-xl font-bold text-rose-400">
                     {member.name
                       .split(' ')
                       .map((n) => n[0])
                       .join('')}
                   </div>
                 )}
-                {/* Holographic foil sheen overlay */}
-                <div className="pointer-events-none absolute -inset-full holo-card-shine opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:animate-[holographic-shine_2s_ease-in-out_infinite]" />
-                
-                {/* Dark gradient for legibility */}
-                <div
-                  className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${
-                    isActive
-                      ? 'bg-gradient-to-t from-black via-black/60 to-black/20'
-                      : 'bg-gradient-to-t from-black/95 via-black/40 to-transparent'
-                  }`}
-                />
 
-                {/* Top liquid shimmer line */}
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/0 to-transparent transition-opacity duration-500 group-hover:via-rose-500/60" />
-              </div>
-
-              {/* Collapsed State Info */}
-              <div
-                className={`relative z-10 flex h-full flex-col justify-between p-3 transition-all duration-300 ${
-                  isActive ? 'pointer-events-none opacity-0' : 'opacity-100'
-                }`}
-              >
-                <div className="flex justify-center">
-                  <span className="grid size-6 place-items-center rounded-full border border-white/15 bg-black/60 font-mono text-[10px] font-bold text-rose-400 backdrop-blur-md">
+                {/* Number Badge */}
+                <div className="absolute top-2 left-2">
+                  <span className="grid size-5 place-items-center rounded-full border border-white/20 bg-black/70 font-mono text-[9px] font-bold text-rose-400 backdrop-blur-sm">
                     0{idx + 1}
                   </span>
                 </div>
 
-                <div className="flex flex-col items-center text-center">
-                  <span className="mb-2 max-h-24 text-[11px] font-semibold tracking-wide text-white/90 [writing-mode:vertical-rl] rotate-180 line-clamp-1">
-                    {member.name}
-                  </span>
-                  <div className="w-full rounded-lg border border-white/10 bg-black/70 px-1.5 py-1 backdrop-blur-md">
-                    <p className="truncate text-[10px] font-bold text-white group-hover:text-rose-300">
-                      {member.name.split(' ')[0]}
-                    </p>
-                    <p className="truncate text-[8px] text-rose-400">
-                      {member.role.split(' ')[0]}
-                    </p>
-                  </div>
-                </div>
+                {/* Holographic foil sheen overlay */}
+                <div className="pointer-events-none absolute -inset-full holo-card-shine opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:animate-[holographic-shine_2s_ease-in-out_infinite]" />
+
+                {/* Subtle gradient overlay */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               </div>
 
-              {/* Expanded State Info */}
-              <div
-                className={`relative z-10 flex h-full flex-col justify-between p-4 sm:p-5 transition-all duration-500 ${
-                  isActive ? 'opacity-100 delay-75' : 'pointer-events-none opacity-0'
-                }`}
-              >
-                {/* Header Tag */}
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-950/60 px-2.5 py-0.5 font-mono text-[10px] font-semibold text-rose-300 backdrop-blur-md">
-                    <Sparkles size={10} className="text-rose-400" />
-                    <span>Ceibo · 0{idx + 1}</span>
-                  </span>
-                  <span className="text-[10px] font-medium text-zinc-400">
-                    Click para ficha
-                  </span>
-                </div>
+              {/* Name & Role */}
+              <div className="mt-3">
+                <h3
+                  className="truncate text-sm font-bold text-white transition-colors duration-200 group-hover:text-rose-200"
+                  title={member.name}
+                >
+                  {member.name}
+                </h3>
+                <p
+                  className="mt-0.5 truncate text-[11px] font-semibold text-rose-400"
+                  title={member.role}
+                >
+                  {member.role}
+                </p>
 
-                {/* Profile Details Card */}
-                <div className="rounded-xl border border-white/10 bg-black/75 p-3.5 backdrop-blur-md">
-                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white drop-shadow-md">
-                      {member.name}
-                    </h3>
-                    <span className="text-[11px] font-semibold text-rose-400">
-                      {member.role}
-                    </span>
-                  </div>
-
-                  {/* Specialties */}
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {member.specialty.split('·').map((tech) => (
+                {/* Specialties chips (compact) */}
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {member.specialty
+                    .split('·')
+                    .slice(0, 2)
+                    .map((tech) => (
                       <span
                         key={tech}
-                        className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-medium text-zinc-200 backdrop-blur-sm"
+                        className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[9px] font-medium text-zinc-300"
                       >
                         {tech.trim()}
                       </span>
                     ))}
-                  </div>
-
-                  {/* Bio */}
-                  <p className="mt-2 text-[11px] leading-relaxed text-zinc-300 line-clamp-2">
-                    {member.bio}
-                  </p>
-
-                  {/* Footer Actions */}
-                  <div className="mt-3 flex items-center justify-between border-t border-white/15 pt-2.5">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/20 px-3 py-1 text-[11px] font-semibold text-rose-300 transition hover:bg-rose-500/30">
-                      <span>Ver proyectos</span>
-                      <ArrowUpRight size={12} />
-                    </span>
-
-                    <div
-                      className="flex items-center gap-1.5"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {member.linkedin && (
-                        <Magnetic strength={0.35}>
-                          <a
-                            href={member.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => sounds.playClick()}
-                            className="grid size-7 place-items-center rounded-lg border border-white/15 bg-black/50 text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/40 hover:text-white"
-                            aria-label={`LinkedIn de ${member.name}`}
-                          >
-                            <LinkedInIcon />
-                          </a>
-                        </Magnetic>
-                      )}
-                      {member.github && (
-                        <Magnetic strength={0.35}>
-                          <a
-                            href={member.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => sounds.playClick()}
-                            className="grid size-7 place-items-center rounded-lg border border-white/15 bg-black/50 text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/40 hover:text-white"
-                            aria-label={`GitHub de ${member.name}`}
-                          >
-                            <GitHubIcon />
-                          </a>
-                        </Magnetic>
-                      )}
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
-          )
-        })}
+
+            {/* Bottom Actions */}
+            <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-2.5">
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-rose-400 transition-colors group-hover:text-rose-300">
+                <span>Ficha</span>
+                <ArrowUpRight size={11} />
+              </span>
+
+              <div
+                className="flex items-center gap-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {member.linkedin && (
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sounds.playClick()}
+                    className="grid size-6 place-items-center rounded-md border border-white/10 bg-black/40 text-zinc-400 transition hover:border-rose-500/40 hover:text-white"
+                    aria-label={`LinkedIn de ${member.name}`}
+                  >
+                    <LinkedInIcon />
+                  </a>
+                )}
+                {member.github && (
+                  <a
+                    href={member.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sounds.playClick()}
+                    className="grid size-6 place-items-center rounded-md border border-white/10 bg-black/40 text-zinc-400 transition hover:border-rose-500/40 hover:text-white"
+                    aria-label={`GitHub de ${member.name}`}
+                  >
+                    <GitHubIcon />
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
       </Reveal>
 
       {/* Mobile Auto-moving Smooth Infinite Carousel ("muy lento") */}
