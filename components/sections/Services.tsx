@@ -30,7 +30,7 @@ const SERVICES_DATA = [
 
 export function Services() {
   return (
-    <section id="servicios" className="relative z-20 mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
+    <section id="servicios" className="relative z-20 mx-auto w-full max-w-6xl overflow-hidden px-5 py-20 md:px-8 md:py-24">
       {/* Scroll Reveal Header */}
       <Reveal className="text-center max-w-2xl mx-auto">
         <span className="font-mono text-xs uppercase tracking-[0.2em] text-rose-400">

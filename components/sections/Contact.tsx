@@ -44,7 +44,7 @@ export function Contact({ initialMessage = '' }: ContactProps) {
   }
 
   return (
-    <section id="contacto" className="relative z-20 mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
+    <section id="contacto" className="relative z-20 mx-auto w-full max-w-7xl overflow-hidden px-5 py-20 md:px-8 md:py-28">
       <Reveal className="overflow-hidden rounded-3xl border border-white/10 bg-[#0c0c12]/90 backdrop-blur-2xl">
         <div className="grid gap-10 p-6 md:p-12 lg:grid-cols-12 lg:gap-14">
           {/* Left: Info */}

@@ -159,7 +159,7 @@ export function Projects() {
   const nexo = PROJECTS[2]
 
   return (
-    <section id="proyectos" className="relative z-20 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+    <section id="proyectos" className="relative z-20 mx-auto w-full max-w-7xl overflow-hidden px-5 py-24 md:px-8 md:py-32">
       {/* Minimal Header */}
       <Reveal className="mx-auto max-w-xl text-center">
         <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl">

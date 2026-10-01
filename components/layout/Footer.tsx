@@ -12,7 +12,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="relative z-20 border-t border-white/10 bg-[#07070a] px-5 py-12 text-xs text-zinc-400 md:px-8">
+    <footer className="relative z-20 w-full overflow-hidden border-t border-white/10 bg-[#07070a] px-5 py-12 text-xs text-zinc-400 md:px-8">
       <Reveal y={20} className="mx-auto max-w-7xl">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
           {/* Brand */}

@@ -81,10 +81,10 @@ export function Hero({ onOpenChat }: HeroProps) {
   return (
     <section
       id="top"
-      className="relative z-20 mx-auto flex min-h-[calc(100dvh-5rem)] md:min-h-[calc(100vh-4.5rem)] max-w-7xl flex-col items-center justify-center px-5 py-6 sm:py-8 md:px-8"
+      className="relative z-20 mx-auto flex min-h-[calc(100dvh-5rem)] md:min-h-[calc(100vh-4.5rem)] w-full max-w-7xl flex-col items-center justify-center overflow-hidden px-5 py-6 sm:py-8 md:px-8"
     >
       {/* Decorative ambient background mesh */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-rose-900/25 via-rose-950/15 to-transparent blur-[140px]" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[500px] w-full max-w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-rose-900/25 via-rose-950/15 to-transparent blur-[140px]" />
 
       {/* Main Hero Content - vertically centered */}
       <div className="mx-auto max-w-4xl text-center flex flex-col items-center justify-center">
