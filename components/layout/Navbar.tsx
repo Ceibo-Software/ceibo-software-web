@@ -120,14 +120,32 @@ export function Navbar({ onOpenChat }: NavbarProps) {
 
         {/* Actions */}
         <div className="flex shrink-0 items-center gap-3">
-          {/* Sound toggle */}
+          {/* Sound toggle (Ambiente natural) */}
           <button
             onClick={handleSoundToggle}
-            className="hidden items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition hover:border-white/20 hover:text-white sm:flex"
-            title={isMuted ? 'Activar efectos sonoros' : 'Silenciar'}
+            className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition duration-200 cursor-pointer ${
+              !isMuted
+                ? 'border-rose-500/50 bg-rose-950/40 text-rose-300 shadow-[0_0_15px_rgba(225,29,72,0.25)]'
+                : 'border-white/10 bg-white/[0.02] text-zinc-400 hover:border-white/25 hover:text-white'
+            }`}
+            title={
+              isMuted
+                ? 'Activar sonido ambiente de naturaleza (viento y bosque)'
+                : 'Silenciar sonido ambiente de naturaleza'
+            }
+            aria-label={isMuted ? 'Activar sonido ambiente' : 'Silenciar sonido ambiente'}
           >
-            {isMuted ? <VolumeX size={13} /> : <Volume2 size={13} className="text-rose-400" />}
-            <span>{isMuted ? 'Sonido' : 'Activo'}</span>
+            {isMuted ? (
+              <VolumeX size={13} />
+            ) : (
+              <Volume2 size={13} className="text-rose-400 animate-pulse" />
+            )}
+            <span className="hidden sm:inline">
+              {isMuted ? 'Ambiente: Off' : 'Ambiente: On'}
+            </span>
+            <span className="inline sm:hidden font-mono text-[10px]">
+              {isMuted ? 'Off' : 'On'}
+            </span>
           </button>
 
           {/* Chatbot trigger */}
@@ -194,6 +212,32 @@ export function Navbar({ onOpenChat }: NavbarProps) {
                   <ArrowUpRight size={14} className="text-zinc-600" />
                 </a>
               ))}
+
+              {/* Mobile Sound Toggle */}
+              <button
+                type="button"
+                onClick={handleSoundToggle}
+                className="flex items-center justify-between border-t border-white/10 pt-3 text-sm text-zinc-300 cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  {isMuted ? (
+                    <VolumeX size={16} className="text-zinc-500" />
+                  ) : (
+                    <Volume2 size={16} className="text-rose-400 animate-pulse" />
+                  )}
+                  <span>Sonido ambiente natural</span>
+                </span>
+                <span
+                  className={`rounded-full border px-2 py-0.5 font-mono text-xs ${
+                    !isMuted
+                      ? 'border-rose-500/40 bg-rose-950/40 text-rose-300'
+                      : 'border-white/10 text-zinc-500'
+                  }`}
+                >
+                  {isMuted ? 'Off' : 'On'}
+                </span>
+              </button>
+
               <div className="pt-2">
                 <a
                   href="#contacto"
