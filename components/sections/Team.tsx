@@ -7,6 +7,7 @@ import { ArrowUpRight, X, Briefcase, Globe, Sparkles } from 'lucide-react'
 import { TEAM_MEMBERS, TeamMember } from '@/lib/data'
 import { sounds } from '@/lib/sound'
 import { Reveal } from '@/components/ui/Reveal'
+import { Magnetic } from '@/components/ui/Magnetic'
 
 function LinkedInIcon({ className }: { className?: string }) {
   return (
@@ -84,8 +85,11 @@ export function Team() {
               }}
               className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/70 p-3 sm:p-5 backdrop-blur-md transition-all duration-300 hover:border-rose-500/50 hover:bg-rose-950/20 hover:shadow-[0_0_35px_rgba(225,29,72,0.2)]"
             >
+              {/* Subtle top liquid shimmer line */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/0 to-transparent transition-opacity duration-500 group-hover:via-rose-500/60" />
+
               <div>
-                {/* Avatar */}
+                {/* Avatar with holographic foil reflection */}
                 <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-white/10 bg-black/50">
                   {member.image ? (
                     <img
@@ -101,6 +105,8 @@ export function Team() {
                         .join('')}
                     </div>
                   )}
+                  {/* Holographic foil sheen overlay */}
+                  <div className="pointer-events-none absolute -inset-full holo-card-shine opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:animate-[holographic-shine_2s_ease-in-out_infinite]" />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
 
@@ -127,28 +133,32 @@ export function Team() {
 
                 <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                   {member.linkedin && (
-                    <a
-                      href={member.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => sounds.playClick()}
-                      className="rounded-lg border border-white/10 p-1.5 text-zinc-400 transition hover:border-rose-500/50 hover:text-white"
-                      aria-label={`LinkedIn de ${member.name}`}
-                    >
-                      <LinkedInIcon />
-                    </a>
+                    <Magnetic strength={0.35}>
+                      <a
+                        href={member.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => sounds.playClick()}
+                        className="grid size-7 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:border-rose-500/50 hover:text-white"
+                        aria-label={`LinkedIn de ${member.name}`}
+                      >
+                        <LinkedInIcon />
+                      </a>
+                    </Magnetic>
                   )}
                   {member.github && (
-                    <a
-                      href={member.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => sounds.playClick()}
-                      className="rounded-lg border border-white/10 p-1.5 text-zinc-400 transition hover:border-rose-500/50 hover:text-white"
-                      aria-label={`GitHub de ${member.name}`}
-                    >
-                      <GitHubIcon />
-                    </a>
+                    <Magnetic strength={0.35}>
+                      <a
+                        href={member.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => sounds.playClick()}
+                        className="grid size-7 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:border-rose-500/50 hover:text-white"
+                        aria-label={`GitHub de ${member.name}`}
+                      >
+                        <GitHubIcon />
+                      </a>
+                    </Magnetic>
                   )}
                 </div>
               </div>
@@ -181,16 +191,18 @@ export function Team() {
               className="relative z-10 max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-white/15 bg-[#0e0e16] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.9)] backdrop-blur-2xl sm:p-8"
             >
               {/* Close Button */}
-              <button
-                onClick={() => {
-                  sounds.playClick()
-                  setSelectedMember(null)
-                }}
-                className="absolute top-5 right-5 grid size-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-400 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
-                aria-label="Cerrar modal"
-              >
-                <X size={18} />
-              </button>
+              <Magnetic strength={0.35} className="absolute top-5 right-5">
+                <button
+                  onClick={() => {
+                    sounds.playClick()
+                    setSelectedMember(null)
+                  }}
+                  className="grid size-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-400 transition hover:border-white/20 hover:bg-white/10 hover:text-white cursor-pointer"
+                  aria-label="Cerrar modal"
+                >
+                  <X size={18} />
+                </button>
+              </Magnetic>
 
               {/* Member Profile Header */}
               <div className="flex items-center gap-4">
@@ -232,40 +244,46 @@ export function Team() {
               {/* Links Row */}
               <div className="mt-5 flex flex-wrap items-center gap-2 border-y border-white/10 py-3">
                 {selectedMember.portfolio && (
-                  <a
-                    href={selectedMember.portfolio}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => sounds.playClick()}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/40 bg-rose-950/30 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-900/50 hover:text-white"
-                  >
-                    <span>Portafolio</span>
-                    <ArrowUpRight size={13} />
-                  </a>
+                  <Magnetic strength={0.25}>
+                    <a
+                      href={selectedMember.portfolio}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => sounds.playClick()}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/40 bg-rose-950/30 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-900/50 hover:text-white"
+                    >
+                      <span>Portafolio</span>
+                      <ArrowUpRight size={13} />
+                    </a>
+                  </Magnetic>
                 )}
                 {selectedMember.linkedin && (
-                  <a
-                    href={selectedMember.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => sounds.playClick()}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-semibold text-zinc-300 transition hover:border-white/25 hover:text-white"
-                  >
-                    <LinkedInIcon />
-                    <span>LinkedIn</span>
-                  </a>
+                  <Magnetic strength={0.25}>
+                    <a
+                      href={selectedMember.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => sounds.playClick()}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-semibold text-zinc-300 transition hover:border-white/25 hover:text-white"
+                    >
+                      <LinkedInIcon />
+                      <span>LinkedIn</span>
+                    </a>
+                  </Magnetic>
                 )}
                 {selectedMember.github && (
-                  <a
-                    href={selectedMember.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => sounds.playClick()}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-semibold text-zinc-300 transition hover:border-white/25 hover:text-white"
-                  >
-                    <GitHubIcon />
-                    <span>GitHub</span>
-                  </a>
+                  <Magnetic strength={0.25}>
+                    <a
+                      href={selectedMember.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => sounds.playClick()}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-semibold text-zinc-300 transition hover:border-white/25 hover:text-white"
+                    >
+                      <GitHubIcon />
+                      <span>GitHub</span>
+                    </a>
+                  </Magnetic>
                 )}
               </div>
 
@@ -308,15 +326,17 @@ export function Team() {
 
               {/* Bottom Close */}
               <div className="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-white/10">
-                <button
-                  onClick={() => {
-                    sounds.playClick()
-                    setSelectedMember(null)
-                  }}
-                  className="rounded-xl border border-white/15 px-4 py-2 text-xs font-semibold text-zinc-300 transition hover:bg-white/10 hover:text-white"
-                >
-                  Cerrar
-                </button>
+                <Magnetic strength={0.25}>
+                  <button
+                    onClick={() => {
+                      sounds.playClick()
+                      setSelectedMember(null)
+                    }}
+                    className="rounded-xl border border-white/15 px-4 py-2 text-xs font-semibold text-zinc-300 transition hover:bg-white/10 hover:text-white cursor-pointer"
+                  >
+                    Cerrar
+                  </button>
+                </Magnetic>
               </div>
             </motion.div>
           </div>

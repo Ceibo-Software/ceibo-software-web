@@ -207,3 +207,54 @@ html { scroll-behavior: smooth; }
   }
 }
 
+@keyframes text-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #fb7185 0%,
+    #f43f5e 25%,
+    #ffffff 50%,
+    #f43f5e 75%,
+    #fda4af 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: text-shimmer 4s ease-in-out infinite;
+}
+
+@keyframes holographic-shine {
+  0% {
+    opacity: 0;
+    transform: translate3d(-100%, -100%, 0) rotate(35deg);
+  }
+  50% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(200%, 200%, 0) rotate(35deg);
+  }
+}
+
+.holo-card-shine {
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.08) 35%,
+    rgba(244, 63, 94, 0.18) 45%,
+    rgba(56, 189, 248, 0.15) 55%,
+    rgba(255, 255, 255, 0.12) 65%,
+    transparent 80%
+  );
+}
+
