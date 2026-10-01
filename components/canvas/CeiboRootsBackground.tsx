@@ -291,10 +291,10 @@ export function CeiboRootsBackground() {
       // 1. THE CEIBO TREE OF HERO (Central Tree)
       // ==========================================
       const treeOriginX = width * 0.5
-      const treeOriginY = height * 0.95
-      const treeTrunkHeight = height * 0.42
+      const treeOriginY = height * 0.92
+      const treeTrunkHeight = height * 0.38
 
-      // Central Trunk: Rising with organic character, then splitting into the Crown
+      // Central Trunk: Rising organically, splitting into the Crown
       const mainTrunk = createBranch(
         treeOriginX,
         treeOriginY,
@@ -303,30 +303,53 @@ export function CeiboRootsBackground() {
         0,
         isMobile ? 3 : 4,
         0,
-        isMobile ? 4.5 : 6.0
+        isMobile ? 4.5 : 5.8
       )
 
-      // Lateral limbs for the tree crown framing Hero
+      // Primary Lateral limbs framing the sides
       const leftCrownLimb = createBranch(
-        treeOriginX - 25,
+        treeOriginX - 22,
         treeOriginY - treeTrunkHeight * 0.55,
-        (-2.6 * Math.PI) / 4,
-        treeTrunkHeight * 0.7,
+        (-2.55 * Math.PI) / 4,
+        treeTrunkHeight * 0.65,
         1,
         isMobile ? 3 : 4,
         0,
-        3.5
+        3.4
       )
 
       const rightCrownLimb = createBranch(
-        treeOriginX + 25,
+        treeOriginX + 22,
         treeOriginY - treeTrunkHeight * 0.55,
-        (-1.4 * Math.PI) / 4,
-        treeTrunkHeight * 0.7,
+        (-1.45 * Math.PI) / 4,
+        treeTrunkHeight * 0.65,
         1,
         isMobile ? 3 : 4,
         0,
-        3.5
+        3.4
+      )
+
+      // Two delicate secondary lateral branches ("algunas ramas más")
+      const leftMidBranch = createBranch(
+        treeOriginX - 16,
+        treeOriginY - treeTrunkHeight * 0.36,
+        (-2.85 * Math.PI) / 4,
+        treeTrunkHeight * 0.44,
+        1,
+        isMobile ? 2 : 3,
+        0,
+        2.5
+      )
+
+      const rightMidBranch = createBranch(
+        treeOriginX + 16,
+        treeOriginY - treeTrunkHeight * 0.36,
+        (-1.15 * Math.PI) / 4,
+        treeTrunkHeight * 0.44,
+        1,
+        isMobile ? 2 : 3,
+        0,
+        2.5
       )
 
       // Basal roots grounding the Ceibo
@@ -334,7 +357,7 @@ export function CeiboRootsBackground() {
         treeOriginX - 10,
         treeOriginY + 5,
         (4 * Math.PI) / 5,
-        width * (isMobile ? 0.3 : 0.25),
+        width * (isMobile ? 0.28 : 0.24),
         1,
         3,
         0,
@@ -345,7 +368,7 @@ export function CeiboRootsBackground() {
         treeOriginX + 10,
         treeOriginY + 5,
         Math.PI / 5,
-        width * (isMobile ? 0.3 : 0.25),
+        width * (isMobile ? 0.28 : 0.24),
         1,
         3,
         0,
@@ -356,122 +379,10 @@ export function CeiboRootsBackground() {
         mainTrunk,
         leftCrownLimb,
         rightCrownLimb,
+        leftMidBranch,
+        rightMidBranch,
         leftRoot,
         rightRoot
-      )
-
-      // ==============================================================
-      // 2. DESCENDING STEMS & VINES EXTENDING DOWN INTO ALL SECTIONS
-      // ==============================================================
-      const servicesY = docHeight * 0.24
-      const projectsY = docHeight * 0.48
-      const teamY = docHeight * 0.70
-      const contactY = docHeight * 0.88
-
-      // Stems descending from Hero into Services
-      allTreesAndStems.push(
-        createBranch(
-          width * 0.05,
-          treeOriginY - 50,
-          Math.PI / 2.3,
-          height * 0.45,
-          1,
-          isMobile ? 3 : 4,
-          height * 0.2,
-          2.4
-        ),
-        createBranch(
-          width * 0.95,
-          treeOriginY - 50,
-          Math.PI / 1.8,
-          height * 0.45,
-          1,
-          isMobile ? 3 : 4,
-          height * 0.2,
-          2.4
-        )
-      )
-
-      // Stems continuing across Services and into Projects
-      allTreesAndStems.push(
-        createBranch(
-          -20,
-          servicesY + height * 0.15,
-          Math.PI / 3.2,
-          width * 0.32,
-          1,
-          isMobile ? 3 : 4,
-          servicesY - height * 0.35,
-          2.2
-        ),
-        createBranch(
-          width + 20,
-          servicesY + height * 0.3,
-          (2 * Math.PI) / 3.2,
-          width * 0.34,
-          1,
-          isMobile ? 3 : 4,
-          servicesY - height * 0.2,
-          2.2
-        )
-      )
-
-      // Stems weaving through Projects
-      allTreesAndStems.push(
-        createBranch(
-          width * 0.06,
-          projectsY + height * 0.1,
-          Math.PI / 2.6,
-          height * 0.42,
-          1,
-          isMobile ? 3 : 4,
-          projectsY - height * 0.3,
-          2.2
-        ),
-        createBranch(
-          width * 0.94,
-          projectsY + height * 0.25,
-          Math.PI / 1.7,
-          height * 0.42,
-          1,
-          isMobile ? 3 : 4,
-          projectsY - height * 0.25,
-          2.2
-        )
-      )
-
-      // Stems descending through Team & Contact
-      allTreesAndStems.push(
-        createBranch(
-          -25,
-          teamY + height * 0.2,
-          Math.PI / 4,
-          width * 0.28,
-          1,
-          3,
-          teamY - height * 0.35,
-          2.0
-        ),
-        createBranch(
-          width + 25,
-          teamY + height * 0.1,
-          (3 * Math.PI) / 4,
-          width * 0.28,
-          1,
-          3,
-          teamY - height * 0.35,
-          2.0
-        ),
-        createBranch(
-          width * 0.5,
-          docHeight - 10,
-          -Math.PI / 2,
-          height * 0.38,
-          1,
-          isMobile ? 3 : 4,
-          contactY - height * 0.3,
-          3.2
-        )
       )
     }
 
@@ -784,6 +695,14 @@ export function CeiboRootsBackground() {
       mouse.y += (mouse.targetY - mouse.y) * 0.12
 
       ctx.clearRect(0, 0, width, height)
+
+      // Smoothly fade canvas out when scrolling down past Hero to keep lower sections 100% clean
+      const heroFade = Math.max(0, 1 - smoothScrollY / (height * 0.85))
+      if (heroFade <= 0.005) {
+        animationFrameId = requestAnimationFrame(render)
+        return
+      }
+      ctx.globalAlpha = heroFade
 
       if (time - lastPulseTime > 70 && pulses.length < 12) {
         spawnPulse()
@@ -1163,7 +1082,7 @@ export function CeiboRootsBackground() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-70 transition-opacity duration-1000"
+      className="pointer-events-none fixed inset-0 -z-10 h-full w-full opacity-70 transition-opacity duration-1000"
     />
   )
 }
