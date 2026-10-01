@@ -32,12 +32,15 @@ export function Team() {
 
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const isInteractingRef = useRef(false)
+  const isUserTouchingRef = useRef(false)
+  const isProgrammaticScrollRef = useRef(false)
   const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const touchStartPos = useRef<{ x: number; y: number } | null>(null)
   const isDraggingRef = useRef(false)
 
   // Pause auto-scroll immediately on touch / interaction
   const pauseAutoScroll = () => {
+    isUserTouchingRef.current = true
     isInteractingRef.current = true
     if (resumeTimeoutRef.current) {
       clearTimeout(resumeTimeoutRef.current)
@@ -45,13 +48,16 @@ export function Team() {
     }
   }
 
-  // Resume auto-scroll after 2.5s (in 2-3s range) once the user releases touch
+  // Resume auto-scroll exactly after 2.5s (in the 2-3s range) once the user releases touch and scroll stops
   const resumeAutoScrollWithDelay = () => {
+    isUserTouchingRef.current = false
     if (resumeTimeoutRef.current) {
       clearTimeout(resumeTimeoutRef.current)
     }
     resumeTimeoutRef.current = setTimeout(() => {
-      isInteractingRef.current = false
+      if (!isUserTouchingRef.current) {
+        isInteractingRef.current = false
+      }
     }, 2500)
   }
 
@@ -62,10 +68,16 @@ export function Team() {
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    isUserTouchingRef.current = true
+    isInteractingRef.current = true
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current)
+      resumeTimeoutRef.current = null
+    }
     if (touchStartPos.current) {
       const diffX = Math.abs(e.touches[0].clientX - touchStartPos.current.x)
       const diffY = Math.abs(e.touches[0].clientY - touchStartPos.current.y)
-      if (diffX > 8 || diffY > 8) {
+      if (diffX > 6 || diffY > 6) {
         isDraggingRef.current = true
       }
     }
@@ -78,7 +90,7 @@ export function Team() {
     }, 80)
   }
 
-  // Track active dot indicator on scroll
+  // Track active dot indicator on scroll and ensure inertia scrolling respects the pause
   const handleScroll = () => {
     const el = scrollRef.current
     if (!el) return
@@ -88,6 +100,21 @@ export function Team() {
       const normalized = (el.scrollLeft % oneSetWidth + oneSetWidth) % oneSetWidth
       const current = Math.floor((normalized + cardWidth / 2) / cardWidth) % TEAM_MEMBERS.length
       setActiveMobileIdx(current)
+    }
+
+    // If scroll occurred from human touch / swipe (not auto-scroll tick):
+    if (!isProgrammaticScrollRef.current) {
+      isInteractingRef.current = true
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current)
+
+      // Only count down 2.5s AFTER the user finishes touching or inertial scrolling stops
+      if (!isUserTouchingRef.current) {
+        resumeTimeoutRef.current = setTimeout(() => {
+          if (!isUserTouchingRef.current) {
+            isInteractingRef.current = false
+          }
+        }, 2500)
+      }
     }
   }
 
@@ -101,16 +128,17 @@ export function Team() {
     resumeAutoScrollWithDelay()
   }
 
-  // Auto-scroll loop: very slow and continuous
+  // Auto-scroll loop: very slow, gentle and strictly paused during touch
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
 
     let animationFrameId: number
-    const SPEED = 0.28 // Very slow and gentle ambient movement
+    const SPEED = 0.22 // Ultra-slow and gentle ambient drift
 
     const step = () => {
-      if (el && !isInteractingRef.current) {
+      if (el && !isInteractingRef.current && !isUserTouchingRef.current) {
+        isProgrammaticScrollRef.current = true
         el.scrollLeft += SPEED
 
         const oneThird = el.scrollWidth / 3
@@ -121,6 +149,11 @@ export function Team() {
             el.scrollLeft += oneThird
           }
         }
+
+        // Reset programmatic flag so real touch/inertial scrolls can be captured
+        Promise.resolve().then(() => {
+          isProgrammaticScrollRef.current = false
+        })
       }
       animationFrameId = requestAnimationFrame(step)
     }
@@ -343,7 +376,9 @@ export function Team() {
           onTouchCancel={handleTouchEnd}
           onPointerDown={pauseAutoScroll}
           onPointerUp={resumeAutoScrollWithDelay}
-          className="flex gap-3 overflow-x-auto scrollbar-none px-4 py-1 touch-pan-x cursor-grab active:cursor-grabbing select-none"
+          onPointerLeave={resumeAutoScrollWithDelay}
+          onPointerCancel={resumeAutoScrollWithDelay}
+          className="flex gap-3 overflow-x-auto scrollbar-none px-4 py-1 touch-pan-x overscroll-x-contain cursor-grab active:cursor-grabbing select-none"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {[...TEAM_MEMBERS, ...TEAM_MEMBERS, ...TEAM_MEMBERS].map((member, idx) => (
