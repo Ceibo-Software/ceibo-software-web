@@ -119,10 +119,10 @@ export function CeiboRootsBackground() {
     ]
 
     const leafPalettes = [
-      { fill: 'rgba(16, 185, 129, 0.82)', vein: 'rgba(244, 63, 94, 0.95)' },  // Vibrant emerald with rose vein
-      { fill: 'rgba(34, 197, 94, 0.78)', vein: 'rgba(251, 113, 133, 0.9)' },   // Botanical leaf green
-      { fill: 'rgba(225, 29, 72, 0.72)', vein: 'rgba(255, 255, 255, 0.92)' },  // Young crimson Ceibo leaf
-      { fill: 'rgba(5, 150, 105, 0.85)', vein: 'rgba(253, 164, 175, 0.9)' },   // Deep jade green
+      { fill: 'rgba(16, 185, 129, 0.68)', vein: 'rgba(244, 63, 94, 0.8)' },  // Vibrant emerald with rose vein
+      { fill: 'rgba(34, 197, 94, 0.65)', vein: 'rgba(251, 113, 133, 0.78)' },   // Botanical leaf green
+      { fill: 'rgba(225, 29, 72, 0.60)', vein: 'rgba(255, 255, 255, 0.8)' },  // Young crimson Ceibo leaf
+      { fill: 'rgba(5, 150, 105, 0.70)', vein: 'rgba(253, 164, 175, 0.78)' },   // Deep jade green
     ]
 
     // Mouse tracker
@@ -588,7 +588,7 @@ export function CeiboRootsBackground() {
           : -(Math.random() * 0.7 + 0.3),
         size: isLeaf ? Math.random() * 4 + 4 : Math.random() * 3 + 2,
         opacity: 0,
-        maxOpacity: Math.random() * 0.65 + 0.25,
+        maxOpacity: Math.random() * 0.45 + 0.18,
         rotation: Math.random() * Math.PI * 2,
         rotationSpeed: (Math.random() - 0.5) * 0.03,
         swayFreq: 0.0015 + Math.random() * 0.002,
@@ -596,7 +596,7 @@ export function CeiboRootsBackground() {
         life: 0,
         maxLife: burst ? 130 + Math.random() * 90 : 360 + Math.random() * 260,
         color: isLeaf
-          ? 'rgba(34, 85, 65, 0.7)'
+          ? 'rgba(34, 85, 65, 0.55)'
           : ceiboColors[Math.floor(Math.random() * ceiboColors.length)],
         isLeaf,
       }
@@ -925,7 +925,7 @@ export function CeiboRootsBackground() {
           partialCurve.p2.y
         )
 
-        const alpha = Math.max(0.12, 0.46 - b.depth * 0.05) * b.growProgress
+        const alpha = Math.max(0.09, 0.35 - b.depth * 0.04) * b.growProgress
         ctx.lineWidth = b.thickness
         ctx.strokeStyle = `rgba(225, 29, 72, ${alpha})`
         ctx.lineCap = 'round'
@@ -1221,7 +1221,7 @@ export function CeiboRootsBackground() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[1] h-full w-full opacity-85 transition-opacity duration-1000"
+      className="pointer-events-none fixed inset-0 z-[1] h-full w-full opacity-75 transition-opacity duration-1000"
     />
   )
 }

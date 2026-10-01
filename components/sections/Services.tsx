@@ -55,9 +55,6 @@ export function Services() {
                 intensity={8}
                 spotlightColor="rgba(244, 63, 94, 0.18)"
               >
-                {/* Subtle top liquid shimmer line */}
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/0 to-transparent transition-opacity duration-500 group-hover:via-rose-500/60" />
-
                 <div>
                   <Magnetic strength={0.4}>
                     <div className="grid size-12 place-items-center rounded-2xl border border-rose-500/20 bg-rose-950/25 text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.1)] transition-all duration-300 group-hover:border-rose-500/50 group-hover:bg-rose-950/40 group-hover:shadow-[0_0_20px_rgba(244,63,94,0.3)]">

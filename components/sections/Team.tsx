@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, X, Briefcase, Globe, Sparkles } from 'lucide-react'
+import { ArrowUpRight, X, Briefcase, Globe, Sparkles, MoveHorizontal } from 'lucide-react'
 import { TEAM_MEMBERS, TeamMember } from '@/lib/data'
 import { sounds } from '@/lib/sound'
 import { Reveal } from '@/components/ui/Reveal'
@@ -28,6 +28,150 @@ function GitHubIcon({ className }: { className?: string }) {
 export function Team() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [activeMobileIdx, setActiveMobileIdx] = useState(0)
+
+  const scrollRef = useRef<HTMLDivElement | null>(null)
+  const isInteractingRef = useRef(false)
+  const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const touchStartPos = useRef<{ x: number; y: number } | null>(null)
+  const isDraggingRef = useRef(false)
+  const currentScrollPos = useRef(0)
+
+  // Pause auto-scroll immediately on touch / interaction
+  const pauseAutoScroll = () => {
+    isInteractingRef.current = true
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current)
+      resumeTimeoutRef.current = null
+    }
+  }
+
+  // Resume auto-scroll after 2.5s once user interaction settles
+  const resumeAutoScrollWithDelay = () => {
+    if (scrollRef.current) {
+      currentScrollPos.current = scrollRef.current.scrollLeft
+    }
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current)
+    }
+    resumeTimeoutRef.current = setTimeout(() => {
+      if (scrollRef.current) {
+        currentScrollPos.current = scrollRef.current.scrollLeft
+      }
+      isInteractingRef.current = false
+    }, 2500)
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    pauseAutoScroll()
+    touchStartPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+    isDraggingRef.current = false
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    pauseAutoScroll()
+    if (touchStartPos.current) {
+      const diffX = Math.abs(e.touches[0].clientX - touchStartPos.current.x)
+      const diffY = Math.abs(e.touches[0].clientY - touchStartPos.current.y)
+      if (diffX > 6 || diffY > 6) {
+        isDraggingRef.current = true
+      }
+    }
+  }
+
+  const handleTouchEnd = () => {
+    resumeAutoScrollWithDelay()
+    setTimeout(() => {
+      isDraggingRef.current = false
+    }, 100)
+  }
+
+  // Handle scroll events: update active dot index and track inertia
+  const handleScroll = () => {
+    const el = scrollRef.current
+    if (!el) return
+    const cardWidth = 227 // 215px + 12px gap
+    const oneSetWidth = cardWidth * TEAM_MEMBERS.length
+    if (oneSetWidth > 0) {
+      const normalized = (el.scrollLeft % oneSetWidth + oneSetWidth) % oneSetWidth
+      const current = Math.floor((normalized + cardWidth / 2) / cardWidth) % TEAM_MEMBERS.length
+      setActiveMobileIdx(current)
+    }
+
+    // If user is actively touching or scrolling, synchronize position and restart timer
+    if (isInteractingRef.current) {
+      currentScrollPos.current = el.scrollLeft
+      if (resumeTimeoutRef.current) {
+        clearTimeout(resumeTimeoutRef.current)
+        resumeTimeoutRef.current = setTimeout(() => {
+          if (scrollRef.current) {
+            currentScrollPos.current = scrollRef.current.scrollLeft
+          }
+          isInteractingRef.current = false
+        }, 2500)
+      }
+    }
+  }
+
+  const scrollToMember = (idx: number) => {
+    const el = scrollRef.current
+    if (!el) return
+    pauseAutoScroll()
+    const cardWidth = 227
+    const oneSetWidth = cardWidth * TEAM_MEMBERS.length
+    const target = oneSetWidth + idx * cardWidth
+    currentScrollPos.current = target
+    el.scrollTo({ left: target, behavior: 'smooth' })
+    resumeAutoScrollWithDelay()
+  }
+
+  // Auto-scroll loop: continuous smooth movement using float accumulator
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+
+    let animationFrameId: number
+    const SPEED = 0.5 // Visibly and smoothly moving on mobile (~30px/sec)
+
+    const initScroll = () => {
+      if (el && el.scrollWidth > 0) {
+        const oneThird = el.scrollWidth / 3
+        if (el.scrollLeft < oneThird * 0.5 || el.scrollLeft > oneThird * 2.5) {
+          currentScrollPos.current = oneThird
+          el.scrollLeft = oneThird
+        } else {
+          currentScrollPos.current = el.scrollLeft
+        }
+      }
+    }
+
+    initScroll()
+    const timer = setTimeout(initScroll, 120)
+
+    const step = () => {
+      if (el && !isInteractingRef.current) {
+        currentScrollPos.current += SPEED
+        const oneThird = el.scrollWidth / 3
+        if (oneThird > 0) {
+          if (currentScrollPos.current >= oneThird * 2) {
+            currentScrollPos.current -= oneThird
+          } else if (currentScrollPos.current <= 0) {
+            currentScrollPos.current += oneThird
+          }
+        }
+        el.scrollLeft = currentScrollPos.current
+      }
+      animationFrameId = requestAnimationFrame(step)
+    }
+
+    animationFrameId = requestAnimationFrame(step)
+
+    return () => {
+      cancelAnimationFrame(animationFrameId)
+      clearTimeout(timer)
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     setMounted(true)
@@ -74,97 +218,261 @@ export function Team() {
         </p>
       </Reveal>
 
-      {/* Team Cards with Staggered Scroll Reveal */}
-      <div className="mt-12 grid grid-cols-2 gap-3.5 sm:gap-6 md:grid-cols-3">
+      {/* Desktop 6-Member Unified Grid (Compact, all 6 visible together, ultra-fluid 120fps hover) */}
+      <Reveal className="mt-10 hidden md:grid md:grid-cols-6 gap-3 lg:gap-3.5 group/team">
         {TEAM_MEMBERS.map((member, idx) => (
-          <Reveal key={member.name} delay={idx * 0.07} className="h-full">
+          <div
+            key={member.name}
+            onClick={() => {
+              sounds.playClick()
+              setSelectedMember(member)
+            }}
+            className="group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/75 p-3 backdrop-blur-sm transition-[transform,border-color,box-shadow,opacity] duration-200 ease-out hover:-translate-y-1.5 hover:border-rose-500/50 hover:bg-[#0d0d14]/95 hover:shadow-[0_12px_28px_-6px_rgba(225,29,72,0.25)] group-hover/team:opacity-75 hover:!opacity-100"
+          >
+            {/* Top liquid shimmer highlight */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/0 to-transparent transition-opacity duration-300 group-hover:via-rose-500/60" />
+
+            <div>
+              {/* Photo Container */}
+              <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-white/10 bg-black/60">
+                {member.image ? (
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="size-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-xl font-bold text-rose-400">
+                    {member.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')}
+                  </div>
+                )}
+
+                {/* Number Badge */}
+                <div className="absolute top-2 left-2">
+                  <span className="grid size-5 place-items-center rounded-full border border-white/20 bg-black/70 font-mono text-[9px] font-bold text-rose-400 backdrop-blur-sm">
+                    0{idx + 1}
+                  </span>
+                </div>
+
+                {/* Holographic foil sheen overlay */}
+                <div className="pointer-events-none absolute -inset-full holo-card-shine opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:animate-[holographic-shine_2s_ease-in-out_infinite]" />
+
+                {/* Subtle gradient overlay */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              </div>
+
+              {/* Name & Role */}
+              <div className="mt-3">
+                <h3
+                  className="truncate text-sm font-bold text-white transition-colors duration-200 group-hover:text-rose-200"
+                  title={member.name}
+                >
+                  {member.name}
+                </h3>
+                <p
+                  className="mt-0.5 truncate text-[11px] font-semibold text-rose-400"
+                  title={member.role}
+                >
+                  {member.role}
+                </p>
+
+                {/* Specialties chips (compact) */}
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {member.specialty
+                    .split('·')
+                    .slice(0, 2)
+                    .map((tech) => (
+                      <span
+                        key={tech}
+                        className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[9px] font-medium text-zinc-300"
+                      >
+                        {tech.trim()}
+                      </span>
+                    ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Actions */}
+            <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-2.5">
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-rose-400 transition-colors group-hover:text-rose-300">
+                <span>Ficha</span>
+                <ArrowUpRight size={11} />
+              </span>
+
+              <div
+                className="flex items-center gap-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {member.linkedin && (
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sounds.playClick()}
+                    className="grid size-6 place-items-center rounded-md border border-white/10 bg-black/40 text-zinc-400 transition hover:border-rose-500/40 hover:text-white"
+                    aria-label={`LinkedIn de ${member.name}`}
+                  >
+                    <LinkedInIcon />
+                  </a>
+                )}
+                {member.github && (
+                  <a
+                    href={member.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sounds.playClick()}
+                    className="grid size-6 place-items-center rounded-md border border-white/10 bg-black/40 text-zinc-400 transition hover:border-rose-500/40 hover:text-white"
+                    aria-label={`GitHub de ${member.name}`}
+                  >
+                    <GitHubIcon />
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </Reveal>
+
+      {/* Mobile Swipe Cue & Interactive Dots */}
+      <div className="mt-8 flex md:hidden items-center justify-between px-1">
+        <div className="flex items-center gap-1.5 font-mono text-[11px] text-zinc-400">
+          <MoveHorizontal size={13} className="text-rose-400 animate-pulse" />
+          <span>Deslizá con el dedo para explorar</span>
+        </div>
+        {/* Pagination Dots */}
+        <div className="flex items-center gap-1.5">
+          {TEAM_MEMBERS.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => scrollToMember(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                activeMobileIdx === i
+                  ? 'w-5 bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]'
+                  : 'w-1.5 bg-white/20 hover:bg-white/40'
+              }`}
+              aria-label={`Ver integrante ${i + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile Auto-moving & Touch-Draggable Carousel ("muy lento", se queda quieto al deslizar, reanuda a los 2-3s) */}
+      <div className="relative mt-3 flex md:hidden overflow-hidden py-2">
+        {/* Soft edge gradient masks */}
+        <div className="pointer-events-none absolute left-0 inset-y-0 z-10 w-6 bg-gradient-to-r from-[#09090b] to-transparent" />
+        <div className="pointer-events-none absolute right-0 inset-y-0 z-10 w-6 bg-gradient-to-l from-[#09090b] to-transparent" />
+
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+          onPointerDown={pauseAutoScroll}
+          onPointerUp={resumeAutoScrollWithDelay}
+          onPointerLeave={resumeAutoScrollWithDelay}
+          onPointerCancel={resumeAutoScrollWithDelay}
+          className="flex gap-3 overflow-x-auto scrollbar-none px-4 py-1 touch-pan-x overscroll-x-contain cursor-grab active:cursor-grabbing select-none"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
+          {[...TEAM_MEMBERS, ...TEAM_MEMBERS, ...TEAM_MEMBERS].map((member, idx) => (
             <div
+              key={`${member.name}-${idx}`}
               onClick={() => {
+                if (isDraggingRef.current) return
                 sounds.playClick()
                 setSelectedMember(member)
               }}
-              className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/70 p-3 sm:p-5 backdrop-blur-md transition-all duration-300 hover:border-rose-500/50 hover:bg-rose-950/20 hover:shadow-[0_0_35px_rgba(225,29,72,0.2)]"
+              className="group relative flex w-[215px] shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/85 p-3.5 backdrop-blur-md transition-all active:scale-[0.98] active:border-rose-500/40"
             >
-              {/* Subtle top liquid shimmer line */}
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/0 to-transparent transition-opacity duration-500 group-hover:via-rose-500/60" />
+              {/* Top liquid shimmer */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
 
               <div>
-                {/* Avatar with holographic foil reflection */}
+                {/* Avatar Container */}
                 <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-white/10 bg-black/50">
                   {member.image ? (
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="size-full object-cover grayscale transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
+                      className="size-full object-cover pointer-events-none"
                     />
                   ) : (
-                    <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-2xl sm:text-3xl font-bold text-rose-400">
+                    <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-2xl font-bold text-rose-400">
                       {member.name
                         .split(' ')
                         .map((n) => n[0])
                         .join('')}
                     </div>
                   )}
-                  {/* Holographic foil sheen overlay */}
-                  <div className="pointer-events-none absolute -inset-full holo-card-shine opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:animate-[holographic-shine_2s_ease-in-out_infinite]" />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  {/* Number Badge */}
+                  <div className="absolute top-2 left-2">
+                    <span className="grid size-6 place-items-center rounded-full border border-white/20 bg-black/60 font-mono text-[10px] font-bold text-rose-400 backdrop-blur-md">
+                      0{(idx % TEAM_MEMBERS.length) + 1}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Info */}
-                <div className="mt-3 sm:mt-4">
-                  <h3 className="text-xs sm:text-base font-bold text-white transition group-hover:text-rose-300 truncate">
+                <div className="mt-3">
+                  <h3 className="text-sm font-bold text-white truncate">
                     {member.name}
                   </h3>
-                  <p className="text-[11px] sm:text-xs font-semibold text-rose-400 truncate">
+                  <p className="text-[11px] font-semibold text-rose-400 truncate">
                     {member.role}
                   </p>
-                  <p className="mt-1.5 sm:mt-2 text-[11px] sm:text-xs leading-relaxed text-zinc-400 line-clamp-2">
+                  <p className="mt-1 text-[11px] leading-relaxed text-zinc-400 line-clamp-2">
                     {member.bio}
                   </p>
                 </div>
               </div>
 
-              {/* Bottom Action Cue */}
-              <div className="mt-3 sm:mt-4 flex items-center justify-between border-t border-white/10 pt-2.5 sm:pt-3">
-                <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-rose-400 transition group-hover:text-rose-300">
+              {/* Bottom Bar */}
+              <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-2.5">
+                <span className="flex items-center gap-1 text-[11px] font-semibold text-rose-400">
                   <span>Ver proyectos</span>
-                  <ArrowUpRight size={13} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight size={12} />
                 </span>
 
-                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                <div
+                  className="flex items-center gap-1.5"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   {member.linkedin && (
-                    <Magnetic strength={0.35}>
-                      <a
-                        href={member.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => sounds.playClick()}
-                        className="grid size-7 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:border-rose-500/50 hover:text-white"
-                        aria-label={`LinkedIn de ${member.name}`}
-                      >
-                        <LinkedInIcon />
-                      </a>
-                    </Magnetic>
+                    <a
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => sounds.playClick()}
+                      className="grid size-6 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:text-white"
+                      aria-label={`LinkedIn de ${member.name}`}
+                    >
+                      <LinkedInIcon />
+                    </a>
                   )}
                   {member.github && (
-                    <Magnetic strength={0.35}>
-                      <a
-                        href={member.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => sounds.playClick()}
-                        className="grid size-7 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:border-rose-500/50 hover:text-white"
-                        aria-label={`GitHub de ${member.name}`}
-                      >
-                        <GitHubIcon />
-                      </a>
-                    </Magnetic>
+                    <a
+                      href={member.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => sounds.playClick()}
+                      className="grid size-6 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:text-white"
+                      aria-label={`GitHub de ${member.name}`}
+                    >
+                      <GitHubIcon />
+                    </a>
                   )}
                 </div>
               </div>
             </div>
-          </Reveal>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Team Member Detail Modal */}
