@@ -28,6 +28,7 @@ function GitHubIcon({ className }: { className?: string }) {
 export function Team() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
   const [activeIdx, setActiveIdx] = useState<number>(0)
+  const [isMobilePaused, setIsMobilePaused] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -75,8 +76,8 @@ export function Team() {
         </p>
       </Reveal>
 
-      {/* Desktop Horizontal Expanding Cards Accordion (All 6 together in one view) */}
-      <Reveal className="mt-12 hidden md:flex h-[510px] w-full items-stretch gap-3">
+      {/* Desktop Horizontal Expanding Cards Accordion (Compact, all 6 together in one view) */}
+      <Reveal className="mt-10 hidden md:flex h-[385px] w-full items-stretch gap-2.5">
         {TEAM_MEMBERS.map((member, idx) => {
           const isActive = activeIdx === idx
           return (
@@ -92,9 +93,9 @@ export function Team() {
                 sounds.playClick()
                 setSelectedMember(member)
               }}
-              className={`group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-3xl border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              className={`group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                 isActive
-                  ? 'flex-[3.4] border-rose-500/50 bg-[#0d0d14]/90 shadow-[0_0_40px_rgba(225,29,72,0.22)]'
+                  ? 'flex-[2.6] border-rose-500/50 bg-[#0d0d14]/90 shadow-[0_0_35px_rgba(225,29,72,0.2)]'
                   : 'flex-1 border-white/10 bg-[#0d0d14]/60 hover:border-white/25 hover:bg-[#0d0d14]/80'
               }`}
             >
@@ -111,7 +112,7 @@ export function Team() {
                     }`}
                   />
                 ) : (
-                  <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-3xl font-bold text-rose-400">
+                  <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-2xl font-bold text-rose-400">
                     {member.name
                       .split(' ')
                       .map((n) => n[0])
@@ -136,25 +137,25 @@ export function Team() {
 
               {/* Collapsed State Info */}
               <div
-                className={`relative z-10 flex h-full flex-col justify-between p-4 transition-all duration-300 ${
+                className={`relative z-10 flex h-full flex-col justify-between p-3 transition-all duration-300 ${
                   isActive ? 'pointer-events-none opacity-0' : 'opacity-100'
                 }`}
               >
                 <div className="flex justify-center">
-                  <span className="grid size-8 place-items-center rounded-full border border-white/15 bg-black/60 font-mono text-xs font-bold text-rose-400 backdrop-blur-md">
+                  <span className="grid size-6 place-items-center rounded-full border border-white/15 bg-black/60 font-mono text-[10px] font-bold text-rose-400 backdrop-blur-md">
                     0{idx + 1}
                   </span>
                 </div>
 
                 <div className="flex flex-col items-center text-center">
-                  <span className="mb-3 max-h-32 text-xs font-bold tracking-wide text-white/90 [writing-mode:vertical-rl] rotate-180 line-clamp-1">
+                  <span className="mb-2 max-h-24 text-[11px] font-semibold tracking-wide text-white/90 [writing-mode:vertical-rl] rotate-180 line-clamp-1">
                     {member.name}
                   </span>
-                  <div className="w-full rounded-xl border border-white/10 bg-black/70 px-2 py-1.5 backdrop-blur-md">
-                    <p className="truncate text-[11px] font-bold text-white group-hover:text-rose-300">
+                  <div className="w-full rounded-lg border border-white/10 bg-black/70 px-1.5 py-1 backdrop-blur-md">
+                    <p className="truncate text-[10px] font-bold text-white group-hover:text-rose-300">
                       {member.name.split(' ')[0]}
                     </p>
-                    <p className="truncate text-[9px] text-rose-400">
+                    <p className="truncate text-[8px] text-rose-400">
                       {member.role.split(' ')[0]}
                     </p>
                   </div>
@@ -163,38 +164,38 @@ export function Team() {
 
               {/* Expanded State Info */}
               <div
-                className={`relative z-10 flex h-full flex-col justify-between p-6 transition-all duration-500 ${
+                className={`relative z-10 flex h-full flex-col justify-between p-4 sm:p-5 transition-all duration-500 ${
                   isActive ? 'opacity-100 delay-75' : 'pointer-events-none opacity-0'
                 }`}
               >
                 {/* Header Tag */}
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-950/60 px-3 py-1 font-mono text-[11px] font-semibold text-rose-300 backdrop-blur-md">
-                    <Sparkles size={11} className="text-rose-400" />
-                    <span>Ceibo Team · 0{idx + 1}</span>
+                  <span className="flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-950/60 px-2.5 py-0.5 font-mono text-[10px] font-semibold text-rose-300 backdrop-blur-md">
+                    <Sparkles size={10} className="text-rose-400" />
+                    <span>Ceibo · 0{idx + 1}</span>
                   </span>
-                  <span className="text-[11px] font-medium text-zinc-400">
-                    Click para ficha completa
+                  <span className="text-[10px] font-medium text-zinc-400">
+                    Click para ficha
                   </span>
                 </div>
 
                 {/* Profile Details Card */}
-                <div className="rounded-2xl border border-white/10 bg-black/70 p-5 backdrop-blur-md">
+                <div className="rounded-xl border border-white/10 bg-black/75 p-3.5 backdrop-blur-md">
                   <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-                    <h3 className="text-2xl font-bold tracking-tight text-white drop-shadow-md">
+                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white drop-shadow-md">
                       {member.name}
                     </h3>
-                    <span className="text-xs font-semibold text-rose-400">
+                    <span className="text-[11px] font-semibold text-rose-400">
                       {member.role}
                     </span>
                   </div>
 
                   {/* Specialties */}
-                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  <div className="mt-2 flex flex-wrap gap-1">
                     {member.specialty.split('·').map((tech) => (
                       <span
                         key={tech}
-                        className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] font-medium text-zinc-200 backdrop-blur-sm"
+                        className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-medium text-zinc-200 backdrop-blur-sm"
                       >
                         {tech.trim()}
                       </span>
@@ -202,19 +203,19 @@ export function Team() {
                   </div>
 
                   {/* Bio */}
-                  <p className="mt-2.5 text-xs leading-relaxed text-zinc-300 line-clamp-2">
+                  <p className="mt-2 text-[11px] leading-relaxed text-zinc-300 line-clamp-2">
                     {member.bio}
                   </p>
 
                   {/* Footer Actions */}
-                  <div className="mt-4 flex items-center justify-between border-t border-white/15 pt-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/20 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/30">
-                      <span>Ver proyectos individuales</span>
-                      <ArrowUpRight size={14} />
+                  <div className="mt-3 flex items-center justify-between border-t border-white/15 pt-2.5">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/20 px-3 py-1 text-[11px] font-semibold text-rose-300 transition hover:bg-rose-500/30">
+                      <span>Ver proyectos</span>
+                      <ArrowUpRight size={12} />
                     </span>
 
                     <div
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-1.5"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {member.linkedin && (
@@ -224,7 +225,7 @@ export function Team() {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={() => sounds.playClick()}
-                            className="grid size-8 place-items-center rounded-xl border border-white/15 bg-black/50 text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/40 hover:text-white"
+                            className="grid size-7 place-items-center rounded-lg border border-white/15 bg-black/50 text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/40 hover:text-white"
                             aria-label={`LinkedIn de ${member.name}`}
                           >
                             <LinkedInIcon />
@@ -238,7 +239,7 @@ export function Team() {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={() => sounds.playClick()}
-                            className="grid size-8 place-items-center rounded-xl border border-white/15 bg-black/50 text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/40 hover:text-white"
+                            className="grid size-7 place-items-center rounded-lg border border-white/15 bg-black/50 text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/40 hover:text-white"
                             aria-label={`GitHub de ${member.name}`}
                           >
                             <GitHubIcon />
@@ -254,99 +255,120 @@ export function Team() {
         })}
       </Reveal>
 
-      {/* Mobile Horizontal Snap Reel (All 6 accessible in a fluid swipe line) */}
-      <Reveal className="mt-8 flex md:hidden gap-3.5 overflow-x-auto snap-x snap-mandatory pb-4 pt-2 no-scrollbar px-1">
-        {TEAM_MEMBERS.map((member, idx) => (
-          <div
-            key={member.name}
-            onClick={() => {
-              sounds.playClick()
-              setSelectedMember(member)
-            }}
-            className="group relative flex w-[82vw] max-w-[310px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-[#0d0d14]/80 p-4 backdrop-blur-md active:scale-[0.98] transition-all"
-          >
-            {/* Top liquid shimmer */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
+      {/* Mobile Auto-moving Smooth Infinite Carousel ("muy lento") */}
+      <div
+        className="relative mt-8 flex md:hidden overflow-hidden py-2"
+        onTouchStart={() => setIsMobilePaused(true)}
+        onTouchEnd={() => setIsMobilePaused(false)}
+      >
+        {/* Soft edge gradient masks */}
+        <div className="pointer-events-none absolute left-0 inset-y-0 z-10 w-6 bg-gradient-to-r from-[#09090b] to-transparent" />
+        <div className="pointer-events-none absolute right-0 inset-y-0 z-10 w-6 bg-gradient-to-l from-[#09090b] to-transparent" />
 
-            <div>
-              {/* Avatar Container */}
-              <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-black/50">
-                {member.image ? (
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="size-full object-cover"
-                  />
-                ) : (
-                  <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-3xl font-bold text-rose-400">
-                    {member.name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')}
+        <motion.div
+          animate={isMobilePaused ? {} : { x: ['0%', '-50%'] }}
+          transition={{
+            x: {
+              repeat: Infinity,
+              repeatType: 'loop',
+              duration: 38,
+              ease: 'linear',
+            },
+          }}
+          className="flex gap-3 shrink-0"
+        >
+          {[...TEAM_MEMBERS, ...TEAM_MEMBERS].map((member, idx) => (
+            <div
+              key={`${member.name}-${idx}`}
+              onClick={() => {
+                sounds.playClick()
+                setSelectedMember(member)
+              }}
+              className="group relative flex w-[215px] shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/85 p-3.5 backdrop-blur-md transition-all active:scale-[0.98]"
+            >
+              {/* Top liquid shimmer */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
+
+              <div>
+                {/* Avatar Container */}
+                <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-white/10 bg-black/50">
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="size-full object-cover"
+                    />
+                  ) : (
+                    <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-2xl font-bold text-rose-400">
+                      {member.name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')}
+                    </div>
+                  )}
+                  {/* Number Badge */}
+                  <div className="absolute top-2 left-2">
+                    <span className="grid size-6 place-items-center rounded-full border border-white/20 bg-black/60 font-mono text-[10px] font-bold text-rose-400 backdrop-blur-md">
+                      0{(idx % TEAM_MEMBERS.length) + 1}
+                    </span>
                   </div>
-                )}
-                {/* Number Badge */}
-                <div className="absolute top-3 left-3">
-                  <span className="grid size-7 place-items-center rounded-full border border-white/20 bg-black/60 font-mono text-[11px] font-bold text-rose-400 backdrop-blur-md">
-                    0{idx + 1}
-                  </span>
+                </div>
+
+                {/* Info */}
+                <div className="mt-3">
+                  <h3 className="text-sm font-bold text-white truncate">
+                    {member.name}
+                  </h3>
+                  <p className="text-[11px] font-semibold text-rose-400 truncate">
+                    {member.role}
+                  </p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-zinc-400 line-clamp-2">
+                    {member.bio}
+                  </p>
                 </div>
               </div>
 
-              {/* Info */}
-              <div className="mt-3.5">
-                <h3 className="text-base font-bold text-white truncate">
-                  {member.name}
-                </h3>
-                <p className="text-xs font-semibold text-rose-400 truncate">
-                  {member.role}
-                </p>
-                <p className="mt-2 text-xs leading-relaxed text-zinc-400 line-clamp-2">
-                  {member.bio}
-                </p>
+              {/* Bottom Bar */}
+              <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-2.5">
+                <span className="flex items-center gap-1 text-[11px] font-semibold text-rose-400">
+                  <span>Ver proyectos</span>
+                  <ArrowUpRight size={12} />
+                </span>
+
+                <div
+                  className="flex items-center gap-1.5"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {member.linkedin && (
+                    <a
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => sounds.playClick()}
+                      className="grid size-6 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:text-white"
+                      aria-label={`LinkedIn de ${member.name}`}
+                    >
+                      <LinkedInIcon />
+                    </a>
+                  )}
+                  {member.github && (
+                    <a
+                      href={member.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => sounds.playClick()}
+                      className="grid size-6 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:text-white"
+                      aria-label={`GitHub de ${member.name}`}
+                    >
+                      <GitHubIcon />
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
-
-            {/* Bottom Bar */}
-            <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
-              <span className="flex items-center gap-1 text-xs font-semibold text-rose-400">
-                <span>Ver proyectos</span>
-                <ArrowUpRight size={13} />
-              </span>
-
-              <div
-                className="flex items-center gap-1.5"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {member.linkedin && (
-                  <a
-                    href={member.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => sounds.playClick()}
-                    className="grid size-7 place-items-center rounded-lg border border-white/10 text-zinc-400"
-                    aria-label={`LinkedIn de ${member.name}`}
-                  >
-                    <LinkedInIcon />
-                  </a>
-                )}
-                {member.github && (
-                  <a
-                    href={member.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => sounds.playClick()}
-                    className="grid size-7 place-items-center rounded-lg border border-white/10 text-zinc-400"
-                    aria-label={`GitHub de ${member.name}`}
-                  >
-                    <GitHubIcon />
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </Reveal>
+          ))}
+        </motion.div>
+      </div>
 
       {/* Team Member Detail Modal */}
       {mounted &&
