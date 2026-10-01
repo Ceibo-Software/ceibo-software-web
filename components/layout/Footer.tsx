@@ -34,7 +34,7 @@ export function Footer() {
             </p>
             <div className="mt-4 flex items-center gap-2 font-mono text-[11px] text-zinc-400">
               <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>34°36&apos;12&quot;S 58°22&apos;54&quot;W · Buenos Aires, ARG</span>
+              <span>Buenos Aires, Argentina</span>
             </div>
           </div>
 
@@ -77,7 +77,7 @@ export function Footer() {
                   onClick={() => sounds.playClick()}
                   className="transition hover:text-rose-400"
                 >
-                  Equipo Senior
+                  Staff
                 </a>
               </li>
             </ul>
