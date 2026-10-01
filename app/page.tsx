@@ -17,13 +17,7 @@ export default function Page() {
 
   return (
     <div className="relative min-h-screen bg-[#09090b] text-zinc-100 selection:bg-rose-500/30 selection:text-white">
-      {/* Background Interactive Algorithmic Ceibo Roots Canvas */}
-      <CeiboRootsBackground />
-
-      {/* Dynamic Cursor Light Spotlight */}
-      <MouseSpotlight />
-
-      {/* Ambient Radial Gradient Overlays */}
+      {/* Ambient Radial Gradient & Grid Overlays */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_top,rgba(225,29,72,0.12),transparent_65%)]"
@@ -32,6 +26,12 @@ export default function Page() {
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-0 opacity-[0.12] [background-image:linear-gradient(rgba(255,255,255,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.05)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]"
       />
+
+      {/* Background Interactive Algorithmic Ceibo Roots Canvas */}
+      <CeiboRootsBackground />
+
+      {/* Dynamic Cursor Light Spotlight */}
+      <MouseSpotlight />
 
       {/* Navigation */}
       <Navbar onOpenChat={() => setIsChatOpen(true)} />

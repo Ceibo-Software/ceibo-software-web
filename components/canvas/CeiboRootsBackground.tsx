@@ -119,10 +119,10 @@ export function CeiboRootsBackground() {
     ]
 
     const leafPalettes = [
-      { fill: 'rgba(32, 75, 56, 0.65)', vein: 'rgba(244, 63, 94, 0.85)' },   // Deep forest with rose vein
-      { fill: 'rgba(22, 60, 48, 0.72)', vein: 'rgba(251, 113, 133, 0.75)' }, // Emerald dark
-      { fill: 'rgba(195, 34, 72, 0.42)', vein: 'rgba(255, 255, 255, 0.85)' }, // Young crimson leaf
-      { fill: 'rgba(28, 80, 52, 0.60)', vein: 'rgba(253, 164, 175, 0.8)' },  // Botanical olive-green
+      { fill: 'rgba(16, 185, 129, 0.82)', vein: 'rgba(244, 63, 94, 0.95)' },  // Vibrant emerald with rose vein
+      { fill: 'rgba(34, 197, 94, 0.78)', vein: 'rgba(251, 113, 133, 0.9)' },   // Botanical leaf green
+      { fill: 'rgba(225, 29, 72, 0.72)', vein: 'rgba(255, 255, 255, 0.92)' },  // Young crimson Ceibo leaf
+      { fill: 'rgba(5, 150, 105, 0.85)', vein: 'rgba(253, 164, 175, 0.9)' },   // Deep jade green
     ]
 
     // Mouse tracker
@@ -717,13 +717,13 @@ export function CeiboRootsBackground() {
         parentScreenEndY: number,
         parentGrown: number
       ) => {
-        const isRoot = b.depth === 0
-        const canStartGrowing = isRoot
-          ? currentScrollTrigger >= b.activationY && time > 12
+        const isEntryRoot = b.depth === 0 || allTreesAndStems.includes(b)
+        const canStartGrowing = isEntryRoot
+          ? currentScrollTrigger >= b.activationY && time > 8
           : parentGrown >= 0.88 && currentScrollTrigger >= b.activationY
 
         if (canStartGrowing && b.growProgress < 1) {
-          const stretchSpeed = 0.015 + b.depth * 0.0035
+          const stretchSpeed = 0.018 + b.depth * 0.0035
           b.growProgress = Math.min(1, b.growProgress + stretchSpeed)
         }
 
@@ -786,7 +786,7 @@ export function CeiboRootsBackground() {
           partialCurve.p2.y
         )
 
-        const alpha = Math.max(0.06, 0.32 - b.depth * 0.05) * b.growProgress
+        const alpha = Math.max(0.12, 0.46 - b.depth * 0.05) * b.growProgress
         ctx.lineWidth = b.thickness
         ctx.strokeStyle = `rgba(225, 29, 72, ${alpha})`
         ctx.lineCap = 'round'
@@ -1082,7 +1082,7 @@ export function CeiboRootsBackground() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 h-full w-full opacity-70 transition-opacity duration-1000"
+      className="pointer-events-none fixed inset-0 z-[1] h-full w-full opacity-85 transition-opacity duration-1000"
     />
   )
 }
