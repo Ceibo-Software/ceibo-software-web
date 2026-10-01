@@ -9,7 +9,7 @@ import { Projects } from '@/components/sections/Projects'
 import { Team } from '@/components/sections/Team'
 import { Contact } from '@/components/sections/Contact'
 import { CeiboChatbot } from '@/components/chat/CeiboChatbot'
-import { ParticleBackground } from '@/components/canvas/ParticleBackground'
+import { CeiboRootsBackground } from '@/components/canvas/CeiboRootsBackground'
 import { MouseSpotlight } from '@/components/ui/Spotlight'
 
 export default function Page() {
@@ -17,8 +17,8 @@ export default function Page() {
 
   return (
     <div className="relative min-h-screen bg-[#09090b] text-zinc-100 selection:bg-rose-500/30 selection:text-white">
-      {/* Background Interactive Particle Canvas */}
-      <ParticleBackground />
+      {/* Background Interactive Algorithmic Ceibo Roots Canvas */}
+      <CeiboRootsBackground />
 
       {/* Dynamic Cursor Light Spotlight */}
       <MouseSpotlight />

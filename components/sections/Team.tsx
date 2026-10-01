@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, X, Briefcase, Globe, Sparkles } from 'lucide-react'
 import { TEAM_MEMBERS, TeamMember } from '@/lib/data'
@@ -25,6 +26,11 @@ function GitHubIcon({ className }: { className?: string }) {
 
 export function Team() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -39,11 +45,14 @@ export function Team() {
   useEffect(() => {
     if (selectedMember) {
       document.body.style.overflow = 'hidden'
+      document.body.setAttribute('data-modal-open', 'true')
     } else {
       document.body.style.overflow = ''
+      document.body.removeAttribute('data-modal-open')
     }
     return () => {
       document.body.style.overflow = ''
+      document.body.removeAttribute('data-modal-open')
     }
   }, [selectedMember])
 
@@ -149,17 +158,19 @@ export function Team() {
       </div>
 
       {/* Team Member Detail Modal */}
-      <AnimatePresence>
-        {selectedMember && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedMember(null)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
-            />
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {selectedMember && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+                {/* Backdrop */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setSelectedMember(null)}
+                  className="fixed inset-0 bg-black/85 backdrop-blur-xl"
+                />
 
             {/* Modal Card */}
             <motion.div
@@ -310,7 +321,9 @@ export function Team() {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    )}
     </section>
   )
 }

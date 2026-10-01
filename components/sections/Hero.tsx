@@ -70,7 +70,7 @@ export function Hero({ onOpenChat }: HeroProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl font-extrabold tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-8xl"
+          className="text-4xl font-extrabold tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-8xl select-none"
         >
           <span className="sr-only">Construimos</span>
           <span aria-hidden="true" className="inline-flex items-baseline">
