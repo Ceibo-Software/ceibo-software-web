@@ -27,6 +27,7 @@ function GitHubIcon({ className }: { className?: string }) {
 
 export function Team() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
+  const [activeIdx, setActiveIdx] = useState<number>(0)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -74,98 +75,278 @@ export function Team() {
         </p>
       </Reveal>
 
-      {/* Team Cards with Staggered Scroll Reveal */}
-      <div className="mt-12 grid grid-cols-2 gap-3.5 sm:gap-6 md:grid-cols-3">
-        {TEAM_MEMBERS.map((member, idx) => (
-          <Reveal key={member.name} delay={idx * 0.07} className="h-full">
+      {/* Desktop Horizontal Expanding Cards Accordion (All 6 together in one view) */}
+      <Reveal className="mt-12 hidden md:flex h-[510px] w-full items-stretch gap-3">
+        {TEAM_MEMBERS.map((member, idx) => {
+          const isActive = activeIdx === idx
+          return (
             <div
+              key={member.name}
+              onMouseEnter={() => {
+                if (activeIdx !== idx) {
+                  sounds.playKey()
+                  setActiveIdx(idx)
+                }
+              }}
               onClick={() => {
                 sounds.playClick()
                 setSelectedMember(member)
               }}
-              className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/70 p-3 sm:p-5 backdrop-blur-md transition-all duration-300 hover:border-rose-500/50 hover:bg-rose-950/20 hover:shadow-[0_0_35px_rgba(225,29,72,0.2)]"
+              className={`group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-3xl border transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                isActive
+                  ? 'flex-[3.4] border-rose-500/50 bg-[#0d0d14]/90 shadow-[0_0_40px_rgba(225,29,72,0.22)]'
+                  : 'flex-1 border-white/10 bg-[#0d0d14]/60 hover:border-white/25 hover:bg-[#0d0d14]/80'
+              }`}
             >
-              {/* Subtle top liquid shimmer line */}
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/0 to-transparent transition-opacity duration-500 group-hover:via-rose-500/60" />
+              {/* Card Background Image or Gradient */}
+              <div className="absolute inset-0 size-full overflow-hidden">
+                {member.image ? (
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className={`size-full object-cover transition-all duration-700 ${
+                      isActive
+                        ? 'scale-105 grayscale-0'
+                        : 'scale-100 grayscale brightness-60 group-hover:brightness-85'
+                    }`}
+                  />
+                ) : (
+                  <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-3xl font-bold text-rose-400">
+                    {member.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')}
+                  </div>
+                )}
+                {/* Holographic foil sheen overlay */}
+                <div className="pointer-events-none absolute -inset-full holo-card-shine opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:animate-[holographic-shine_2s_ease-in-out_infinite]" />
+                
+                {/* Dark gradient for legibility */}
+                <div
+                  className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${
+                    isActive
+                      ? 'bg-gradient-to-t from-black via-black/60 to-black/20'
+                      : 'bg-gradient-to-t from-black/95 via-black/40 to-transparent'
+                  }`}
+                />
 
-              <div>
-                {/* Avatar with holographic foil reflection */}
-                <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-white/10 bg-black/50">
-                  {member.image ? (
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="size-full object-cover grayscale transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
-                    />
-                  ) : (
-                    <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-2xl sm:text-3xl font-bold text-rose-400">
-                      {member.name
-                        .split(' ')
-                        .map((n) => n[0])
-                        .join('')}
-                    </div>
-                  )}
-                  {/* Holographic foil sheen overlay */}
-                  <div className="pointer-events-none absolute -inset-full holo-card-shine opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:animate-[holographic-shine_2s_ease-in-out_infinite]" />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                {/* Top liquid shimmer line */}
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/0 to-transparent transition-opacity duration-500 group-hover:via-rose-500/60" />
+              </div>
+
+              {/* Collapsed State Info */}
+              <div
+                className={`relative z-10 flex h-full flex-col justify-between p-4 transition-all duration-300 ${
+                  isActive ? 'pointer-events-none opacity-0' : 'opacity-100'
+                }`}
+              >
+                <div className="flex justify-center">
+                  <span className="grid size-8 place-items-center rounded-full border border-white/15 bg-black/60 font-mono text-xs font-bold text-rose-400 backdrop-blur-md">
+                    0{idx + 1}
+                  </span>
                 </div>
 
-                {/* Info */}
-                <div className="mt-3 sm:mt-4">
-                  <h3 className="text-xs sm:text-base font-bold text-white transition group-hover:text-rose-300 truncate">
+                <div className="flex flex-col items-center text-center">
+                  <span className="mb-3 max-h-32 text-xs font-bold tracking-wide text-white/90 [writing-mode:vertical-rl] rotate-180 line-clamp-1">
                     {member.name}
-                  </h3>
-                  <p className="text-[11px] sm:text-xs font-semibold text-rose-400 truncate">
-                    {member.role}
-                  </p>
-                  <p className="mt-1.5 sm:mt-2 text-[11px] sm:text-xs leading-relaxed text-zinc-400 line-clamp-2">
-                    {member.bio}
-                  </p>
+                  </span>
+                  <div className="w-full rounded-xl border border-white/10 bg-black/70 px-2 py-1.5 backdrop-blur-md">
+                    <p className="truncate text-[11px] font-bold text-white group-hover:text-rose-300">
+                      {member.name.split(' ')[0]}
+                    </p>
+                    <p className="truncate text-[9px] text-rose-400">
+                      {member.role.split(' ')[0]}
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Bottom Action Cue */}
-              <div className="mt-3 sm:mt-4 flex items-center justify-between border-t border-white/10 pt-2.5 sm:pt-3">
-                <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-rose-400 transition group-hover:text-rose-300">
-                  <span>Ver proyectos</span>
-                  <ArrowUpRight size={13} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </span>
+              {/* Expanded State Info */}
+              <div
+                className={`relative z-10 flex h-full flex-col justify-between p-6 transition-all duration-500 ${
+                  isActive ? 'opacity-100 delay-75' : 'pointer-events-none opacity-0'
+                }`}
+              >
+                {/* Header Tag */}
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-950/60 px-3 py-1 font-mono text-[11px] font-semibold text-rose-300 backdrop-blur-md">
+                    <Sparkles size={11} className="text-rose-400" />
+                    <span>Ceibo Team · 0{idx + 1}</span>
+                  </span>
+                  <span className="text-[11px] font-medium text-zinc-400">
+                    Click para ficha completa
+                  </span>
+                </div>
 
-                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                  {member.linkedin && (
-                    <Magnetic strength={0.35}>
-                      <a
-                        href={member.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => sounds.playClick()}
-                        className="grid size-7 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:border-rose-500/50 hover:text-white"
-                        aria-label={`LinkedIn de ${member.name}`}
+                {/* Profile Details Card */}
+                <div className="rounded-2xl border border-white/10 bg-black/70 p-5 backdrop-blur-md">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                    <h3 className="text-2xl font-bold tracking-tight text-white drop-shadow-md">
+                      {member.name}
+                    </h3>
+                    <span className="text-xs font-semibold text-rose-400">
+                      {member.role}
+                    </span>
+                  </div>
+
+                  {/* Specialties */}
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {member.specialty.split('·').map((tech) => (
+                      <span
+                        key={tech}
+                        className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] font-medium text-zinc-200 backdrop-blur-sm"
                       >
-                        <LinkedInIcon />
-                      </a>
-                    </Magnetic>
-                  )}
-                  {member.github && (
-                    <Magnetic strength={0.35}>
-                      <a
-                        href={member.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => sounds.playClick()}
-                        className="grid size-7 place-items-center rounded-lg border border-white/10 text-zinc-400 transition hover:border-rose-500/50 hover:text-white"
-                        aria-label={`GitHub de ${member.name}`}
-                      >
-                        <GitHubIcon />
-                      </a>
-                    </Magnetic>
-                  )}
+                        {tech.trim()}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Bio */}
+                  <p className="mt-2.5 text-xs leading-relaxed text-zinc-300 line-clamp-2">
+                    {member.bio}
+                  </p>
+
+                  {/* Footer Actions */}
+                  <div className="mt-4 flex items-center justify-between border-t border-white/15 pt-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/20 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/30">
+                      <span>Ver proyectos individuales</span>
+                      <ArrowUpRight size={14} />
+                    </span>
+
+                    <div
+                      className="flex items-center gap-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {member.linkedin && (
+                        <Magnetic strength={0.35}>
+                          <a
+                            href={member.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => sounds.playClick()}
+                            className="grid size-8 place-items-center rounded-xl border border-white/15 bg-black/50 text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/40 hover:text-white"
+                            aria-label={`LinkedIn de ${member.name}`}
+                          >
+                            <LinkedInIcon />
+                          </a>
+                        </Magnetic>
+                      )}
+                      {member.github && (
+                        <Magnetic strength={0.35}>
+                          <a
+                            href={member.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => sounds.playClick()}
+                            className="grid size-8 place-items-center rounded-xl border border-white/15 bg-black/50 text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/40 hover:text-white"
+                            aria-label={`GitHub de ${member.name}`}
+                          >
+                            <GitHubIcon />
+                          </a>
+                        </Magnetic>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </Reveal>
+          )
+        })}
+      </Reveal>
+
+      {/* Mobile Horizontal Snap Reel (All 6 accessible in a fluid swipe line) */}
+      <Reveal className="mt-8 flex md:hidden gap-3.5 overflow-x-auto snap-x snap-mandatory pb-4 pt-2 no-scrollbar px-1">
+        {TEAM_MEMBERS.map((member, idx) => (
+          <div
+            key={member.name}
+            onClick={() => {
+              sounds.playClick()
+              setSelectedMember(member)
+            }}
+            className="group relative flex w-[82vw] max-w-[310px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-[#0d0d14]/80 p-4 backdrop-blur-md active:scale-[0.98] transition-all"
+          >
+            {/* Top liquid shimmer */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
+
+            <div>
+              {/* Avatar Container */}
+              <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-black/50">
+                {member.image ? (
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="size-full object-cover"
+                  />
+                ) : (
+                  <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-3xl font-bold text-rose-400">
+                    {member.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')}
+                  </div>
+                )}
+                {/* Number Badge */}
+                <div className="absolute top-3 left-3">
+                  <span className="grid size-7 place-items-center rounded-full border border-white/20 bg-black/60 font-mono text-[11px] font-bold text-rose-400 backdrop-blur-md">
+                    0{idx + 1}
+                  </span>
+                </div>
+              </div>
+
+              {/* Info */}
+              <div className="mt-3.5">
+                <h3 className="text-base font-bold text-white truncate">
+                  {member.name}
+                </h3>
+                <p className="text-xs font-semibold text-rose-400 truncate">
+                  {member.role}
+                </p>
+                <p className="mt-2 text-xs leading-relaxed text-zinc-400 line-clamp-2">
+                  {member.bio}
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom Bar */}
+            <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
+              <span className="flex items-center gap-1 text-xs font-semibold text-rose-400">
+                <span>Ver proyectos</span>
+                <ArrowUpRight size={13} />
+              </span>
+
+              <div
+                className="flex items-center gap-1.5"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {member.linkedin && (
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sounds.playClick()}
+                    className="grid size-7 place-items-center rounded-lg border border-white/10 text-zinc-400"
+                    aria-label={`LinkedIn de ${member.name}`}
+                  >
+                    <LinkedInIcon />
+                  </a>
+                )}
+                {member.github && (
+                  <a
+                    href={member.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sounds.playClick()}
+                    className="grid size-7 place-items-center rounded-lg border border-white/10 text-zinc-400"
+                    aria-label={`GitHub de ${member.name}`}
+                  >
+                    <GitHubIcon />
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
         ))}
-      </div>
+      </Reveal>
 
       {/* Team Member Detail Modal */}
       {mounted &&
