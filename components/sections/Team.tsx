@@ -250,13 +250,6 @@ export function Team() {
                   </div>
                 )}
 
-                {/* Number Badge */}
-                <div className="absolute top-2 left-2">
-                  <span className="grid size-5 place-items-center rounded-full border border-white/20 bg-black/70 font-mono text-[9px] font-bold text-rose-400 backdrop-blur-sm">
-                    0{idx + 1}
-                  </span>
-                </div>
-
                 {/* Holographic foil sheen overlay */}
                 <div className="pointer-events-none absolute -inset-full holo-card-shine opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:animate-[holographic-shine_2s_ease-in-out_infinite]" />
 
@@ -378,8 +371,8 @@ export function Team() {
           onPointerUp={resumeAutoScrollWithDelay}
           onPointerLeave={resumeAutoScrollWithDelay}
           onPointerCancel={resumeAutoScrollWithDelay}
-          className="flex w-full max-w-full gap-3 overflow-x-auto scrollbar-none px-4 py-1 touch-pan-x overscroll-x-contain cursor-grab active:cursor-grabbing select-none"
-          style={{ WebkitOverflowScrolling: 'touch' }}
+          className="flex w-full max-w-full gap-3 overflow-x-auto scrollbar-none px-4 py-1 cursor-grab active:cursor-grabbing select-none"
+          style={{ WebkitOverflowScrolling: 'touch', touchAction: 'auto' }}
         >
           {[...TEAM_MEMBERS, ...TEAM_MEMBERS, ...TEAM_MEMBERS].map((member, idx) => (
             <div
@@ -411,12 +404,6 @@ export function Team() {
                         .join('')}
                     </div>
                   )}
-                  {/* Number Badge */}
-                  <div className="absolute top-2 left-2">
-                    <span className="grid size-6 place-items-center rounded-full border border-white/20 bg-black/60 font-mono text-[10px] font-bold text-rose-400 backdrop-blur-md">
-                      0{(idx % TEAM_MEMBERS.length) + 1}
-                    </span>
-                  </div>
                 </div>
 
                 {/* Info */}
