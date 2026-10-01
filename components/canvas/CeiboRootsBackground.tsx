@@ -205,11 +205,11 @@ export function CeiboRootsBackground() {
       let endX = startX + Math.cos(angle) * length
       let endY = startY + Math.sin(angle) * length
 
-      // Safety ceiling: keep Ceibo branches well below the navbar
-      const navbarCeilingY = Math.max(160, height * 0.22)
+      // Safety ceiling: keep Ceibo branches well below the navbar (at least 200px breathing room)
+      const navbarCeilingY = Math.max(200, height * 0.28)
       if (activationY < 100 && endY < navbarCeilingY) {
-        endY = navbarCeilingY + 10 + Math.random() * 20
-        if (cpY < navbarCeilingY) cpY = navbarCeilingY + 10
+        endY = navbarCeilingY + 15 + Math.random() * 25
+        if (cpY < navbarCeilingY) cpY = navbarCeilingY + 15
       }
 
       const isTerminal = depth >= maxDepth

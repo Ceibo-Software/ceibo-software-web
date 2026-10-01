@@ -67,10 +67,8 @@ export function Navbar({ onOpenChat }: NavbarProps) {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-300 ease-out ${
-        isScrolled
-          ? 'border-b border-transparent bg-transparent px-3 pt-3 sm:px-6 md:px-8 md:pt-6'
-          : 'border-b border-white/10 bg-[#09090b]/80 px-0 pt-0 shadow-sm backdrop-blur-2xl'
+      className={`sticky top-0 z-40 w-full px-3 transition-all duration-300 ease-out sm:px-6 md:px-8 ${
+        isScrolled ? 'pt-3 md:pt-6' : 'pt-3 md:pt-5'
       } ${
         isModalOpen
           ? 'pointer-events-none -translate-y-full opacity-0'
@@ -81,7 +79,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
         className={`mx-auto flex items-center justify-between transition-all duration-300 ease-out ${
           isScrolled
             ? 'max-w-6xl lg:max-w-7xl rounded-full border border-white/15 bg-[#09090b]/85 px-5 py-2.5 shadow-[0_15px_40px_rgba(0,0,0,0.8)] backdrop-blur-2xl ring-1 ring-white/10 sm:px-6 md:px-8 md:py-3'
-            : 'max-w-7xl px-5 py-3 sm:px-8 md:px-10'
+            : 'max-w-7xl rounded-full border border-transparent bg-transparent px-4 py-3 sm:px-6'
         }`}
       >
         {/* Brand logo */}
@@ -104,7 +102,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
 
         {/* Desktop Links with generous separation */}
         <nav
-          className={`hidden items-center justify-center text-sm font-medium text-zinc-300 md:flex md:flex-1 transition-all duration-300 ${
+          className={`hidden items-center justify-center text-sm font-medium text-zinc-400 md:flex md:flex-1 transition-all duration-300 ${
             isScrolled ? 'gap-8 px-8 lg:px-16' : 'gap-8 px-6 lg:px-10'
           }`}
         >
