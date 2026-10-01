@@ -13,33 +13,55 @@ const ROTATING_WORDS = [
   'soluciones sin vueltas.',
 ]
 
-const TARGET_WORD = 'Construimos'
+const ACTION_WORDS = [
+  'Construimos',
+  'Diseñamos',
+  'Creamos',
+  'Imaginamos',
+]
 
 interface HeroProps {
   onOpenChat?: () => void
 }
 
 export function Hero({ onOpenChat }: HeroProps) {
+  const [actionIndex, setActionIndex] = useState(0)
   const [wordIndex, setWordIndex] = useState(0)
   const [displayText, setDisplayText] = useState('')
-  const [showCursor, setShowCursor] = useState(true)
+  const [isDeleting, setIsDeleting] = useState(false)
 
-  // Typewriter effect for 'Construimos'
+  // Continuous Typewriter & De-typewriter loop
   useEffect(() => {
-    let index = 0
-    const timeout = setTimeout(() => {
-      const interval = setInterval(() => {
-        index++
-        setDisplayText(TARGET_WORD.slice(0, index))
-        if (index >= TARGET_WORD.length) {
-          clearInterval(interval)
-          setTimeout(() => setShowCursor(false), 2400)
-        }
-      }, 85)
-    }, 120)
+    const currentWord = ACTION_WORDS[actionIndex]
+    let timer: NodeJS.Timeout
 
-    return () => clearTimeout(timeout)
-  }, [])
+    if (!isDeleting) {
+      // Typing forward
+      if (displayText.length < currentWord.length) {
+        timer = setTimeout(() => {
+          setDisplayText(currentWord.slice(0, displayText.length + 1))
+        }, 90)
+      } else {
+        // Pause at full word before deleting
+        timer = setTimeout(() => {
+          setIsDeleting(true)
+        }, 2200)
+      }
+    } else {
+      // Deleting backwards
+      if (displayText.length > 0) {
+        timer = setTimeout(() => {
+          setDisplayText(currentWord.slice(0, displayText.length - 1))
+        }, 45)
+      } else {
+        // Move to next word
+        setIsDeleting(false)
+        setActionIndex((prev) => (prev + 1) % ACTION_WORDS.length)
+      }
+    }
+
+    return () => clearTimeout(timer)
+  }, [displayText, isDeleting, actionIndex])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -73,25 +95,19 @@ export function Hero({ onOpenChat }: HeroProps) {
           transition={{ duration: 0.6 }}
           className="text-4xl font-extrabold tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-8xl select-none"
         >
-          <span className="sr-only">Construimos</span>
+          <span className="sr-only">Construimos, diseñamos y creamos software de alto impacto</span>
           <span aria-hidden="true" className="inline-flex items-baseline">
             <span>{displayText}</span>
-            <AnimatePresence>
-              {showCursor && (
-                <motion.span
-                  initial={{ opacity: 1 }}
-                  animate={{ opacity: [1, 0] }}
-                  exit={{ opacity: 0 }}
-                  transition={{
-                    duration: 0.5,
-                    repeat: Infinity,
-                    repeatType: 'reverse',
-                    ease: 'easeInOut',
-                  }}
-                  className="ml-1 inline-block h-[0.78em] w-[3px] rounded-full bg-rose-500 sm:w-[4px] md:w-[5px]"
-                />
-              )}
-            </AnimatePresence>
+            <motion.span
+              animate={{ opacity: [1, 0] }}
+              transition={{
+                duration: 0.55,
+                repeat: Infinity,
+                repeatType: 'reverse',
+                ease: 'easeInOut',
+              }}
+              className="ml-1 inline-block h-[0.78em] w-[3px] rounded-full bg-rose-500 sm:w-[4px] md:w-[5px]"
+            />
           </span>{' '}
           <span className="block mt-2 min-h-[1.25em]">
             <AnimatePresence mode="wait">
