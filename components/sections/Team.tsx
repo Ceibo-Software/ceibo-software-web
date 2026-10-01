@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, X, Briefcase, Globe, Sparkles } from 'lucide-react'
+import { ArrowUpRight, X, Briefcase, Globe, Sparkles, MoveHorizontal } from 'lucide-react'
 import { TEAM_MEMBERS, TeamMember } from '@/lib/data'
 import { sounds } from '@/lib/sound'
 import { Reveal } from '@/components/ui/Reveal'
@@ -27,8 +27,118 @@ function GitHubIcon({ className }: { className?: string }) {
 
 export function Team() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
-  const [isMobilePaused, setIsMobilePaused] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [activeMobileIdx, setActiveMobileIdx] = useState(0)
+
+  const scrollRef = useRef<HTMLDivElement | null>(null)
+  const isInteractingRef = useRef(false)
+  const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const touchStartPos = useRef<{ x: number; y: number } | null>(null)
+  const isDraggingRef = useRef(false)
+
+  // Pause auto-scroll immediately on touch / interaction
+  const pauseAutoScroll = () => {
+    isInteractingRef.current = true
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current)
+      resumeTimeoutRef.current = null
+    }
+  }
+
+  // Resume auto-scroll after 2.5s (in 2-3s range) once the user releases touch
+  const resumeAutoScrollWithDelay = () => {
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current)
+    }
+    resumeTimeoutRef.current = setTimeout(() => {
+      isInteractingRef.current = false
+    }, 2500)
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    pauseAutoScroll()
+    touchStartPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+    isDraggingRef.current = false
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartPos.current) {
+      const diffX = Math.abs(e.touches[0].clientX - touchStartPos.current.x)
+      const diffY = Math.abs(e.touches[0].clientY - touchStartPos.current.y)
+      if (diffX > 8 || diffY > 8) {
+        isDraggingRef.current = true
+      }
+    }
+  }
+
+  const handleTouchEnd = () => {
+    resumeAutoScrollWithDelay()
+    setTimeout(() => {
+      isDraggingRef.current = false
+    }, 80)
+  }
+
+  // Track active dot indicator on scroll
+  const handleScroll = () => {
+    const el = scrollRef.current
+    if (!el) return
+    const cardWidth = 227 // 215px + 12px gap
+    const oneSetWidth = cardWidth * TEAM_MEMBERS.length
+    if (oneSetWidth > 0) {
+      const normalized = (el.scrollLeft % oneSetWidth + oneSetWidth) % oneSetWidth
+      const current = Math.floor((normalized + cardWidth / 2) / cardWidth) % TEAM_MEMBERS.length
+      setActiveMobileIdx(current)
+    }
+  }
+
+  const scrollToMember = (idx: number) => {
+    const el = scrollRef.current
+    if (!el) return
+    pauseAutoScroll()
+    const cardWidth = 227
+    const oneSetWidth = cardWidth * TEAM_MEMBERS.length
+    el.scrollTo({ left: oneSetWidth + idx * cardWidth, behavior: 'smooth' })
+    resumeAutoScrollWithDelay()
+  }
+
+  // Auto-scroll loop: very slow and continuous
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+
+    let animationFrameId: number
+    const SPEED = 0.28 // Very slow and gentle ambient movement
+
+    const step = () => {
+      if (el && !isInteractingRef.current) {
+        el.scrollLeft += SPEED
+
+        const oneThird = el.scrollWidth / 3
+        if (oneThird > 0) {
+          if (el.scrollLeft >= oneThird * 2) {
+            el.scrollLeft -= oneThird
+          } else if (el.scrollLeft <= 0) {
+            el.scrollLeft += oneThird
+          }
+        }
+      }
+      animationFrameId = requestAnimationFrame(step)
+    }
+
+    const initTimer = setTimeout(() => {
+      if (el && el.scrollWidth > 0) {
+        el.scrollLeft = el.scrollWidth / 3
+      }
+    }, 60)
+
+    animationFrameId = requestAnimationFrame(step)
+
+    return () => {
+      cancelAnimationFrame(animationFrameId)
+      clearTimeout(initTimer)
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     setMounted(true)
@@ -194,36 +304,57 @@ export function Team() {
         ))}
       </Reveal>
 
-      {/* Mobile Auto-moving Smooth Infinite Carousel ("muy lento") */}
-      <div
-        className="relative mt-8 flex md:hidden overflow-hidden py-2"
-        onTouchStart={() => setIsMobilePaused(true)}
-        onTouchEnd={() => setIsMobilePaused(false)}
-      >
+      {/* Mobile Swipe Cue & Interactive Dots */}
+      <div className="mt-8 flex md:hidden items-center justify-between px-1">
+        <div className="flex items-center gap-1.5 font-mono text-[11px] text-zinc-400">
+          <MoveHorizontal size={13} className="text-rose-400 animate-pulse" />
+          <span>Deslizá con el dedo para explorar</span>
+        </div>
+        {/* Pagination Dots */}
+        <div className="flex items-center gap-1.5">
+          {TEAM_MEMBERS.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => scrollToMember(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                activeMobileIdx === i
+                  ? 'w-5 bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]'
+                  : 'w-1.5 bg-white/20 hover:bg-white/40'
+              }`}
+              aria-label={`Ver integrante ${i + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile Auto-moving & Touch-Draggable Carousel ("muy lento", se queda quieto al deslizar, reanuda a los 2-3s) */}
+      <div className="relative mt-3 flex md:hidden overflow-hidden py-2">
         {/* Soft edge gradient masks */}
         <div className="pointer-events-none absolute left-0 inset-y-0 z-10 w-6 bg-gradient-to-r from-[#09090b] to-transparent" />
         <div className="pointer-events-none absolute right-0 inset-y-0 z-10 w-6 bg-gradient-to-l from-[#09090b] to-transparent" />
 
-        <motion.div
-          animate={isMobilePaused ? {} : { x: ['0%', '-50%'] }}
-          transition={{
-            x: {
-              repeat: Infinity,
-              repeatType: 'loop',
-              duration: 38,
-              ease: 'linear',
-            },
-          }}
-          className="flex gap-3 shrink-0"
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+          onPointerDown={pauseAutoScroll}
+          onPointerUp={resumeAutoScrollWithDelay}
+          className="flex gap-3 overflow-x-auto scrollbar-none px-4 py-1 touch-pan-x cursor-grab active:cursor-grabbing select-none"
+          style={{ WebkitOverflowScrolling: 'touch' }}
         >
-          {[...TEAM_MEMBERS, ...TEAM_MEMBERS].map((member, idx) => (
+          {[...TEAM_MEMBERS, ...TEAM_MEMBERS, ...TEAM_MEMBERS].map((member, idx) => (
             <div
               key={`${member.name}-${idx}`}
               onClick={() => {
+                if (isDraggingRef.current) return
                 sounds.playClick()
                 setSelectedMember(member)
               }}
-              className="group relative flex w-[215px] shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/85 p-3.5 backdrop-blur-md transition-all active:scale-[0.98]"
+              className="group relative flex w-[215px] shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/85 p-3.5 backdrop-blur-md transition-all active:scale-[0.98] active:border-rose-500/40"
             >
               {/* Top liquid shimmer */}
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
@@ -235,7 +366,7 @@ export function Team() {
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="size-full object-cover"
+                      className="size-full object-cover pointer-events-none"
                     />
                   ) : (
                     <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-2xl font-bold text-rose-400">
@@ -306,7 +437,7 @@ export function Team() {
               </div>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
 
       {/* Team Member Detail Modal */}

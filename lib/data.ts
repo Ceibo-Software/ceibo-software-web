@@ -181,7 +181,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     ],
   },
   {
-    name: 'Gonzalo Apellido',
+    name: 'Gonzalo Gil',
     role: 'Full Stack Developer',
     specialty: 'React · Node.js · APIs · Cloud',
     bio: 'Desarrollo de punta a punta, enfocado en interfaces intuitivas y servicios backend robustos.',
