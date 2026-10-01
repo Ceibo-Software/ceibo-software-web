@@ -171,6 +171,10 @@ html { scroll-behavior: smooth; }
   body {
     @apply bg-[#09090b] text-zinc-100;
   }
+  h1, h2, h3, h4, h5, h6, button, [role="button"] {
+    user-select: none;
+    -webkit-user-select: none;
+  }
   ::selection {
     background-color: rgba(225, 29, 72, 0.4);
     color: #ffffff;

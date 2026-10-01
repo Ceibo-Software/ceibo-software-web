@@ -14,6 +14,29 @@ export function Navbar({ onOpenChat }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  useEffect(() => {
+    const checkModal = () => {
+      const isLocked =
+        document.body.style.overflow === 'hidden' ||
+        document.body.hasAttribute('data-modal-open')
+      setIsModalOpen(isLocked)
+    }
+
+    checkModal()
+
+    const observer = new MutationObserver(() => {
+      checkModal()
+    })
+
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['style', 'data-modal-open'],
+    })
+
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     setIsMuted(sounds.getMuted())
@@ -46,6 +69,10 @@ export function Navbar({ onOpenChat }: NavbarProps) {
     <header
       className={`sticky top-0 z-40 w-full px-3 transition-all duration-300 ease-out sm:px-6 md:px-8 ${
         isScrolled ? 'pt-3 md:pt-6' : 'pt-3 md:pt-5'
+      } ${
+        isModalOpen
+          ? 'pointer-events-none -translate-y-full opacity-0'
+          : 'translate-y-0 opacity-100'
       }`}
     >
       <div

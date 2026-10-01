@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, X, Briefcase, Globe, Sparkles } from 'lucide-react'
 import { TEAM_MEMBERS, TeamMember } from '@/lib/data'
@@ -25,6 +26,11 @@ function GitHubIcon({ className }: { className?: string }) {
 
 export function Team() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -39,11 +45,14 @@ export function Team() {
   useEffect(() => {
     if (selectedMember) {
       document.body.style.overflow = 'hidden'
+      document.body.setAttribute('data-modal-open', 'true')
     } else {
       document.body.style.overflow = ''
+      document.body.removeAttribute('data-modal-open')
     }
     return () => {
       document.body.style.overflow = ''
+      document.body.removeAttribute('data-modal-open')
     }
   }, [selectedMember])
 
@@ -65,7 +74,7 @@ export function Team() {
       </Reveal>
 
       {/* Team Cards with Staggered Scroll Reveal */}
-      <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-12 grid grid-cols-2 gap-3.5 sm:gap-6 md:grid-cols-3">
         {TEAM_MEMBERS.map((member, idx) => (
           <Reveal key={member.name} delay={idx * 0.07} className="h-full">
             <div
@@ -73,7 +82,7 @@ export function Team() {
                 sounds.playClick()
                 setSelectedMember(member)
               }}
-              className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/70 p-4 backdrop-blur-md transition-all duration-300 hover:border-rose-500/50 hover:bg-rose-950/20 hover:shadow-[0_0_35px_rgba(225,29,72,0.2)]"
+              className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14]/70 p-3 sm:p-5 backdrop-blur-md transition-all duration-300 hover:border-rose-500/50 hover:bg-rose-950/20 hover:shadow-[0_0_35px_rgba(225,29,72,0.2)]"
             >
               <div>
                 {/* Avatar */}
@@ -85,7 +94,7 @@ export function Team() {
                       className="size-full object-cover grayscale transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
                     />
                   ) : (
-                    <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-3xl font-bold text-rose-400">
+                    <div className="grid size-full place-items-center bg-gradient-to-br from-rose-950 via-zinc-950 to-black font-mono text-2xl sm:text-3xl font-bold text-rose-400">
                       {member.name
                         .split(' ')
                         .map((n) => n[0])
@@ -96,22 +105,22 @@ export function Team() {
                 </div>
 
                 {/* Info */}
-                <div className="mt-4">
-                  <h3 className="text-sm font-bold text-white transition group-hover:text-rose-300">
+                <div className="mt-3 sm:mt-4">
+                  <h3 className="text-xs sm:text-base font-bold text-white transition group-hover:text-rose-300 truncate">
                     {member.name}
                   </h3>
-                  <p className="text-xs font-semibold text-rose-400">
+                  <p className="text-[11px] sm:text-xs font-semibold text-rose-400 truncate">
                     {member.role}
                   </p>
-                  <p className="mt-2 text-xs leading-relaxed text-zinc-400 line-clamp-2">
+                  <p className="mt-1.5 sm:mt-2 text-[11px] sm:text-xs leading-relaxed text-zinc-400 line-clamp-2">
                     {member.bio}
                   </p>
                 </div>
               </div>
 
               {/* Bottom Action Cue */}
-              <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
-                <span className="flex items-center gap-1 text-[11px] font-semibold text-rose-400 transition group-hover:text-rose-300">
+              <div className="mt-3 sm:mt-4 flex items-center justify-between border-t border-white/10 pt-2.5 sm:pt-3">
+                <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-rose-400 transition group-hover:text-rose-300">
                   <span>Ver proyectos</span>
                   <ArrowUpRight size={13} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
@@ -149,17 +158,19 @@ export function Team() {
       </div>
 
       {/* Team Member Detail Modal */}
-      <AnimatePresence>
-        {selectedMember && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedMember(null)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
-            />
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {selectedMember && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+                {/* Backdrop */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setSelectedMember(null)}
+                  className="fixed inset-0 bg-black/85 backdrop-blur-xl"
+                />
 
             {/* Modal Card */}
             <motion.div
@@ -310,7 +321,9 @@ export function Team() {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    )}
     </section>
   )
 }

@@ -180,6 +180,30 @@ export const TEAM_MEMBERS: TeamMember[] = [
       },
     ],
   },
+  {
+    name: 'Gonzalo Apellido',
+    role: 'Full Stack Developer',
+    specialty: 'React · Node.js · APIs · Cloud',
+    bio: 'Desarrollo de punta a punta, enfocado en interfaces intuitivas y servicios backend robustos.',
+    image: '',
+    linkedin: 'https://linkedin.com',
+    github: 'https://github.com',
+    portfolio: 'https://github.com',
+    projects: [
+      {
+        title: 'Aplicación Web & APIs Integradas',
+        description: 'Desarrollo de módulos interactivos y conexión fluida con servicios cloud.',
+        role: 'Full Stack Dev',
+        tech: ['React', 'Node.js', 'PostgreSQL'],
+      },
+      {
+        title: 'Optimización de Experiencia de Usuario',
+        description: 'Implementación de componentes reutilizables y mejora en tiempos de respuesta.',
+        role: 'Frontend Dev',
+        tech: ['TypeScript', 'Next.js', 'Tailwind'],
+      },
+    ],
+  },
 ]
 
 export const SERVICES: ServiceItem[] = [
