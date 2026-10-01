@@ -119,9 +119,10 @@ export function CeiboRootsBackground() {
     ]
 
     const leafPalettes = [
-      { fill: 'rgba(30, 68, 52, 0.55)', vein: 'rgba(244, 63, 94, 0.8)' },   // Deep forest with rose vein
-      { fill: 'rgba(20, 50, 40, 0.65)', vein: 'rgba(251, 113, 133, 0.7)' }, // Emerald dark
-      { fill: 'rgba(180, 30, 65, 0.35)', vein: 'rgba(255, 255, 255, 0.75)' }, // Young crimson leaf
+      { fill: 'rgba(16, 185, 129, 0.82)', vein: 'rgba(244, 63, 94, 0.95)' },  // Vibrant emerald with rose vein
+      { fill: 'rgba(34, 197, 94, 0.78)', vein: 'rgba(251, 113, 133, 0.9)' },   // Botanical leaf green
+      { fill: 'rgba(225, 29, 72, 0.72)', vein: 'rgba(255, 255, 255, 0.92)' },  // Young crimson Ceibo leaf
+      { fill: 'rgba(5, 150, 105, 0.85)', vein: 'rgba(253, 164, 175, 0.9)' },   // Deep jade green
     ]
 
     // Mouse tracker
@@ -146,13 +147,16 @@ export function CeiboRootsBackground() {
       const leaves: Leaf[] = []
       if (depth < 1) return leaves
 
-      const leafCount = depth >= maxDepth - 1 ? (isMobile ? 2 : 3) : 2
+      // Un poquito más de hojas (3 a 4 en puntas, 2 a 3 en medias)
+      const leafCount = depth >= maxDepth - 1
+        ? (isMobile ? 3 : 4)
+        : (isMobile ? 2 : 3)
       const types: LeafType[] = ['trifoliate', 'lanceolate', 'bud']
 
       for (let i = 0; i < leafCount; i++) {
-        const t = 0.35 + (i / (leafCount + 0.5)) * 0.55
+        const t = 0.28 + (i / (leafCount + 0.3)) * 0.64
         const chosenType =
-          depth === 1
+          depth <= 1
             ? 'trifoliate'
             : types[Math.floor(Math.random() * types.length)]
 
@@ -165,9 +169,9 @@ export function CeiboRootsBackground() {
           side: i % 2 === 0 ? 1 : -1,
           size:
             chosenType === 'trifoliate'
-              ? (isMobile ? 10 : 14) + Math.random() * 4
-              : (isMobile ? 8 : 11) + Math.random() * 3,
-          angleOffset: (Math.PI / 4) * (0.8 + Math.random() * 0.35),
+              ? (isMobile ? 11 : 14) + Math.random() * 3
+              : (isMobile ? 8 : 11) + Math.random() * 2.5,
+          angleOffset: (Math.PI / 4) * (0.75 + Math.random() * 0.35),
           swayPhase: Math.random() * Math.PI * 2,
           swaySpeed: 0.001 + Math.random() * 0.0015,
           color: palette.fill,
@@ -195,11 +199,18 @@ export function CeiboRootsBackground() {
 
       const midX = startX + Math.cos(angle) * midLen
       const midY = startY + Math.sin(angle) * midLen
-      const cpX = midX + Math.cos(normalAngle) * curveOffset
-      const cpY = midY + Math.sin(normalAngle) * curveOffset
+      let cpX = midX + Math.cos(normalAngle) * curveOffset
+      let cpY = midY + Math.sin(normalAngle) * curveOffset
 
-      const endX = startX + Math.cos(angle) * length
-      const endY = startY + Math.sin(angle) * length
+      let endX = startX + Math.cos(angle) * length
+      let endY = startY + Math.sin(angle) * length
+
+      // Safety ceiling: keep Ceibo branches below the navbar (at least 60px breathing room)
+      const navbarCeilingY = Math.max(130, height * 0.16)
+      if (activationY < 100 && endY < navbarCeilingY) {
+        endY = navbarCeilingY + 12 + Math.random() * 20
+        if (cpY < navbarCeilingY) cpY = navbarCeilingY + 12
+      }
 
       const isTerminal = depth >= maxDepth
       const hasBlossom = isTerminal || (depth >= 2 && Math.random() < 0.5)
@@ -242,16 +253,21 @@ export function CeiboRootsBackground() {
 
       if (depth < maxDepth) {
         const childCount =
-          depth === 0 ? (isMobile ? 2 : 3) : Math.random() > 0.35 ? 2 : 1
-        const spread = (Math.PI / 4) * (0.8 + Math.random() * 0.4)
+          depth === 0
+            ? (isMobile ? 2 : 3)
+            : Math.random() > 0.3
+            ? 2
+            : 1
+        const spread = (Math.PI / 4) * (0.85 + Math.random() * 0.35)
 
         for (let i = 0; i < childCount; i++) {
+          const ratio = childCount > 1 ? (i / (childCount - 1) - 0.5) * 2 : 0
           const subAngle =
             angle +
-            (i === 0 ? -1 : 1) * (spread / (childCount > 1 ? 2 : 1)) +
-            (Math.random() - 0.5) * 0.25
-          const subLength = length * (0.68 + Math.random() * 0.25)
-          const childActivationY = activationY + length * 0.3
+            ratio * (spread * 0.5) +
+            (Math.random() - 0.5) * 0.2
+          const subLength = length * (0.68 + Math.random() * 0.22)
+          const childActivationY = activationY + length * 0.28
           branch.children.push(
             createBranch(
               endX,
@@ -279,71 +295,128 @@ export function CeiboRootsBackground() {
       )
 
       // ==========================================
-      // 1. THE CEIBO TREE OF HERO (Central Tree)
+      // 1. TWIN CEIBO TREES FRAMING HERO (LEFT & RIGHT)
       // ==========================================
-      const treeOriginX = width * 0.5
-      const treeOriginY = height * 0.95
-      const treeTrunkHeight = height * 0.42
+      const buildCeiboHeroTree = (
+        originX: number,
+        originY: number,
+        trunkHeight: number,
+        side: 'left' | 'right'
+      ) => {
+        const lean = side === 'left' ? 0.08 : -0.08
+        const trunk = createBranch(
+          originX,
+          originY,
+          -Math.PI / 2 + lean,
+          trunkHeight,
+          0,
+          isMobile ? 2 : 3,
+          0,
+          isMobile ? 4.2 : 5.4
+        )
 
-      // Central Trunk: Rising with organic character, then splitting into the Crown
-      const mainTrunk = createBranch(
-        treeOriginX,
+        // Limb reaching toward center to gracefully frame the hero headline
+        const innerAngle =
+          side === 'left' ? (-1.75 * Math.PI) / 4 : (-2.25 * Math.PI) / 4
+        const innerLimb = createBranch(
+          originX + (side === 'left' ? 18 : -18),
+          originY - trunkHeight * 0.52,
+          innerAngle,
+          trunkHeight * 0.65,
+          1,
+          isMobile ? 2 : 3,
+          0,
+          3.4
+        )
+
+        // Limb reaching outward toward screen edge
+        const outerAngle =
+          side === 'left' ? (-2.75 * Math.PI) / 4 : (-1.25 * Math.PI) / 4
+        const outerLimb = createBranch(
+          originX + (side === 'left' ? -18 : 18),
+          originY - trunkHeight * 0.52,
+          outerAngle,
+          trunkHeight * 0.65,
+          1,
+          isMobile ? 2 : 3,
+          0,
+          3.4
+        )
+
+        // Mid-height decorative lateral branch
+        const midAngle =
+          side === 'left' ? (-1.35 * Math.PI) / 4 : (-2.65 * Math.PI) / 4
+        const midBranch = createBranch(
+          originX + (side === 'left' ? 14 : -14),
+          originY - trunkHeight * 0.32,
+          midAngle,
+          trunkHeight * 0.44,
+          1,
+          2,
+          0,
+          2.5
+        )
+
+        // Lateral outer branch
+        const outerMidAngle =
+          side === 'left' ? (-3.05 * Math.PI) / 4 : (-0.95 * Math.PI) / 4
+        const outerMidBranch = createBranch(
+          originX + (side === 'left' ? -14 : 14),
+          originY - trunkHeight * 0.32,
+          outerMidAngle,
+          trunkHeight * 0.44,
+          1,
+          2,
+          0,
+          2.5
+        )
+
+        // Basal roots
+        const rootSpread = side === 'left' ? (4 * Math.PI) / 5 : Math.PI / 5
+        const rootOpposite = side === 'left' ? Math.PI / 4 : (3 * Math.PI) / 4
+        const root1 = createBranch(
+          originX + (side === 'left' ? -10 : 10),
+          originY + 5,
+          rootSpread,
+          width * (isMobile ? 0.22 : 0.18),
+          1,
+          3,
+          0,
+          2.8
+        )
+        const root2 = createBranch(
+          originX + (side === 'left' ? 10 : -10),
+          originY + 5,
+          rootOpposite,
+          width * (isMobile ? 0.16 : 0.12),
+          1,
+          3,
+          0,
+          2.4
+        )
+
+        return [trunk, innerLimb, outerLimb, midBranch, outerMidBranch, root1, root2]
+      }
+
+      const leftOriginX = width * (isMobile ? 0.08 : 0.14)
+      const rightOriginX = width * (isMobile ? 0.92 : 0.86)
+      const treeOriginY = height * 0.94
+      const treeTrunkHeight = height * 0.28
+
+      const leftTree = buildCeiboHeroTree(
+        leftOriginX,
         treeOriginY,
-        -Math.PI / 2,
         treeTrunkHeight,
-        0,
-        isMobile ? 3 : 4,
-        0,
-        isMobile ? 4.5 : 6.0
+        'left'
+      )
+      const rightTree = buildCeiboHeroTree(
+        rightOriginX,
+        treeOriginY,
+        treeTrunkHeight,
+        'right'
       )
 
-      // Lateral limbs for the tree crown framing Hero
-      const leftCrownLimb = createBranch(
-        treeOriginX - 25,
-        treeOriginY - treeTrunkHeight * 0.55,
-        (-2.6 * Math.PI) / 4,
-        treeTrunkHeight * 0.7,
-        1,
-        isMobile ? 3 : 4,
-        0,
-        3.5
-      )
-
-      const rightCrownLimb = createBranch(
-        treeOriginX + 25,
-        treeOriginY - treeTrunkHeight * 0.55,
-        (-1.4 * Math.PI) / 4,
-        treeTrunkHeight * 0.7,
-        1,
-        isMobile ? 3 : 4,
-        0,
-        3.5
-      )
-
-      // Basal roots grounding the Ceibo
-      const leftRoot = createBranch(
-        treeOriginX - 10,
-        treeOriginY + 5,
-        (4 * Math.PI) / 5,
-        width * (isMobile ? 0.3 : 0.25),
-        1,
-        3,
-        0,
-        3.0
-      )
-
-      const rightRoot = createBranch(
-        treeOriginX + 10,
-        treeOriginY + 5,
-        Math.PI / 5,
-        width * (isMobile ? 0.3 : 0.25),
-        1,
-        3,
-        0,
-        3.0
-      )
-
-      allTreesAndStems.push(mainTrunk, leftCrownLimb, rightCrownLimb, leftRoot, rightRoot)
+      allTreesAndStems.push(...leftTree, ...rightTree)
 
       // ==============================================================
       // 2. DESCENDING STEMS & VINES EXTENDING DOWN INTO ALL SECTIONS
@@ -357,22 +430,22 @@ export function CeiboRootsBackground() {
       allTreesAndStems.push(
         createBranch(
           width * 0.05,
-          treeOriginY - 50,
+          treeOriginY - 40,
           Math.PI / 2.3,
           height * 0.45,
           1,
           isMobile ? 3 : 4,
-          height * 0.2,
+          height * 0.15,
           2.4
         ),
         createBranch(
           width * 0.95,
-          treeOriginY - 50,
+          treeOriginY - 40,
           Math.PI / 1.8,
           height * 0.45,
           1,
           isMobile ? 3 : 4,
-          height * 0.2,
+          height * 0.15,
           2.4
         )
       )
@@ -783,13 +856,13 @@ export function CeiboRootsBackground() {
         parentScreenEndY: number,
         parentGrown: number
       ) => {
-        const isRoot = b.depth === 0
-        const canStartGrowing = isRoot
-          ? currentScrollTrigger >= b.activationY && time > 12
+        const isEntryRoot = b.depth === 0 || allTreesAndStems.includes(b)
+        const canStartGrowing = isEntryRoot
+          ? currentScrollTrigger >= b.activationY && time > 8
           : parentGrown >= 0.88 && currentScrollTrigger >= b.activationY
 
         if (canStartGrowing && b.growProgress < 1) {
-          const stretchSpeed = 0.015 + b.depth * 0.0035
+          const stretchSpeed = 0.018 + b.depth * 0.0035
           b.growProgress = Math.min(1, b.growProgress + stretchSpeed)
         }
 
@@ -852,7 +925,7 @@ export function CeiboRootsBackground() {
           partialCurve.p2.y
         )
 
-        const alpha = Math.max(0.06, 0.32 - b.depth * 0.05) * b.growProgress
+        const alpha = Math.max(0.12, 0.46 - b.depth * 0.05) * b.growProgress
         ctx.lineWidth = b.thickness
         ctx.strokeStyle = `rgba(225, 29, 72, ${alpha})`
         ctx.lineCap = 'round'
@@ -1148,7 +1221,7 @@ export function CeiboRootsBackground() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-70 transition-opacity duration-1000"
+      className="pointer-events-none fixed inset-0 z-[1] h-full w-full opacity-85 transition-opacity duration-1000"
     />
   )
 }
