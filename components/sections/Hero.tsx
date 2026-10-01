@@ -132,7 +132,7 @@ export function Hero({ onOpenChat }: HeroProps) {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg md:text-xl"
         >
-          Acompañamos a startups y empresas a diseñar y desarrollar aplicaciones web y móviles modernas, rápidas y hechas a medida.
+          Somos una empresa que acompaña a startups y empresas a diseñar y desarrollar aplicaciones web y móviles modernas, rápidas y hechas a medida.
         </motion.p>
 
         {/* Action buttons */}
