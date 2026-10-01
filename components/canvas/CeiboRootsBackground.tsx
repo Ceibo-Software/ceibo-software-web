@@ -295,102 +295,128 @@ export function CeiboRootsBackground() {
       )
 
       // ==========================================
-      // 1. THE CEIBO TREE OF HERO (Central Tree)
+      // 1. TWIN CEIBO TREES FRAMING HERO (LEFT & RIGHT)
       // ==========================================
-      const treeOriginX = width * 0.5
+      const buildCeiboHeroTree = (
+        originX: number,
+        originY: number,
+        trunkHeight: number,
+        side: 'left' | 'right'
+      ) => {
+        const lean = side === 'left' ? 0.08 : -0.08
+        const trunk = createBranch(
+          originX,
+          originY,
+          -Math.PI / 2 + lean,
+          trunkHeight,
+          0,
+          isMobile ? 2 : 3,
+          0,
+          isMobile ? 4.2 : 5.4
+        )
+
+        // Limb reaching toward center to gracefully frame the hero headline
+        const innerAngle =
+          side === 'left' ? (-1.75 * Math.PI) / 4 : (-2.25 * Math.PI) / 4
+        const innerLimb = createBranch(
+          originX + (side === 'left' ? 18 : -18),
+          originY - trunkHeight * 0.52,
+          innerAngle,
+          trunkHeight * 0.65,
+          1,
+          isMobile ? 2 : 3,
+          0,
+          3.4
+        )
+
+        // Limb reaching outward toward screen edge
+        const outerAngle =
+          side === 'left' ? (-2.75 * Math.PI) / 4 : (-1.25 * Math.PI) / 4
+        const outerLimb = createBranch(
+          originX + (side === 'left' ? -18 : 18),
+          originY - trunkHeight * 0.52,
+          outerAngle,
+          trunkHeight * 0.65,
+          1,
+          isMobile ? 2 : 3,
+          0,
+          3.4
+        )
+
+        // Mid-height decorative lateral branch
+        const midAngle =
+          side === 'left' ? (-1.35 * Math.PI) / 4 : (-2.65 * Math.PI) / 4
+        const midBranch = createBranch(
+          originX + (side === 'left' ? 14 : -14),
+          originY - trunkHeight * 0.32,
+          midAngle,
+          trunkHeight * 0.44,
+          1,
+          2,
+          0,
+          2.5
+        )
+
+        // Lateral outer branch
+        const outerMidAngle =
+          side === 'left' ? (-3.05 * Math.PI) / 4 : (-0.95 * Math.PI) / 4
+        const outerMidBranch = createBranch(
+          originX + (side === 'left' ? -14 : 14),
+          originY - trunkHeight * 0.32,
+          outerMidAngle,
+          trunkHeight * 0.44,
+          1,
+          2,
+          0,
+          2.5
+        )
+
+        // Basal roots
+        const rootSpread = side === 'left' ? (4 * Math.PI) / 5 : Math.PI / 5
+        const rootOpposite = side === 'left' ? Math.PI / 4 : (3 * Math.PI) / 4
+        const root1 = createBranch(
+          originX + (side === 'left' ? -10 : 10),
+          originY + 5,
+          rootSpread,
+          width * (isMobile ? 0.22 : 0.18),
+          1,
+          3,
+          0,
+          2.8
+        )
+        const root2 = createBranch(
+          originX + (side === 'left' ? 10 : -10),
+          originY + 5,
+          rootOpposite,
+          width * (isMobile ? 0.16 : 0.12),
+          1,
+          3,
+          0,
+          2.4
+        )
+
+        return [trunk, innerLimb, outerLimb, midBranch, outerMidBranch, root1, root2]
+      }
+
+      const leftOriginX = width * (isMobile ? 0.08 : 0.14)
+      const rightOriginX = width * (isMobile ? 0.92 : 0.86)
       const treeOriginY = height * 0.94
       const treeTrunkHeight = height * 0.28
 
-      // Central Trunk: Rising organically, splitting into the Crown
-      const mainTrunk = createBranch(
-        treeOriginX,
+      const leftTree = buildCeiboHeroTree(
+        leftOriginX,
         treeOriginY,
-        -Math.PI / 2,
         treeTrunkHeight,
-        0,
-        isMobile ? 2 : 3,
-        0,
-        isMobile ? 4.5 : 5.8
+        'left'
+      )
+      const rightTree = buildCeiboHeroTree(
+        rightOriginX,
+        treeOriginY,
+        treeTrunkHeight,
+        'right'
       )
 
-      // Primary Lateral limbs framing the sides (wider lateral reach)
-      const leftCrownLimb = createBranch(
-        treeOriginX - 24,
-        treeOriginY - treeTrunkHeight * 0.52,
-        (-2.85 * Math.PI) / 4,
-        treeTrunkHeight * 0.70,
-        1,
-        isMobile ? 2 : 3,
-        0,
-        3.6
-      )
-
-      const rightCrownLimb = createBranch(
-        treeOriginX + 24,
-        treeOriginY - treeTrunkHeight * 0.52,
-        (-1.15 * Math.PI) / 4,
-        treeTrunkHeight * 0.70,
-        1,
-        isMobile ? 2 : 3,
-        0,
-        3.6
-      )
-
-      // Two delicate secondary lateral branches stretching wide
-      const leftMidBranch = createBranch(
-        treeOriginX - 18,
-        treeOriginY - treeTrunkHeight * 0.32,
-        (-3.05 * Math.PI) / 4,
-        treeTrunkHeight * 0.50,
-        1,
-        2,
-        0,
-        2.6
-      )
-
-      const rightMidBranch = createBranch(
-        treeOriginX + 18,
-        treeOriginY - treeTrunkHeight * 0.32,
-        (-0.95 * Math.PI) / 4,
-        treeTrunkHeight * 0.50,
-        1,
-        2,
-        0,
-        2.6
-      )
-
-      // Basal roots grounding the Ceibo (wider grounding)
-      const leftRoot = createBranch(
-        treeOriginX - 10,
-        treeOriginY + 5,
-        (4 * Math.PI) / 5,
-        width * (isMobile ? 0.32 : 0.28),
-        1,
-        3,
-        0,
-        3.0
-      )
-
-      const rightRoot = createBranch(
-        treeOriginX + 10,
-        treeOriginY + 5,
-        Math.PI / 5,
-        width * (isMobile ? 0.32 : 0.28),
-        1,
-        3,
-        0,
-        3.0
-      )
-
-      allTreesAndStems.push(
-        mainTrunk,
-        leftCrownLimb,
-        rightCrownLimb,
-        leftMidBranch,
-        rightMidBranch,
-        leftRoot,
-        rightRoot
-      )
+      allTreesAndStems.push(...leftTree, ...rightTree)
 
       // ==============================================================
       // 2. DESCENDING STEMS & VINES EXTENDING DOWN INTO ALL SECTIONS
