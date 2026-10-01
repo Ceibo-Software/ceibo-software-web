@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, TrendingUp, X, Check } from 'lucide-react'
 import { sounds } from '@/lib/sound'
 import { Reveal } from '@/components/ui/Reveal'
+import { Magnetic } from '@/components/ui/Magnetic'
 
 interface MinimalProject {
   id: string
@@ -83,6 +84,49 @@ const PROJECTS: MinimalProject[] = [
   },
 ]
 
+function ProjectSpotlightCard({
+  children,
+  onClick,
+  accentColor,
+  className = '',
+}: {
+  children: React.ReactNode
+  onClick?: () => void
+  accentColor: string
+  className?: string
+}) {
+  const cardRef = React.useRef<HTMLDivElement>(null)
+  const [coords, setCoords] = React.useState({ x: 0, y: 0 })
+  const [isHovered, setIsHovered] = React.useState(false)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+  }
+
+  return (
+    <div
+      ref={cardRef}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`group relative cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-[#0d0d14]/90 shadow-2xl transition-all duration-300 hover:border-white/25 ${className}`}
+    >
+      {/* Dynamic cursor-following spotlight glow */}
+      <div
+        className="pointer-events-none absolute -inset-px rounded-3xl transition-opacity duration-300"
+        style={{
+          opacity: isHovered ? 1 : 0,
+          background: `radial-gradient(550px circle at ${coords.x}px ${coords.y}px, ${accentColor}28, transparent 70%)`,
+        }}
+      />
+      {children}
+    </div>
+  )
+}
+
 export function Projects() {
   const [activeProject, setActiveProject] = useState<MinimalProject | null>(null)
   const [mounted, setMounted] = useState(false)
@@ -130,12 +174,13 @@ export function Projects() {
       <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-12">
         {/* HERO PROJECT: Pampa Finance (12 cols) */}
         <Reveal delay={0.08} className="md:col-span-12">
-          <div
+          <ProjectSpotlightCard
             onClick={() => {
               sounds.playClick()
               setActiveProject(pampa)
             }}
-            className="group relative cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-[#0d0d14]/90 p-7 shadow-2xl transition-all duration-300 hover:border-rose-500/40 sm:p-10"
+            accentColor="#f43f5e"
+            className="p-7 sm:p-10 hover:border-rose-500/40"
           >
             {/* Ambient subtle glow */}
             <div
@@ -143,7 +188,7 @@ export function Projects() {
               style={{ background: 'radial-gradient(circle, #f43f5e 0%, transparent 70%)' }}
             />
 
-            <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
+            <div className="relative z-10 grid gap-8 lg:grid-cols-12 lg:items-center">
               {/* Text column - Minimal & concise */}
               <div className="space-y-4 lg:col-span-5">
                 <div className="flex items-center gap-3">
@@ -237,143 +282,149 @@ export function Projects() {
                 </div>
               </div>
             </div>
-          </div>
+          </ProjectSpotlightCard>
         </Reveal>
 
         {/* COMPANION 1: Marea Health (6 cols) */}
         <Reveal delay={0.14} className="md:col-span-6">
-          <div
+          <ProjectSpotlightCard
             onClick={() => {
               sounds.playClick()
               setActiveProject(marea)
             }}
-            className="group relative flex h-full flex-col justify-between cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-[#0d0d14]/90 p-7 shadow-2xl transition-all duration-300 hover:border-cyan-500/40 sm:p-8"
+            accentColor="#06b6d4"
+            className="flex h-full flex-col justify-between p-7 sm:p-8 hover:border-cyan-500/40"
           >
             <div
               className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full blur-3xl opacity-15 transition-opacity duration-500 group-hover:opacity-30"
               style={{ background: 'radial-gradient(circle, #06b6d4 0%, transparent 70%)' }}
             />
 
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="rounded-full border border-cyan-500/30 bg-cyan-950/40 px-3 py-1 text-xs font-semibold text-cyan-300">
-                  {marea.category}
-                </span>
-                <span className="font-mono text-xs text-zinc-400">{marea.metric}</span>
+            <div className="relative z-10 flex h-full flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="rounded-full border border-cyan-500/30 bg-cyan-950/40 px-3 py-1 text-xs font-semibold text-cyan-300">
+                    {marea.category}
+                  </span>
+                  <span className="font-mono text-xs text-zinc-400">{marea.metric}</span>
+                </div>
+
+                <h3 className="mt-4 text-2xl font-black text-white sm:text-3xl">
+                  {marea.title}
+                </h3>
+                <p className="mt-1 text-sm text-zinc-400">
+                  {marea.summary}
+                </p>
               </div>
 
-              <h3 className="mt-4 text-2xl font-black text-white sm:text-3xl">
-                {marea.title}
-              </h3>
-              <p className="mt-1 text-sm text-zinc-400">
-                {marea.summary}
-              </p>
-            </div>
-
-            {/* Visual Minimal Mockup */}
-            <div className="my-6 rounded-2xl border border-white/10 bg-gradient-to-b from-[#101720] to-[#0a0e14] p-5 shadow-inner">
-              <div className="rounded-xl border border-cyan-500/20 bg-cyan-950/30 p-3.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-white">Consulta Médica</span>
-                  <span className="text-[10px] text-amber-300 font-bold">★ 4.9</span>
-                </div>
-                <div className="mt-3 flex items-center justify-between rounded-lg bg-black/40 px-3 py-2 text-xs text-zinc-300">
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                    Videollamada lista
-                  </span>
-                  <div className="flex items-end gap-1 h-3">
-                    <span className="w-1 h-2 rounded bg-cyan-400 animate-pulse" />
-                    <span className="w-1 h-3 rounded bg-cyan-400" />
-                    <span className="w-1 h-1 rounded bg-cyan-400" />
+              {/* Visual Minimal Mockup */}
+              <div className="my-6 rounded-2xl border border-white/10 bg-gradient-to-b from-[#101720] to-[#0a0e14] p-5 shadow-inner">
+                <div className="rounded-xl border border-cyan-500/20 bg-cyan-950/30 p-3.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-white">Consulta Médica</span>
+                    <span className="text-[10px] text-amber-300 font-bold">★ 4.9</span>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between rounded-lg bg-black/40 px-3 py-2 text-xs text-zinc-300">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+                      Videollamada lista
+                    </span>
+                    <div className="flex items-end gap-1 h-3">
+                      <span className="w-1 h-2 rounded bg-cyan-400 animate-pulse" />
+                      <span className="w-1 h-3 rounded bg-cyan-400" />
+                      <span className="w-1 h-1 rounded bg-cyan-400" />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-center justify-between pt-1">
-              <div className="flex gap-2">
-                {marea.tags.map((t) => (
-                  <span key={t} className="rounded-md border border-white/5 bg-white/[0.03] px-2 py-0.5 text-[11px] text-zinc-400">
-                    {t}
-                  </span>
-                ))}
+              <div className="flex items-center justify-between pt-1">
+                <div className="flex gap-2">
+                  {marea.tags.map((t) => (
+                    <span key={t} className="rounded-md border border-white/5 bg-white/[0.03] px-2 py-0.5 text-[11px] text-zinc-400">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <span className="inline-flex items-center gap-1 text-xs font-bold text-cyan-400 transition-transform duration-200 group-hover:translate-x-1">
+                  <span>Ver proyecto</span>
+                  <ArrowUpRight size={13} />
+                </span>
               </div>
-              <span className="inline-flex items-center gap-1 text-xs font-bold text-cyan-400 transition-transform duration-200 group-hover:translate-x-1">
-                <span>Ver proyecto</span>
-                <ArrowUpRight size={13} />
-              </span>
             </div>
-          </div>
+          </ProjectSpotlightCard>
         </Reveal>
 
         {/* COMPANION 2: Nexo Ops (6 cols) */}
         <Reveal delay={0.18} className="md:col-span-6">
-          <div
+          <ProjectSpotlightCard
             onClick={() => {
               sounds.playClick()
               setActiveProject(nexo)
             }}
-            className="group relative flex h-full flex-col justify-between cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-[#0d0d14]/90 p-7 shadow-2xl transition-all duration-300 hover:border-amber-500/40 sm:p-8"
+            accentColor="#f59e0b"
+            className="flex h-full flex-col justify-between p-7 sm:p-8 hover:border-amber-500/40"
           >
             <div
               className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full blur-3xl opacity-15 transition-opacity duration-500 group-hover:opacity-30"
               style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
             />
 
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="rounded-full border border-amber-500/30 bg-amber-950/40 px-3 py-1 text-xs font-semibold text-amber-300">
-                  {nexo.category}
+            <div className="relative z-10 flex h-full flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="rounded-full border border-amber-500/30 bg-amber-950/40 px-3 py-1 text-xs font-semibold text-amber-300">
+                    {nexo.category}
+                  </span>
+                  <span className="font-mono text-xs text-zinc-400">{nexo.metric}</span>
+                </div>
+
+                <h3 className="mt-4 text-2xl font-black text-white sm:text-3xl">
+                  {nexo.title}
+                </h3>
+                <p className="mt-1 text-sm text-zinc-400">
+                  {nexo.summary}
+                </p>
+              </div>
+
+              {/* Visual Minimal Mockup */}
+              <div className="my-6 rounded-2xl border border-white/10 bg-gradient-to-b from-[#18150f] to-[#0c0a06] p-5 shadow-inner">
+                <div className="space-y-2 font-mono text-xs">
+                  <div className="flex items-center justify-between text-zinc-400">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-emerald-400" />
+                      us-east-1
+                    </span>
+                    <span className="text-emerald-400">18ms</span>
+                  </div>
+                  <div className="flex items-center justify-between text-zinc-400">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-emerald-400" />
+                      sa-east-1
+                    </span>
+                    <span className="text-emerald-400">24ms</span>
+                  </div>
+                  <div className="mt-2 h-1.5 w-full rounded-full bg-white/10">
+                    <div className="h-full w-[93%] rounded-full bg-amber-500" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <div className="flex gap-2">
+                  {nexo.tags.map((t) => (
+                    <span key={t} className="rounded-md border border-white/5 bg-white/[0.03] px-2 py-0.5 text-[11px] text-zinc-400">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-400 transition-transform duration-200 group-hover:translate-x-1">
+                  <span>Ver proyecto</span>
+                  <ArrowUpRight size={13} />
                 </span>
-                <span className="font-mono text-xs text-zinc-400">{nexo.metric}</span>
-              </div>
-
-              <h3 className="mt-4 text-2xl font-black text-white sm:text-3xl">
-                {nexo.title}
-              </h3>
-              <p className="mt-1 text-sm text-zinc-400">
-                {nexo.summary}
-              </p>
-            </div>
-
-            {/* Visual Minimal Mockup */}
-            <div className="my-6 rounded-2xl border border-white/10 bg-gradient-to-b from-[#18150f] to-[#0c0a06] p-5 shadow-inner">
-              <div className="space-y-2 font-mono text-xs">
-                <div className="flex items-center justify-between text-zinc-400">
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-1.5 rounded-full bg-emerald-400" />
-                    us-east-1
-                  </span>
-                  <span className="text-emerald-400">18ms</span>
-                </div>
-                <div className="flex items-center justify-between text-zinc-400">
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-1.5 rounded-full bg-emerald-400" />
-                    sa-east-1
-                  </span>
-                  <span className="text-emerald-400">24ms</span>
-                </div>
-                <div className="mt-2 h-1.5 w-full rounded-full bg-white/10">
-                  <div className="h-full w-[93%] rounded-full bg-amber-500" />
-                </div>
               </div>
             </div>
-
-            <div className="flex items-center justify-between pt-1">
-              <div className="flex gap-2">
-                {nexo.tags.map((t) => (
-                  <span key={t} className="rounded-md border border-white/5 bg-white/[0.03] px-2 py-0.5 text-[11px] text-zinc-400">
-                    {t}
-                  </span>
-                ))}
-              </div>
-              <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-400 transition-transform duration-200 group-hover:translate-x-1">
-                <span>Ver proyecto</span>
-                <ArrowUpRight size={13} />
-              </span>
-            </div>
-          </div>
+          </ProjectSpotlightCard>
         </Reveal>
       </div>
 
@@ -395,22 +446,24 @@ export function Projects() {
                 />
 
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                  initial={{ opacity: 0, scale: 0.93, y: 16 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, scale: 0.94, y: 12 }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 320 }}
                   className="relative z-10 w-full max-w-lg rounded-3xl border border-white/15 bg-[#0e0e16] p-6 shadow-2xl sm:p-8"
                 >
-                  <button
-                    onClick={() => {
-                      sounds.playClick()
-                      setActiveProject(null)
-                    }}
-                    className="absolute right-5 top-5 grid size-8 place-items-center rounded-full border border-white/10 bg-white/5 text-zinc-400 transition hover:text-white"
-                    aria-label="Cerrar"
-                  >
-                    <X size={16} />
-                  </button>
+                  <Magnetic strength={0.35} className="absolute right-5 top-5">
+                    <button
+                      onClick={() => {
+                        sounds.playClick()
+                        setActiveProject(null)
+                      }}
+                      className="grid size-8 place-items-center rounded-full border border-white/10 bg-white/5 text-zinc-400 transition hover:border-white/20 hover:text-white cursor-pointer"
+                      aria-label="Cerrar"
+                    >
+                      <X size={16} />
+                    </button>
+                  </Magnetic>
 
                   <span className="text-xs font-semibold text-rose-400">
                     {activeProject.category}
@@ -446,17 +499,19 @@ export function Projects() {
 
                   {/* Action */}
                   <div className="mt-6 flex justify-end border-t border-white/10 pt-4">
-                    <a
-                      href="#contacto"
-                      onClick={() => {
-                        sounds.playClick()
-                        setActiveProject(null)
-                      }}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-5 py-2 text-xs font-bold text-white shadow-lg transition hover:bg-rose-500"
-                    >
-                      <span>Consultar por un proyecto similar</span>
-                      <ArrowUpRight size={14} />
-                    </a>
+                    <Magnetic strength={0.25}>
+                      <a
+                        href="#contacto"
+                        onClick={() => {
+                          sounds.playClick()
+                          setActiveProject(null)
+                        }}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-5 py-2 text-xs font-bold text-white shadow-lg transition hover:bg-rose-500"
+                      >
+                        <span>Consultar por un proyecto similar</span>
+                        <ArrowUpRight size={14} />
+                      </a>
+                    </Magnetic>
                   </div>
                 </motion.div>
               </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, MessageSquare } from 'lucide-react'
 import { sounds } from '@/lib/sound'
+import { Magnetic } from '@/components/ui/Magnetic'
 
 const ROTATING_WORDS = [
   'productos que lideran.',
@@ -100,7 +101,7 @@ export function Hero({ onOpenChat }: HeroProps) {
                 animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 exit={{ opacity: 0, y: -30, filter: 'blur(6px)' }}
                 transition={{ duration: 0.45, ease: 'easeOut' }}
-                className="inline-block bg-gradient-to-r from-rose-400 via-rose-500 to-rose-200 bg-clip-text text-transparent"
+                className="inline-block animate-text-shimmer drop-shadow-[0_0_24px_rgba(244,63,94,0.35)]"
               >
                 {ROTATING_WORDS[wordIndex]}
               </motion.span>
@@ -125,27 +126,31 @@ export function Hero({ onOpenChat }: HeroProps) {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-10 flex flex-wrap items-center justify-center gap-4"
         >
-          <button
-            onClick={() => handleScroll('contacto')}
-            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-r from-rose-600 via-rose-700 to-rose-800 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_35px_rgba(225,29,72,0.4)] transition-all duration-300 hover:shadow-[0_0_50px_rgba(225,29,72,0.7)] hover:brightness-110 active:scale-95"
-          >
-            <span>Iniciar mi proyecto</span>
-            <ArrowUpRight
-              size={16}
-              className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-            />
-          </button>
+          <Magnetic strength={0.3}>
+            <button
+              onClick={() => handleScroll('contacto')}
+              className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-r from-rose-600 via-rose-700 to-rose-800 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_35px_rgba(225,29,72,0.4)] transition-all duration-300 hover:shadow-[0_0_50px_rgba(225,29,72,0.7)] hover:brightness-110 active:scale-95 cursor-pointer"
+            >
+              <span>Iniciar mi proyecto</span>
+              <ArrowUpRight
+                size={16}
+                className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+              />
+            </button>
+          </Magnetic>
 
-          <button
-            onClick={() => {
-              sounds.playClick()
-              if (onOpenChat) onOpenChat()
-            }}
-            className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.04] px-6 py-3.5 text-sm font-medium text-zinc-200 backdrop-blur-md transition-all duration-300 hover:border-rose-500/40 hover:bg-white/[0.08] hover:text-white active:scale-95"
-          >
-            <MessageSquare size={16} className="text-rose-400 transition-transform duration-300 group-hover:scale-110" />
-            <span>Chatear con el Asistente</span>
-          </button>
+          <Magnetic strength={0.22}>
+            <button
+              onClick={() => {
+                sounds.playClick()
+                if (onOpenChat) onOpenChat()
+              }}
+              className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.04] px-6 py-3.5 text-sm font-medium text-zinc-200 backdrop-blur-md transition-all duration-300 hover:border-rose-500/40 hover:bg-white/[0.08] hover:text-white active:scale-95 cursor-pointer"
+            >
+              <MessageSquare size={16} className="text-rose-400 transition-transform duration-300 group-hover:scale-110" />
+              <span>Chatear con el Asistente</span>
+            </button>
+          </Magnetic>
         </motion.div>
 
         {/* Metrics */}

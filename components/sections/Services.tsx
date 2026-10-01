@@ -3,6 +3,7 @@
 import { Code2, Smartphone, Sparkles, Bot } from 'lucide-react'
 import { TiltCard } from '@/components/ui/TiltCard'
 import { Reveal } from '@/components/ui/Reveal'
+import { Magnetic } from '@/components/ui/Magnetic'
 
 const SERVICES_DATA = [
   {
@@ -50,15 +51,21 @@ export function Services() {
           return (
             <Reveal key={idx} delay={idx * 0.08}>
               <TiltCard
-                className="h-full p-6 flex flex-col justify-between"
+                className="group relative h-full p-6 flex flex-col justify-between transition-all duration-300 hover:border-rose-500/40"
                 intensity={8}
+                spotlightColor="rgba(244, 63, 94, 0.18)"
               >
-                <div>
-                  <div className="grid size-12 place-items-center rounded-2xl border border-rose-500/20 bg-rose-950/20 text-rose-400">
-                    <Icon size={22} />
-                  </div>
+                {/* Subtle top liquid shimmer line */}
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/0 to-transparent transition-opacity duration-500 group-hover:via-rose-500/60" />
 
-                  <h3 className="mt-5 text-lg font-bold text-white">
+                <div>
+                  <Magnetic strength={0.4}>
+                    <div className="grid size-12 place-items-center rounded-2xl border border-rose-500/20 bg-rose-950/25 text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.1)] transition-all duration-300 group-hover:border-rose-500/50 group-hover:bg-rose-950/40 group-hover:shadow-[0_0_20px_rgba(244,63,94,0.3)]">
+                      <Icon size={22} />
+                    </div>
+                  </Magnetic>
+
+                  <h3 className="mt-5 text-lg font-bold text-white transition-colors duration-200 group-hover:text-rose-100">
                     {service.title}
                   </h3>
 
