@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, Menu, X, MessageSquare, Volume2, VolumeX } from 'lucide-react'
+import { ArrowUpRight, Menu, X, MessageSquare } from 'lucide-react'
 import { CEIBO_BRAND } from '@/lib/data'
 import { sounds } from '@/lib/sound'
 
@@ -12,7 +12,6 @@ interface NavbarProps {
 
 export function Navbar({ onOpenChat }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [isMuted, setIsMuted] = useState(true)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -39,12 +38,6 @@ export function Navbar({ onOpenChat }: NavbarProps) {
   }, [])
 
   useEffect(() => {
-    setIsMuted(sounds.getMuted())
-    const unsubscribe = sounds.subscribe((muted) => setIsMuted(muted))
-    return () => unsubscribe()
-  }, [])
-
-  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
     }
@@ -52,11 +45,6 @@ export function Navbar({ onOpenChat }: NavbarProps) {
     handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const handleSoundToggle = () => {
-    const nextMuted = sounds.toggleMute()
-    setIsMuted(nextMuted)
-  }
 
   const navLinks = [
     { label: 'Servicios', href: '#servicios' },
@@ -120,34 +108,6 @@ export function Navbar({ onOpenChat }: NavbarProps) {
 
         {/* Actions */}
         <div className="flex shrink-0 items-center gap-3">
-          {/* Sound toggle (Ambiente natural) */}
-          <button
-            onClick={handleSoundToggle}
-            className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition duration-200 cursor-pointer ${
-              !isMuted
-                ? 'border-rose-500/50 bg-rose-950/40 text-rose-300 shadow-[0_0_15px_rgba(225,29,72,0.25)]'
-                : 'border-white/10 bg-white/[0.02] text-zinc-400 hover:border-white/25 hover:text-white'
-            }`}
-            title={
-              isMuted
-                ? 'Activar sonido ambiente de naturaleza (viento y bosque)'
-                : 'Silenciar sonido ambiente de naturaleza'
-            }
-            aria-label={isMuted ? 'Activar sonido ambiente' : 'Silenciar sonido ambiente'}
-          >
-            {isMuted ? (
-              <VolumeX size={13} />
-            ) : (
-              <Volume2 size={13} className="text-rose-400 animate-pulse" />
-            )}
-            <span className="hidden sm:inline">
-              {isMuted ? 'Ambiente: Off' : 'Ambiente: On'}
-            </span>
-            <span className="inline sm:hidden font-mono text-[10px]">
-              {isMuted ? 'Off' : 'On'}
-            </span>
-          </button>
-
           {/* Chatbot trigger */}
           <button
             onClick={() => {
@@ -212,31 +172,6 @@ export function Navbar({ onOpenChat }: NavbarProps) {
                   <ArrowUpRight size={14} className="text-zinc-600" />
                 </a>
               ))}
-
-              {/* Mobile Sound Toggle */}
-              <button
-                type="button"
-                onClick={handleSoundToggle}
-                className="flex items-center justify-between border-t border-white/10 pt-3 text-sm text-zinc-300 cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  {isMuted ? (
-                    <VolumeX size={16} className="text-zinc-500" />
-                  ) : (
-                    <Volume2 size={16} className="text-rose-400 animate-pulse" />
-                  )}
-                  <span>Sonido ambiente natural</span>
-                </span>
-                <span
-                  className={`rounded-full border px-2 py-0.5 font-mono text-xs ${
-                    !isMuted
-                      ? 'border-rose-500/40 bg-rose-950/40 text-rose-300'
-                      : 'border-white/10 text-zinc-500'
-                  }`}
-                >
-                  {isMuted ? 'Off' : 'On'}
-                </span>
-              </button>
 
               <div className="pt-2">
                 <a
