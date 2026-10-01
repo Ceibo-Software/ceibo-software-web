@@ -81,19 +81,19 @@ export function Hero({ onOpenChat }: HeroProps) {
   return (
     <section
       id="top"
-      className="relative z-20 mx-auto flex min-h-[calc(100dvh-5rem)] max-w-7xl flex-col items-center justify-center px-5 py-14 md:px-8 md:py-20"
+      className="relative z-20 mx-auto flex min-h-[calc(100dvh-5rem)] md:min-h-[calc(100vh-4.5rem)] max-w-7xl flex-col items-center justify-center px-5 py-6 sm:py-8 md:px-8"
     >
       {/* Decorative ambient background mesh */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-rose-900/25 via-rose-950/15 to-transparent blur-[140px]" />
 
-      {/* Main Hero Content - vertically centered with my-auto */}
-      <div className="my-auto mx-auto max-w-4xl text-center py-4">
+      {/* Main Hero Content - vertically centered */}
+      <div className="mx-auto max-w-4xl text-center flex flex-col items-center justify-center">
         {/* Dynamic Animated Kinetic Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl font-extrabold tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-8xl select-none"
+          className="text-4xl font-extrabold tracking-[-0.035em] text-white sm:text-5xl md:text-6xl lg:text-7xl select-none"
         >
           <span className="sr-only">Construimos, diseñamos y creamos software de alto impacto</span>
           <span aria-hidden="true" className="inline-flex items-baseline">
@@ -109,7 +109,7 @@ export function Hero({ onOpenChat }: HeroProps) {
               className="ml-1 inline-block h-[0.78em] w-[3px] rounded-full bg-rose-500 sm:w-[4px] md:w-[5px]"
             />
           </span>{' '}
-          <span className="block mt-2 min-h-[1.25em]">
+          <span className="block mt-1 sm:mt-2 min-h-[1.2em]">
             <AnimatePresence mode="wait">
               <motion.span
                 key={wordIndex}
@@ -130,7 +130,7 @@ export function Hero({ onOpenChat }: HeroProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg md:text-xl"
+          className="mx-auto mt-4 sm:mt-5 md:mt-6 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg md:text-xl"
         >
           Somos una empresa que acompaña a startups y empresas a diseñar y desarrollar aplicaciones web y móviles modernas, rápidas y hechas a medida.
         </motion.p>
@@ -140,12 +140,12 @@ export function Hero({ onOpenChat }: HeroProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+          className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3.5 sm:gap-4"
         >
           <Magnetic strength={0.3}>
             <button
               onClick={() => handleScroll('contacto')}
-              className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-r from-rose-600 via-rose-700 to-rose-800 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_35px_rgba(225,29,72,0.4)] transition-all duration-300 hover:shadow-[0_0_50px_rgba(225,29,72,0.7)] hover:brightness-110 active:scale-95 cursor-pointer"
+              className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-r from-rose-600 via-rose-700 to-rose-800 px-7 py-3 text-sm font-semibold text-white shadow-[0_0_35px_rgba(225,29,72,0.4)] transition-all duration-300 hover:shadow-[0_0_50px_rgba(225,29,72,0.7)] hover:brightness-110 active:scale-95 cursor-pointer"
             >
               <span>Iniciar mi proyecto</span>
               <ArrowUpRight
@@ -161,7 +161,7 @@ export function Hero({ onOpenChat }: HeroProps) {
                 sounds.playClick()
                 if (onOpenChat) onOpenChat()
               }}
-              className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.04] px-6 py-3.5 text-sm font-medium text-zinc-200 backdrop-blur-md transition-all duration-300 hover:border-rose-500/40 hover:bg-white/[0.08] hover:text-white active:scale-95 cursor-pointer"
+              className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.04] px-6 py-3 text-sm font-medium text-zinc-200 backdrop-blur-md transition-all duration-300 hover:border-rose-500/40 hover:bg-white/[0.08] hover:text-white active:scale-95 cursor-pointer"
             >
               <MessageSquare size={16} className="text-rose-400 transition-transform duration-300 group-hover:scale-110" />
               <span>Chatear con el Asistente</span>
@@ -174,7 +174,7 @@ export function Hero({ onOpenChat }: HeroProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4 }}
-          className="mt-14 flex flex-wrap items-center justify-center gap-8 sm:gap-14 text-center text-xs text-zinc-400 sm:text-sm"
+          className="mt-8 sm:mt-10 md:mt-12 flex flex-wrap items-center justify-center gap-6 sm:gap-12 md:gap-14 text-center text-xs text-zinc-400 sm:text-sm"
         >
           <div>
             <strong className="block text-2xl sm:text-3xl font-bold text-white">+40</strong>
