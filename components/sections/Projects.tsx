@@ -246,18 +246,15 @@ export function Projects() {
                   <div className="size-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)]" />
                 </div>
 
-                {/* Cáliz de Ceibo (conector floral superior) */}
-                <div className="relative -mb-3 z-30 flex items-center justify-center">
+                {/* Conector floral superior */}
+                <div className="relative -mb-1.5 z-30 flex items-center justify-center">
                   <div
-                    className={`flex items-center gap-1.5 rounded-full border px-3 py-0.5 text-[10px] font-mono font-bold tracking-wider backdrop-blur-md transition-all duration-300 ${
+                    className={`size-2.5 rounded-full border transition-all duration-300 ${
                       isHovered
-                        ? 'border-rose-500 bg-rose-950/90 text-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.6)] scale-105'
-                        : 'border-white/15 bg-[#14141c]/90 text-zinc-400'
+                        ? 'border-rose-400 bg-rose-500 shadow-[0_0_14px_rgba(244,63,94,0.9)] scale-125'
+                        : 'border-rose-500/40 bg-[#14141c] shadow-[0_0_6px_rgba(244,63,94,0.3)]'
                     }`}
-                  >
-                    <span className={`size-1.5 rounded-full ${isHovered ? 'bg-rose-400 animate-ping' : 'bg-rose-500'}`} />
-                    <span>BROTE 0{idx + 1}</span>
-                  </div>
+                  />
                 </div>
 
                 {/* Tarjeta suspendida con micro-física pendular en hover */}
