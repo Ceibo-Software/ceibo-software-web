@@ -205,11 +205,11 @@ export function CeiboRootsBackground() {
       let endX = startX + Math.cos(angle) * length
       let endY = startY + Math.sin(angle) * length
 
-      // Safety ceiling: keep Ceibo branches well below the navbar (at least 200px breathing room)
-      const navbarCeilingY = Math.max(200, height * 0.28)
+      // Safety ceiling: keep Ceibo branches below the navbar (at least 60px breathing room)
+      const navbarCeilingY = Math.max(130, height * 0.16)
       if (activationY < 100 && endY < navbarCeilingY) {
-        endY = navbarCeilingY + 15 + Math.random() * 25
-        if (cpY < navbarCeilingY) cpY = navbarCeilingY + 15
+        endY = navbarCeilingY + 12 + Math.random() * 20
+        if (cpY < navbarCeilingY) cpY = navbarCeilingY + 12
       }
 
       const isTerminal = depth >= maxDepth
@@ -298,8 +298,8 @@ export function CeiboRootsBackground() {
       // 1. THE CEIBO TREE OF HERO (Central Tree)
       // ==========================================
       const treeOriginX = width * 0.5
-      const treeOriginY = height * 0.95
-      const treeTrunkHeight = height * 0.24
+      const treeOriginY = height * 0.94
+      const treeTrunkHeight = height * 0.28
 
       // Central Trunk: Rising organically, splitting into the Crown
       const mainTrunk = createBranch(
@@ -313,58 +313,58 @@ export function CeiboRootsBackground() {
         isMobile ? 4.5 : 5.8
       )
 
-      // Primary Lateral limbs framing the sides (spreading wider laterally)
+      // Primary Lateral limbs framing the sides (wider lateral reach)
       const leftCrownLimb = createBranch(
-        treeOriginX - 20,
-        treeOriginY - treeTrunkHeight * 0.55,
-        (-2.75 * Math.PI) / 4,
-        treeTrunkHeight * 0.55,
+        treeOriginX - 24,
+        treeOriginY - treeTrunkHeight * 0.52,
+        (-2.85 * Math.PI) / 4,
+        treeTrunkHeight * 0.70,
         1,
         isMobile ? 2 : 3,
         0,
-        3.4
+        3.6
       )
 
       const rightCrownLimb = createBranch(
-        treeOriginX + 20,
-        treeOriginY - treeTrunkHeight * 0.55,
-        (-1.25 * Math.PI) / 4,
-        treeTrunkHeight * 0.55,
+        treeOriginX + 24,
+        treeOriginY - treeTrunkHeight * 0.52,
+        (-1.15 * Math.PI) / 4,
+        treeTrunkHeight * 0.70,
         1,
         isMobile ? 2 : 3,
         0,
-        3.4
+        3.6
       )
 
-      // Two delicate secondary lateral branches ("algunas ramas más")
+      // Two delicate secondary lateral branches stretching wide
       const leftMidBranch = createBranch(
-        treeOriginX - 16,
-        treeOriginY - treeTrunkHeight * 0.35,
-        (-2.95 * Math.PI) / 4,
-        treeTrunkHeight * 0.40,
+        treeOriginX - 18,
+        treeOriginY - treeTrunkHeight * 0.32,
+        (-3.05 * Math.PI) / 4,
+        treeTrunkHeight * 0.50,
         1,
         2,
         0,
-        2.5
+        2.6
       )
 
       const rightMidBranch = createBranch(
-        treeOriginX + 16,
-        treeOriginY - treeTrunkHeight * 0.35,
-        (-1.05 * Math.PI) / 4,
-        treeTrunkHeight * 0.40,
+        treeOriginX + 18,
+        treeOriginY - treeTrunkHeight * 0.32,
+        (-0.95 * Math.PI) / 4,
+        treeTrunkHeight * 0.50,
         1,
         2,
         0,
-        2.5
+        2.6
       )
 
-      // Basal roots grounding the Ceibo
+      // Basal roots grounding the Ceibo (wider grounding)
       const leftRoot = createBranch(
         treeOriginX - 10,
         treeOriginY + 5,
         (4 * Math.PI) / 5,
-        width * (isMobile ? 0.28 : 0.24),
+        width * (isMobile ? 0.32 : 0.28),
         1,
         3,
         0,
@@ -375,7 +375,7 @@ export function CeiboRootsBackground() {
         treeOriginX + 10,
         treeOriginY + 5,
         Math.PI / 5,
-        width * (isMobile ? 0.28 : 0.24),
+        width * (isMobile ? 0.32 : 0.28),
         1,
         3,
         0,
