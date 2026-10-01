@@ -29,11 +29,11 @@ const PROJECTS: MinimalProject[] = [
     id: 'pampa-finance',
     title: 'Pampa Finance',
     category: 'Fintech & Pagos',
-    summary: 'Plataforma corporativa de cobros y tesorería multi-moneda.',
+    summary: 'Plataforma corporativa de cobros y tesorería multi-moneda de alta concurrencia.',
     metric: '+$4.2M USD/mes',
     accentColor: '#f43f5e',
     glowColor: 'rgba(244, 63, 94, 0.25)',
-    tags: ['Next.js', 'Go', 'Stripe API'],
+    tags: ['Next.js 16', 'Go', 'Stripe API'],
     details: {
       description: 'Motor transaccional con conciliación bancaria automatizada en tiempo real y arquitectura de microservicios de alta concurrencia.',
       specs: [
@@ -48,7 +48,7 @@ const PROJECTS: MinimalProject[] = [
     id: 'marea-health',
     title: 'Marea Health',
     category: 'Salud Digital',
-    summary: 'App móvil médica con agendamiento y videoconsultas cifradas.',
+    summary: 'App móvil médica con agendamiento sincrónico y videoconsultas cifradas.',
     metric: '15,000+ pacientes',
     accentColor: '#06b6d4',
     glowColor: 'rgba(6, 182, 212, 0.25)',
@@ -67,7 +67,7 @@ const PROJECTS: MinimalProject[] = [
     id: 'nexo-ops',
     title: 'Nexo Ops',
     category: 'Cloud & SaaS',
-    summary: 'Centro de control y telemetría de microservicios en vivo.',
+    summary: 'Centro de control y telemetría de microservicios e infraestructura en vivo.',
     metric: '99.99% Uptime',
     accentColor: '#f59e0b',
     glowColor: 'rgba(245, 158, 11, 0.25)',
@@ -84,51 +84,9 @@ const PROJECTS: MinimalProject[] = [
   },
 ]
 
-function ProjectSpotlightCard({
-  children,
-  onClick,
-  accentColor,
-  className = '',
-}: {
-  children: React.ReactNode
-  onClick?: () => void
-  accentColor: string
-  className?: string
-}) {
-  const cardRef = React.useRef<HTMLDivElement>(null)
-  const [coords, setCoords] = React.useState({ x: 0, y: 0 })
-  const [isHovered, setIsHovered] = React.useState(false)
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top })
-  }
-
-  return (
-    <div
-      ref={cardRef}
-      onClick={onClick}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={`group relative cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-[#0d0d14]/90 shadow-2xl transition-all duration-300 hover:border-white/25 ${className}`}
-    >
-      {/* Dynamic cursor-following spotlight glow */}
-      <div
-        className="pointer-events-none absolute -inset-px rounded-3xl transition-opacity duration-300"
-        style={{
-          opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(550px circle at ${coords.x}px ${coords.y}px, ${accentColor}28, transparent 70%)`,
-        }}
-      />
-      {children}
-    </div>
-  )
-}
-
 export function Projects() {
   const [activeProject, setActiveProject] = useState<MinimalProject | null>(null)
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -154,278 +112,239 @@ export function Projects() {
     }
   }, [activeProject])
 
-  const pampa = PROJECTS[0]
-  const marea = PROJECTS[1]
-  const nexo = PROJECTS[2]
-
   return (
-    <section id="proyectos" className="relative z-20 mx-auto w-full max-w-7xl overflow-hidden px-5 py-24 md:px-8 md:py-32">
-      {/* Minimal Header */}
-      <Reveal className="mx-auto max-w-xl text-center">
-        <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl">
-          Proyectos
+    <section id="proyectos" className="relative z-20 mx-auto w-full max-w-7xl overflow-hidden px-5 py-20 md:px-8 md:py-28">
+      {/* Header */}
+      <Reveal className="mx-auto max-w-2xl text-center">
+        <span className="font-mono text-xs uppercase tracking-[0.2em] text-rose-400">
+          Casos Destacados · Frutos de Ceibo
+        </span>
+        <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl">
+          Proyectos que dan frutos
         </h2>
-        <p className="mt-2 text-sm text-zinc-400">
-          Casos destacados desarrollados para clientes reales.
+        <p className="mt-3 text-xs leading-relaxed text-zinc-400 sm:text-sm">
+          Soluciones de software y arquitectura digital nacidas de nuestra raíz. Pasa el cursor o toca cada flor para explorar la ficha técnica completa.
         </p>
       </Reveal>
 
-      {/* Bento Minimalist Showcase */}
-      <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-12">
-        {/* HERO PROJECT: Pampa Finance (12 cols) */}
-        <Reveal delay={0.08} className="md:col-span-12">
-          <ProjectSpotlightCard
-            onClick={() => {
-              sounds.playClick()
-              setActiveProject(pampa)
-            }}
-            accentColor="#f43f5e"
-            className="p-7 sm:p-10 hover:border-rose-500/40"
-          >
-            {/* Ambient subtle glow */}
-            <div
-              className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full blur-3xl opacity-20 transition-opacity duration-500 group-hover:opacity-35"
-              style={{ background: 'radial-gradient(circle, #f43f5e 0%, transparent 70%)' }}
-            />
+      {/* DESKTOP: Canopy Branch Rail (Rama orgánica interactiva de la que cuelgan los proyectos) */}
+      <div className="relative mt-12 hidden md:block w-full">
+        <svg
+          viewBox="0 0 1200 90"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-20 overflow-visible"
+        >
+          <defs>
+            <linearGradient id="branchWood" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#181518" />
+              <stop offset="50%" stopColor="#2b242c" />
+              <stop offset="100%" stopColor="#181518" />
+            </linearGradient>
+            <linearGradient id="sapGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgba(244,63,94,0.15)" />
+              <stop offset="50%" stopColor="rgba(244,63,94,0.85)" />
+              <stop offset="100%" stopColor="rgba(244,63,94,0.15)" />
+            </linearGradient>
+            <filter id="blossomGlow" x="-25%" y="-25%" width="150%" height="150%">
+              <feGaussianBlur stdDeviation="3.5" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
 
-            <div className="relative z-10 grid gap-8 lg:grid-cols-12 lg:items-center">
-              {/* Text column - Minimal & concise */}
-              <div className="space-y-4 lg:col-span-5">
-                <div className="flex items-center gap-3">
-                  <span className="rounded-full border border-rose-500/30 bg-rose-950/40 px-3 py-1 text-xs font-semibold text-rose-300">
-                    {pampa.category}
-                  </span>
-                  <span className="font-mono text-xs text-zinc-400">{pampa.metric}</span>
+          {/* Rama horizontal arqueada */}
+          <path
+            d="M 20 40 Q 300 20 600 38 T 1180 32"
+            stroke="url(#branchWood)"
+            strokeWidth="7"
+            strokeLinecap="round"
+          />
+          {/* Veta luminosa de savia */}
+          <path
+            d="M 20 40 Q 300 20 600 38 T 1180 32"
+            stroke="url(#sapGlow)"
+            strokeWidth="2.5"
+            strokeDasharray="8 14"
+            className="animate-pulse"
+          />
+
+          {/* Brotes botánicos de hojas en los extremos */}
+          <g transform="translate(45, 30) rotate(-25)">
+            <path d="M 0 0 C 8 -12 20 -10 24 0 C 18 10 6 12 0 0 Z" fill="#15803d" opacity="0.65" />
+          </g>
+          <g transform="translate(1140, 26) rotate(35)">
+            <path d="M 0 0 C 8 -12 20 -10 24 0 C 18 10 6 12 0 0 Z" fill="#15803d" opacity="0.65" />
+          </g>
+
+          {/* 3 Nodos y tallos descendentes hacia cada tarjeta (200, 600, 1000) */}
+          {[
+            { x: 200, y: 32, idx: 0 },
+            { x: 600, y: 38, idx: 1 },
+            { x: 1000, y: 33, idx: 2 },
+          ].map(({ x, y, idx }) => {
+            const isHovered = hoveredIdx === idx
+            return (
+              <g key={idx}>
+                {/* Nudo de corteza */}
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="5"
+                  fill="#0d0d14"
+                  stroke={isHovered ? '#f43f5e' : 'rgba(255,255,255,0.25)'}
+                  strokeWidth="2"
+                  filter={isHovered ? 'url(#blossomGlow)' : undefined}
+                  className="transition-colors duration-300"
+                />
+                {/* Hojita viva en el nudo */}
+                <path
+                  d={`M ${x + 4} ${y - 2} C ${x + 12} ${y - 10} ${x + 18} ${y - 6} ${x + 14} ${y + 2} Z`}
+                  fill="#e11d48"
+                  opacity={isHovered ? 0.95 : 0.4}
+                  className="transition-opacity duration-300"
+                />
+
+                {/* Tallo flexible que sostiene la tarjeta */}
+                <path
+                  d={`M ${x} ${y} Q ${x + (idx === 0 ? -6 : idx === 2 ? 6 : 0)} 62 ${x} 90`}
+                  stroke={isHovered ? '#f43f5e' : 'rgba(244,63,94,0.35)'}
+                  strokeWidth={isHovered ? '2.5' : '1.5'}
+                  fill="none"
+                  filter={isHovered ? 'url(#blossomGlow)' : undefined}
+                  className="transition-all duration-300"
+                />
+
+                {/* Pulso de savia viva deslizándose por el tallo */}
+                <circle
+                  cx={x}
+                  cy={y + 35}
+                  r={isHovered ? '3.5' : '2'}
+                  fill="#f43f5e"
+                  filter="url(#blossomGlow)"
+                  className="animate-pulse"
+                />
+              </g>
+            )
+          })}
+        </svg>
+      </div>
+
+      {/* 3 HANGING BLOSSOM CARDS (Grilla compacta de 3 columnas en PC, adaptable en celular) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 mt-6 md:-mt-2">
+        {PROJECTS.map((project, idx) => {
+          const isHovered = hoveredIdx === idx
+          return (
+            <Reveal key={project.id} delay={idx * 0.1}>
+              <div
+                className="relative flex flex-col items-center"
+                onMouseEnter={() => setHoveredIdx(idx)}
+                onMouseLeave={() => setHoveredIdx(null)}
+              >
+                {/* Tallo móvil visible solo en celular */}
+                <div className="flex md:hidden flex-col items-center mb-1">
+                  <div className="h-6 w-0.5 bg-gradient-to-b from-rose-500/20 via-rose-500/60 to-rose-500" />
+                  <div className="size-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)]" />
                 </div>
 
-                <h3 className="text-2xl font-black text-white sm:text-3xl md:text-4xl">
-                  {pampa.title}
-                </h3>
-
-                <p className="text-sm text-zinc-400 sm:text-base">
-                  {pampa.summary}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-2 pt-1">
-                  {pampa.tags.map((t) => (
-                    <span
-                      key={t}
-                      className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-zinc-400"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="pt-2">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 transition-transform duration-200 group-hover:translate-x-1">
-                    <span>Ver proyecto</span>
-                    <ArrowUpRight size={14} />
-                  </span>
-                </div>
-              </div>
-
-              {/* Visual column - Sleek dark glass interface */}
-              <div className="lg:col-span-7">
-                <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#13131d] to-[#0a0a0f] p-6 shadow-inner">
-                  <div className="flex items-center justify-between border-b border-white/10 pb-3 text-xs text-zinc-400">
-                    <span className="font-mono text-[11px] text-zinc-300">Pampa Gateway</span>
-                    <span className="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400">
-                      <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      Online
-                    </span>
+                {/* Cáliz de Ceibo (conector floral superior) */}
+                <div className="relative -mb-3 z-30 flex items-center justify-center">
+                  <div
+                    className={`flex items-center gap-1.5 rounded-full border px-3 py-0.5 text-[10px] font-mono font-bold tracking-wider backdrop-blur-md transition-all duration-300 ${
+                      isHovered
+                        ? 'border-rose-500 bg-rose-950/90 text-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.6)] scale-105'
+                        : 'border-white/15 bg-[#14141c]/90 text-zinc-400'
+                    }`}
+                  >
+                    <span className={`size-1.5 rounded-full ${isHovered ? 'bg-rose-400 animate-ping' : 'bg-rose-500'}`} />
+                    <span>BROTE 0{idx + 1}</span>
                   </div>
+                </div>
 
-                  <div className="mt-6 grid gap-6 sm:grid-cols-2 sm:items-center">
-                    {/* Glass card */}
-                    <div className="relative aspect-[1.58/1] overflow-hidden rounded-xl border border-white/20 bg-gradient-to-br from-zinc-900 via-black to-zinc-950 p-4 shadow-xl">
-                      <div className="pointer-events-none absolute -right-6 -bottom-6 size-24 rounded-full bg-rose-500/20 blur-xl" />
-                      <div className="flex h-full flex-col justify-between">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-black tracking-widest text-white">PAMPA</span>
-                          <span className="font-mono text-[9px] text-zinc-400">CORP</span>
-                        </div>
-                        <div className="h-5 w-7 rounded bg-amber-400/80 border border-amber-300/40" />
-                        <div className="font-mono text-[11px] text-zinc-400">•••• 8492</div>
-                      </div>
+                {/* Tarjeta suspendida con micro-física pendular en hover */}
+                <motion.div
+                  whileHover={{
+                    rotate: [0, -1.6, 1.4, -0.6, 0],
+                    y: 4,
+                    transition: { duration: 0.7, ease: 'easeInOut' },
+                  }}
+                  onClick={() => {
+                    sounds.playClick()
+                    setActiveProject(project)
+                  }}
+                  className={`group relative w-full cursor-pointer flex flex-col justify-between overflow-hidden rounded-3xl border bg-gradient-to-b from-[#101018] via-[#0c0c13] to-[#09090e] p-6 pt-7 shadow-2xl backdrop-blur-xl transition-all duration-300 ${
+                    isHovered
+                      ? 'border-rose-500/60 shadow-[0_16px_40px_-10px_rgba(244,63,94,0.35)] -translate-y-1'
+                      : 'border-white/10 hover:border-white/25'
+                  }`}
+                  style={{ transformOrigin: 'top center' }}
+                >
+                  {/* Resplandor ambiental de néctar interior */}
+                  <div
+                    className={`pointer-events-none absolute -right-16 -top-16 size-44 rounded-full blur-2xl transition-opacity duration-500 ${
+                      isHovered ? 'opacity-30' : 'opacity-10'
+                    }`}
+                    style={{ background: project.accentColor }}
+                  />
+
+                  {/* Top content */}
+                  <div>
+                    {/* Header de tarjeta: Categoría y estado */}
+                    <div className="flex items-center justify-between">
+                      <span className="rounded-full border border-rose-500/25 bg-rose-950/40 px-2.5 py-0.5 text-[11px] font-semibold text-rose-300">
+                        {project.category}
+                      </span>
+                      <span className="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400">
+                        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        Producción
+                      </span>
                     </div>
 
-                    {/* Chart preview */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-xs text-zinc-400">
-                        <span>Volumen mensual</span>
-                        <span className="flex items-center gap-1 font-bold text-emerald-400">
-                          <TrendingUp size={12} /> +28%
+                    {/* Título de proyecto */}
+                    <h3 className="mt-4 text-2xl font-black tracking-tight text-white transition-colors duration-200 group-hover:text-rose-100">
+                      {project.title}
+                    </h3>
+
+                    {/* Métrica clave destacada */}
+                    <div className="mt-3.5 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-1.5">
+                      <TrendingUp size={13} className="text-rose-400" />
+                      <span className="font-mono text-xs font-bold text-white">
+                        {project.metric}
+                      </span>
+                    </div>
+
+                    {/* Resumen conciso */}
+                    <p className="mt-3.5 text-xs sm:text-sm leading-relaxed text-zinc-300 line-clamp-3">
+                      {project.summary}
+                    </p>
+
+                    {/* Stack tags */}
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {project.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-zinc-400 transition-colors group-hover:text-zinc-200"
+                        >
+                          {tag}
                         </span>
-                      </div>
-                      <svg viewBox="0 0 100 32" className="h-10 w-full text-rose-500" preserveAspectRatio="none">
-                        <defs>
-                          <linearGradient id="pGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#f43f5e" stopOpacity="0.35" />
-                            <stop offset="100%" stopColor="#f43f5e" stopOpacity="0" />
-                          </linearGradient>
-                        </defs>
-                        <path
-                          d="M 0,26 Q 20,20 40,22 T 70,12 T 100,6"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="M 0,26 Q 20,20 40,22 T 70,12 T 100,6 L 100,32 L 0,32 Z"
-                          fill="url(#pGrad)"
-                        />
-                      </svg>
+                      ))}
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </ProjectSpotlightCard>
-        </Reveal>
 
-        {/* COMPANION 1: Marea Health (6 cols) */}
-        <Reveal delay={0.14} className="md:col-span-6">
-          <ProjectSpotlightCard
-            onClick={() => {
-              sounds.playClick()
-              setActiveProject(marea)
-            }}
-            accentColor="#06b6d4"
-            className="flex h-full flex-col justify-between p-7 sm:p-8 hover:border-cyan-500/40"
-          >
-            <div
-              className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full blur-3xl opacity-15 transition-opacity duration-500 group-hover:opacity-30"
-              style={{ background: 'radial-gradient(circle, #06b6d4 0%, transparent 70%)' }}
-            />
-
-            <div className="relative z-10 flex h-full flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full border border-cyan-500/30 bg-cyan-950/40 px-3 py-1 text-xs font-semibold text-cyan-300">
-                    {marea.category}
-                  </span>
-                  <span className="font-mono text-xs text-zinc-400">{marea.metric}</span>
-                </div>
-
-                <h3 className="mt-4 text-2xl font-black text-white sm:text-3xl">
-                  {marea.title}
-                </h3>
-                <p className="mt-1 text-sm text-zinc-400">
-                  {marea.summary}
-                </p>
-              </div>
-
-              {/* Visual Minimal Mockup */}
-              <div className="my-6 rounded-2xl border border-white/10 bg-gradient-to-b from-[#101720] to-[#0a0e14] p-5 shadow-inner">
-                <div className="rounded-xl border border-cyan-500/20 bg-cyan-950/30 p-3.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-white">Consulta Médica</span>
-                    <span className="text-[10px] text-amber-300 font-bold">★ 4.9</span>
-                  </div>
-                  <div className="mt-3 flex items-center justify-between rounded-lg bg-black/40 px-3 py-2 text-xs text-zinc-300">
-                    <span className="flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                      Videollamada lista
+                  {/* Bottom Action Footer */}
+                  <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-3">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 transition-all duration-200 group-hover:translate-x-1 group-hover:text-rose-300">
+                      <span>Ver ficha técnica</span>
+                      <ArrowUpRight size={13} />
                     </span>
-                    <div className="flex items-end gap-1 h-3">
-                      <span className="w-1 h-2 rounded bg-cyan-400 animate-pulse" />
-                      <span className="w-1 h-3 rounded bg-cyan-400" />
-                      <span className="w-1 h-1 rounded bg-cyan-400" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-1">
-                <div className="flex gap-2">
-                  {marea.tags.map((t) => (
-                    <span key={t} className="rounded-md border border-white/5 bg-white/[0.03] px-2 py-0.5 text-[11px] text-zinc-400">
-                      {t}
+                    <span className="font-mono text-[10px] text-zinc-500">
+                      Ceibo #{idx + 1}
                     </span>
-                  ))}
-                </div>
-                <span className="inline-flex items-center gap-1 text-xs font-bold text-cyan-400 transition-transform duration-200 group-hover:translate-x-1">
-                  <span>Ver proyecto</span>
-                  <ArrowUpRight size={13} />
-                </span>
-              </div>
-            </div>
-          </ProjectSpotlightCard>
-        </Reveal>
-
-        {/* COMPANION 2: Nexo Ops (6 cols) */}
-        <Reveal delay={0.18} className="md:col-span-6">
-          <ProjectSpotlightCard
-            onClick={() => {
-              sounds.playClick()
-              setActiveProject(nexo)
-            }}
-            accentColor="#f59e0b"
-            className="flex h-full flex-col justify-between p-7 sm:p-8 hover:border-amber-500/40"
-          >
-            <div
-              className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full blur-3xl opacity-15 transition-opacity duration-500 group-hover:opacity-30"
-              style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
-            />
-
-            <div className="relative z-10 flex h-full flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full border border-amber-500/30 bg-amber-950/40 px-3 py-1 text-xs font-semibold text-amber-300">
-                    {nexo.category}
-                  </span>
-                  <span className="font-mono text-xs text-zinc-400">{nexo.metric}</span>
-                </div>
-
-                <h3 className="mt-4 text-2xl font-black text-white sm:text-3xl">
-                  {nexo.title}
-                </h3>
-                <p className="mt-1 text-sm text-zinc-400">
-                  {nexo.summary}
-                </p>
-              </div>
-
-              {/* Visual Minimal Mockup */}
-              <div className="my-6 rounded-2xl border border-white/10 bg-gradient-to-b from-[#18150f] to-[#0c0a06] p-5 shadow-inner">
-                <div className="space-y-2 font-mono text-xs">
-                  <div className="flex items-center justify-between text-zinc-400">
-                    <span className="flex items-center gap-1.5">
-                      <span className="size-1.5 rounded-full bg-emerald-400" />
-                      us-east-1
-                    </span>
-                    <span className="text-emerald-400">18ms</span>
                   </div>
-                  <div className="flex items-center justify-between text-zinc-400">
-                    <span className="flex items-center gap-1.5">
-                      <span className="size-1.5 rounded-full bg-emerald-400" />
-                      sa-east-1
-                    </span>
-                    <span className="text-emerald-400">24ms</span>
-                  </div>
-                  <div className="mt-2 h-1.5 w-full rounded-full bg-white/10">
-                    <div className="h-full w-[93%] rounded-full bg-amber-500" />
-                  </div>
-                </div>
+                </motion.div>
               </div>
-
-              <div className="flex items-center justify-between pt-1">
-                <div className="flex gap-2">
-                  {nexo.tags.map((t) => (
-                    <span key={t} className="rounded-md border border-white/5 bg-white/[0.03] px-2 py-0.5 text-[11px] text-zinc-400">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-                <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-400 transition-transform duration-200 group-hover:translate-x-1">
-                  <span>Ver proyecto</span>
-                  <ArrowUpRight size={13} />
-                </span>
-              </div>
-            </div>
-          </ProjectSpotlightCard>
-        </Reveal>
+            </Reveal>
+          )
+        })}
       </div>
 
       {/* MINIMAL PROJECT MODAL */}
