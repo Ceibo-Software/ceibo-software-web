@@ -208,7 +208,7 @@ export function CeiboChatbot({
   return (
     <>
       {/* Floating Trigger Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 left-6 z-50">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -220,15 +220,15 @@ export function CeiboChatbot({
 
           {/* Unread badge */}
           {!isOpen && unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-white text-[11px] font-bold text-rose-600 shadow-md">
+            <span className="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-white text-xs font-bold text-rose-600 shadow-md">
               {unreadCount}
             </span>
           )}
 
           {/* Help tooltip on hover */}
           {!isOpen && (
-            <span className="pointer-events-none absolute right-16 hidden whitespace-nowrap rounded-xl border border-white/10 bg-[#121218] px-3.5 py-1.5 text-xs font-medium text-zinc-200 shadow-xl backdrop-blur-md md:group-hover:block">
-              ¿Dudas? Chatea con nosotros 💬
+            <span className="pointer-events-none absolute left-16 hidden whitespace-nowrap rounded-xl border border-white/10 bg-[#121218] px-3.5 py-1.5 text-xs font-medium text-zinc-200 shadow-xl backdrop-blur-md md:group-hover:block">
+              ¿Dudas? Chateá con nosotros 💬
             </span>
           )}
         </motion.button>
@@ -242,7 +242,7 @@ export function CeiboChatbot({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 25, scale: 0.96 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="fixed inset-x-4 bottom-24 z-50 mx-auto max-h-[580px] w-auto overflow-hidden rounded-3xl border border-white/15 bg-[#0f0f15]/95 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.95)] backdrop-blur-2xl sm:right-6 sm:left-auto sm:w-[380px]"
+            className="fixed inset-x-4 bottom-24 z-50 mx-auto max-h-[580px] w-auto overflow-hidden rounded-3xl border border-white/15 bg-[#0f0f15]/95 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.95)] backdrop-blur-2xl sm:left-6 sm:right-auto sm:w-[380px]"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-white/10 bg-gradient-to-r from-rose-950/60 to-black/60 px-5 py-4">
@@ -253,7 +253,7 @@ export function CeiboChatbot({
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-white">Ceibo Assistant</h3>
-                  <p className="text-[11px] text-emerald-400">En línea · Responde al instante</p>
+                  <p className="text-xs text-emerald-400">En línea · Responde al instante</p>
                 </div>
               </div>
 
@@ -309,7 +309,7 @@ export function CeiboChatbot({
                           <button
                             key={idx}
                             onClick={() => handleActionChipClick(chip)}
-                            className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/30 hover:text-white active:scale-95"
+                            className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs font-medium text-zinc-300 transition hover:border-rose-500/50 hover:bg-rose-950/30 hover:text-white active:scale-95"
                           >
                             <span>{chip.label}</span>
                             <ArrowUpRight size={11} className="opacity-60" />
@@ -348,7 +348,7 @@ export function CeiboChatbot({
             >
               <input
                 type="text"
-                placeholder="Escribe tu consulta o idea..."
+                placeholder="Escribí tu consulta o idea..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 className="w-full bg-transparent px-2 text-xs text-white placeholder:text-zinc-500 outline-none focus:ring-0 sm:text-sm"

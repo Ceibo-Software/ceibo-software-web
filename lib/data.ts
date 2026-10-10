@@ -46,7 +46,7 @@ export const CEIBO_BRAND = {
   tagline: 'Desarrollo de software y productos digitales',
   logoUrl: '/ceibo-logo.png',
   location: 'Buenos Aires, Argentina (UTC-3)',
-  email: 'hola@ceibo.software',
+  email: 'hola@ceibosoftware.com.ar',
   phone: '+54 9 11 5555 5555',
   status: 'Disponible para proyectos Q2/Q3',
 }
