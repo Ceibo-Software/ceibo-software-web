@@ -1,0 +1,75 @@
+# Ceibo Software
+
+> Ceibo Software es una empresa argentina de desarrollo de software y productos digitales, con sede en Buenos Aires. Diseña y construye plataformas web, aplicaciones móviles para iOS y Android, productos con diseño UI/UX y automatizaciones con inteligencia artificial, a medida para startups y empresas de Argentina y de todo el mundo. Acompaña cada proyecto de la idea al lanzamiento, con trato directo con el equipo que lo desarrolla y sin intermediarios.
+
+Ceibo Software (ceibosoftware.com.ar) is a software development and digital product company based in Buenos Aires, Argentina. It designs and builds custom web platforms, iOS and Android apps, UI/UX product design and AI-powered automation for startups and companies worldwide, working in Spanish and English in the UTC-3 time zone.
+
+Datos clave:
+- Nombre: Ceibo Software
+- Rubro: desarrollo de software a medida y productos digitales
+- Sede: Buenos Aires, Argentina (UTC-3), con clientes en todo el mundo
+- Clientes: startups, pymes y empresas que necesitan un producto digital propio
+- Modalidad: trabajo remoto, comunicación directa con el equipo técnico
+- Alcance: desde la idea, el diseño y el desarrollo hasta el lanzamiento y la infraestructura en la nube
+- Contacto: hola@ceibo.software, respuesta con un plan de trabajo en menos de 24 horas
+
+## Servicios
+
+- [Software a medida y plataformas web](https://ceibosoftware.com.ar/#servicios): sistemas web y paneles de control hechos a la medida del negocio para automatizar tareas repetitivas y escalar ventas. Incluye paneles de administración, bases de datos rápidas y seguras, integración con las herramientas que el cliente ya usa y alta velocidad de carga.
+- [Apps móviles para iOS y Android](https://ceibosoftware.com.ar/#servicios): aplicaciones nativas e híbridas listas para publicar en App Store y Google Play. Incluye diseño táctil moderno, notificaciones automáticas, funcionamiento sin conexión y publicación en las tiendas.
+- [Diseño de producto UI/UX](https://ceibosoftware.com.ar/#servicios): interfaces pensadas para aumentar la conversión y la retención. Incluye investigación de usuarios y mercado, prototipos navegables en Figma, diseño visual de alta fidelidad y sistemas de diseño escalables.
+- [Automatización y asistentes de IA](https://ceibosoftware.com.ar/#servicios): chatbots de atención y ventas 24/7, automatización de emails y facturación, conexión con WhatsApp y CRMs, y alojamiento seguro en la nube.
+
+## Capacidades técnicas
+
+- Frontend: React, Next.js, TypeScript, Tailwind CSS
+- Backend: Node.js, Go, APIs REST y gRPC, PostgreSQL, Redis, Kafka
+- Mobile: aplicaciones para iOS y Android
+- Cloud y DevOps: AWS, Docker, Kubernetes, Terraform, CI/CD, Prometheus, Cloudflare
+- Diseño: Figma, design systems, investigación de usuarios, prototipado
+- Inteligencia artificial: chatbots, asistentes conversacionales e integraciones automatizadas
+
+## Proyectos
+
+- [Pampa Finance](https://ceibosoftware.com.ar/#proyectos): plataforma de pagos digitales y tesorería para empresas, para cobrar, pagar a proveedores y conciliar movimientos en tiempo real sin planillas manuales.
+- [Marea Health](https://ceibosoftware.com.ar/#proyectos): app médica para pacientes y profesionales, con turnos, recordatorios por WhatsApp, historias clínicas digitales y videoconsultas.
+- [Nexo Ops](https://ceibosoftware.com.ar/#proyectos): panel de gestión operativa que centraliza proyectos, métricas comerciales y tareas de equipos en un solo lugar.
+
+## Equipo
+
+- [Staff completo](https://ceibosoftware.com.ar/#equipo): equipo multidisciplinario de ingeniería, producto y diseño.
+- Matías Caubet, Tech Lead: arquitectura de software, Go y sistemas de alta concurrencia.
+- Juana Zabaleta, Product & Design Lead: UI/UX, design systems y Figma.
+- Tomás Messineo, DevOps Engineer: CI/CD, Docker, cloud e infraestructura.
+- Sebastian Varas, Cloud & DevOps Engineer: Kubernetes, AWS, CI/CD y Terraform.
+- Máximo Simonetti, Software Engineer: TypeScript, React, estado y rendimiento.
+- Gonzalo Gil, Full Stack Developer: React, Node.js, APIs y cloud.
+
+## Cómo trabajamos
+
+- Primer contacto: el cliente cuenta su idea, objetivos y plazos por el formulario o por email, y recibe un plan claro en menos de 24 horas.
+- Trato directo: el cliente habla con las personas que diseñan y desarrollan su producto, sin intermediarios comerciales.
+- Proceso completo: investigación, diseño, desarrollo, lanzamiento e infraestructura en la nube dentro del mismo equipo.
+- Presupuestos: se trabaja con proyectos desde menos de USD 1.000 hasta más de USD 6.000, según alcance.
+
+## Preguntas frecuentes
+
+- ¿Qué hace Ceibo Software? Desarrolla software a medida: plataformas web, apps móviles para iOS y Android, diseño UI/UX y automatizaciones con inteligencia artificial.
+- ¿Dónde está Ceibo Software? En Buenos Aires, Argentina, y trabaja de forma remota con clientes de cualquier país.
+- ¿Con qué tipo de clientes trabaja? Con startups que necesitan lanzar su primer producto y con empresas que quieren digitalizar o automatizar procesos.
+- ¿Desarrollan apps para iOS y Android? Sí, aplicaciones nativas e híbridas, incluida la publicación en App Store y Google Play.
+- ¿Hacen chatbots o soluciones con IA? Sí, chatbots de atención y ventas 24/7 conectados con WhatsApp, CRMs y otras herramientas.
+- ¿Cuánto cuesta un proyecto? Depende del alcance; hay opciones desde menos de USD 1.000 hasta proyectos de más de USD 6.000.
+- ¿Cuánto tardan en responder? Menos de 24 horas, con un plan de trabajo concreto.
+- ¿Cómo los contacto? Por el formulario en https://ceibosoftware.com.ar/#contacto o por email a hola@ceibo.software.
+
+## Contacto
+
+- [Formulario de contacto](https://ceibosoftware.com.ar/#contacto): para contar la idea, objetivos, fecha estimada y rango de inversión
+- Email: hola@ceibo.software
+- Ubicación: Buenos Aires, Argentina (UTC-3)
+- Idiomas: español e inglés
+
+## Optional
+
+- [Sitio web](https://ceibosoftware.com.ar/): página principal con servicios, proyectos, equipo y contacto
