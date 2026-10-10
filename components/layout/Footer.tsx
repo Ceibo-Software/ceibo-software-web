@@ -34,7 +34,7 @@ export function Footer() {
             <p className="mt-3 max-w-sm text-xs leading-relaxed text-zinc-400">
               Empresa de desarrollo de software y productos digitales. Diseñado y construido desde Argentina para el mundo.
             </p>
-            <div className="mt-4 flex items-center gap-2 font-mono text-[11px] text-zinc-400">
+            <div className="mt-4 flex items-center gap-2 font-mono text-xs text-zinc-400">
               <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>Buenos Aires, Argentina</span>
             </div>
@@ -95,15 +95,7 @@ export function Footer() {
                   {CEIBO_BRAND.email}
                 </a>
               </li>
-              <li>
-                <a
-                  href={`tel:${CEIBO_BRAND.phone.replace(/\s+/g, '')}`}
-                  className="transition hover:text-rose-400"
-                >
-                  {CEIBO_BRAND.phone}
-                </a>
-              </li>
-              <li className="pt-2 text-emerald-400 text-[11px]">
+              <li className="pt-2 text-emerald-400 text-xs">
                 ● Disponibilidad inmediata
               </li>
             </ul>
@@ -111,7 +103,7 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 text-[11px] text-zinc-400 sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 text-xs text-zinc-400 sm:flex-row">
           <p>© {new Date().getFullYear()} Ceibo Software. Todos los derechos reservados.</p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">

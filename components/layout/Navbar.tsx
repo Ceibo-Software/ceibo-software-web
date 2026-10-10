@@ -49,6 +49,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
     { label: 'Servicios', href: '#servicios' },
     { label: 'Proyectos', href: '#proyectos' },
     { label: 'Equipo', href: '#equipo' },
+    { label: 'Preguntas', href: '#preguntas' },
     { label: 'Contacto', href: '#contacto' },
   ]
 
@@ -72,9 +73,9 @@ export function Navbar({ onOpenChat }: NavbarProps) {
         {/* Brand logo */}
         <a
           href="#top"
-          className="group flex shrink-0 items-center gap-3 text-sm font-semibold tracking-tight text-white"
+          className="group flex shrink-0 items-center gap-2.5 sm:gap-3 text-sm font-semibold tracking-tight text-white"
         >
-          <div className="relative size-11 overflow-hidden rounded-xl border border-white/20 bg-white p-1 shadow-md transition-transform duration-300 group-hover:scale-105 sm:size-12">
+          <div className="relative size-10 overflow-hidden rounded-xl border border-white/20 bg-white p-1 shadow-md transition-transform duration-300 group-hover:scale-105 sm:size-12">
             <img
               src={CEIBO_BRAND.logoUrl}
               alt="Ceibo Software Logo"
@@ -84,15 +85,15 @@ export function Navbar({ onOpenChat }: NavbarProps) {
               className="size-full object-contain"
             />
           </div>
-          <span className="flex items-center text-xl font-bold tracking-tight text-white sm:text-2xl">
+          <span className="flex items-center text-lg font-bold tracking-tight text-white sm:text-2xl">
             Ceibo<span className="text-rose-500">.</span>software
           </span>
         </a>
 
         {/* Desktop Links with generous separation */}
         <nav
-          className={`hidden items-center justify-center text-sm font-medium text-zinc-400 md:flex md:flex-1 transition-all duration-300 ${
-            isScrolled ? 'gap-8 px-8 lg:px-16' : 'gap-8 px-6 lg:px-10'
+          className={`hidden items-center justify-center whitespace-nowrap text-sm font-medium text-zinc-400 lg:flex lg:flex-1 transition-all duration-300 ${
+            isScrolled ? 'gap-5 px-4 xl:gap-8 xl:px-12' : 'gap-5 px-4 xl:gap-8 xl:px-10'
           }`}
         >
           {navLinks.map((link) => (
@@ -107,22 +108,23 @@ export function Navbar({ onOpenChat }: NavbarProps) {
         </nav>
 
         {/* Actions */}
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {/* Chatbot trigger */}
           <button
             onClick={() => {
               if (onOpenChat) onOpenChat()
             }}
+            aria-label="Abrir asistente IA"
             className="flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-950/30 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-900/40 hover:text-white cursor-pointer"
           >
             <MessageSquare size={13} />
-            <span className="hidden sm:inline">Asistente IA</span>
+            <span className="hidden sm:inline lg:hidden xl:inline">Asistente IA</span>
           </button>
 
           {/* Primary CTA */}
           <a
             href="#contacto"
-            className="group hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-rose-600 to-rose-700 px-5 py-2 text-xs font-semibold text-white shadow-md transition-all duration-300 hover:brightness-110 md:inline-flex cursor-pointer"
+            className="group hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-rose-600 to-rose-700 px-5 py-2 text-xs font-semibold text-white shadow-md transition-all duration-300 hover:brightness-110 lg:inline-flex cursor-pointer"
           >
             <span>Hablemos</span>
             <ArrowUpRight
@@ -136,8 +138,9 @@ export function Navbar({ onOpenChat }: NavbarProps) {
             onClick={() => {
               setMenuOpen(!menuOpen)
             }}
-            className="grid size-9 place-items-center rounded-full border border-white/10 text-zinc-300 transition hover:border-white/20 md:hidden cursor-pointer"
-            aria-label="Menú principal"
+            className="grid size-9 place-items-center rounded-full border border-white/10 text-zinc-300 transition hover:border-white/20 lg:hidden cursor-pointer"
+            aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={menuOpen}
           >
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -152,7 +155,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="mx-auto mt-2 max-w-md overflow-hidden rounded-3xl border border-white/15 bg-[#0c0c12]/95 p-6 shadow-2xl backdrop-blur-2xl md:hidden"
+            className="mx-auto mt-2 max-w-md overflow-hidden rounded-3xl border border-white/15 bg-[#0c0c12]/95 p-6 shadow-2xl backdrop-blur-2xl lg:hidden"
           >
             <div className="flex flex-col gap-4 text-base font-medium text-zinc-200">
               {navLinks.map((link) => (

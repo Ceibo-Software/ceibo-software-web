@@ -77,7 +77,7 @@ export function Team() {
           </h2>
         </div>
         <p className="max-w-md text-xs leading-relaxed text-zinc-400 sm:text-sm">
-          Haz clic en cada perfil para conocer sus proyectos individuales y especialidades técnicas.
+          Hacé clic en cada perfil para conocer sus proyectos individuales y especialidades técnicas.
         </p>
       </Reveal>
 
@@ -127,7 +127,7 @@ export function Team() {
                     {member.name}
                   </h3>
                   <p
-                    className="mt-0.5 truncate text-[10px] sm:text-xs font-semibold text-rose-400"
+                    className="mt-0.5 truncate text-xs font-semibold text-rose-400"
                     title={member.role}
                   >
                     {member.role}
@@ -141,7 +141,7 @@ export function Team() {
                       .map((tech) => (
                         <span
                           key={tech}
-                          className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[9px] font-medium text-zinc-300"
+                          className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-xs font-medium text-zinc-300"
                         >
                           {tech.trim()}
                         </span>
@@ -152,8 +152,8 @@ export function Team() {
 
               {/* Bottom Actions */}
               <div className="mt-2 sm:mt-3 flex items-center justify-between border-t border-white/10 pt-2 sm:pt-2.5">
-                <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-semibold text-rose-400 transition-colors group-hover:text-rose-300">
-                  <span>Ficha</span>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-rose-400 transition-colors group-hover:text-rose-300">
+                  <span>Ver más</span>
                   <ArrowUpRight size={11} />
                 </span>
 
@@ -253,7 +253,7 @@ export function Team() {
                       <div className="text-xs sm:text-sm font-semibold text-rose-400">
                         {selectedMember.role}
                       </div>
-                      <div className="mt-1 font-mono text-[11px] text-zinc-400">
+                      <div className="mt-1 font-mono text-xs text-zinc-400">
                         {selectedMember.specialty}
                       </div>
                     </div>
@@ -322,7 +322,7 @@ export function Team() {
                         >
                           <div className="flex items-center justify-between text-xs">
                             <span className="font-bold text-white tracking-tight">{proj.title}</span>
-                            <span className="rounded-md bg-white/10 px-2 py-0.5 font-mono text-[10px] text-zinc-300">
+                            <span className="rounded-md bg-white/10 px-2 py-0.5 font-mono text-xs text-zinc-300">
                               {proj.role}
                             </span>
                           </div>
@@ -333,7 +333,7 @@ export function Team() {
                             {proj.tech.map((t, ti) => (
                               <span
                                 key={ti}
-                                className="rounded-md border border-white/10 bg-black/40 px-2 py-0.5 font-mono text-[10px] text-rose-300"
+                                className="rounded-md border border-white/10 bg-black/40 px-2 py-0.5 font-mono text-xs text-rose-300"
                               >
                                 {t}
                               </span>

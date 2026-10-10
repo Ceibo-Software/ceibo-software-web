@@ -55,9 +55,9 @@ const PROJECTS: MinimalProject[] = [
     details: {
       description: 'Ecosistema móvil diseñado para eliminar esperas y optimizar la gestión de consultas presenciales y remotas.',
       specs: [
-        'Videollamadas peer-to-peer con WebRTC',
-        'Recordatorios sincronizados vía WhatsApp',
-        'Historias clínicas con cifrado médico HIPAA',
+        '+30% en reservas de turnos',
+        'Recordatorios automáticos vía WhatsApp',
+        'Videoconsultas sin salir de casa',
       ],
       stack: ['React Native', 'WebRTC', 'FastAPI', 'AWS', 'WhatsApp API'],
     },
@@ -122,7 +122,7 @@ export function Projects() {
           Proyectos que dan frutos
         </h2>
         <p className="mt-3 text-xs leading-relaxed text-zinc-400 sm:text-sm">
-          Soluciones de software y arquitectura digital nacidas de nuestra raíz. Pasa el cursor o toca cada flor para explorar la ficha técnica completa.
+          Soluciones de software y arquitectura digital nacidas de nuestra raíz. Pasá el cursor o tocá cada flor para ver más detalles.
         </p>
       </Reveal>
 
@@ -285,10 +285,10 @@ export function Projects() {
                   <div>
                     {/* Header de tarjeta: Categoría y estado */}
                     <div className="flex items-center justify-between">
-                      <span className="rounded-full border border-rose-500/25 bg-rose-950/40 px-2.5 py-0.5 text-[11px] font-semibold text-rose-300">
+                      <span className="rounded-full border border-rose-500/25 bg-rose-950/40 px-2.5 py-0.5 text-xs font-semibold text-rose-300">
                         {project.category}
                       </span>
-                      <span className="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400">
+                      <span className="flex items-center gap-1.5 font-mono text-xs text-emerald-400">
                         <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         Producción
                       </span>
@@ -317,7 +317,7 @@ export function Projects() {
                       {project.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-zinc-400 transition-colors group-hover:text-zinc-200"
+                          className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 text-xs font-medium text-zinc-400 transition-colors group-hover:text-zinc-200"
                         >
                           {tag}
                         </span>
@@ -328,10 +328,10 @@ export function Projects() {
                   {/* Bottom Action Footer */}
                   <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-3">
                     <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 transition-all duration-200 group-hover:translate-x-1 group-hover:text-rose-300">
-                      <span>Ver ficha técnica</span>
+                      <span>Ver más</span>
                       <ArrowUpRight size={13} />
                     </span>
-                    <span className="font-mono text-[10px] text-zinc-500">
+                    <span className="font-mono text-xs text-zinc-400">
                       Ceibo #{idx + 1}
                     </span>
                   </div>
