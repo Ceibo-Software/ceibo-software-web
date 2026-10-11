@@ -7,6 +7,7 @@ import { ArrowUpRight, X, Briefcase } from 'lucide-react'
 import { TEAM_MEMBERS, TeamMember } from '@/lib/data'
 import { Reveal } from '@/components/ui/Reveal'
 import { Magnetic } from '@/components/ui/Magnetic'
+import { useI18n } from '@/components/i18n/I18nProvider'
 
 function LinkedInIcon({ className }: { className?: string }) {
   return (
@@ -25,19 +26,33 @@ function GitHubIcon({ className }: { className?: string }) {
 }
 
 export function Team() {
-  const [members, setMembers] = useState<TeamMember[]>(TEAM_MEMBERS)
+  const { t } = useI18n()
+
+  
+  const localizedMembers: TeamMember[] = TEAM_MEMBERS.map((member) => {
+    const text = t.team.members[member.name]
+    if (!text) return member
+    return {
+      ...member,
+      bio: text.bio,
+      projects: member.projects?.map((project, i) => ({ ...project, ...text.projects[i] })),
+    }
+  })
+
+  const [members, setMembers] = useState<TeamMember[]>(localizedMembers)
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
   const [mounted, setMounted] = useState(false)
 
   // Randomize members order on client mount (avoids SSR hydration mismatch)
   useEffect(() => {
     setMounted(true)
-    const shuffled = [...TEAM_MEMBERS]
+    const shuffled = [...localizedMembers]
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
       ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
     }
     setMembers(shuffled)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -70,14 +85,14 @@ export function Team() {
       <Reveal className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-end">
         <div>
           <span className="font-mono text-xs uppercase tracking-[0.2em] text-rose-400">
-            Staff
+            {t.team.eyebrow}
           </span>
           <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
-            Quiénes estamos detrás
+            {t.team.title}
           </h2>
         </div>
         <p className="max-w-md text-xs leading-relaxed text-zinc-400 sm:text-sm">
-          Hacé clic en cada perfil para conocer sus proyectos individuales y especialidades técnicas.
+          {t.team.subtitle}
         </p>
       </Reveal>
 
@@ -153,7 +168,7 @@ export function Team() {
               {/* Bottom Actions */}
               <div className="mt-2 sm:mt-3 flex items-center justify-between border-t border-white/10 pt-2 sm:pt-2.5">
                 <span className="inline-flex items-center gap-1 text-xs font-semibold text-rose-400 transition-colors group-hover:text-rose-300">
-                  <span>Ver más</span>
+                  <span>{t.common.seeMore}</span>
                   <ArrowUpRight size={11} />
                 </span>
 
@@ -167,7 +182,7 @@ export function Team() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="grid size-5 sm:size-6 place-items-center rounded-md border border-white/10 bg-black/40 text-zinc-400 transition hover:border-rose-500/40 hover:text-white"
-                      aria-label={`LinkedIn de ${member.name}`}
+                      aria-label={t.team.linkedinOf(member.name)}
                     >
                       <LinkedInIcon />
                     </a>
@@ -178,7 +193,7 @@ export function Team() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="grid size-5 sm:size-6 place-items-center rounded-md border border-white/10 bg-black/40 text-zinc-400 transition hover:border-rose-500/40 hover:text-white"
-                      aria-label={`GitHub de ${member.name}`}
+                      aria-label={t.team.githubOf(member.name)}
                     >
                       <GitHubIcon />
                     </a>
@@ -220,7 +235,7 @@ export function Team() {
                         setSelectedMember(null)
                       }}
                       className="grid size-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-400 transition hover:border-white/20 hover:bg-white/10 hover:text-white cursor-pointer"
-                      aria-label="Cerrar modal"
+                      aria-label={t.team.closeModal}
                     >
                       <X size={18} />
                     </button>
@@ -274,7 +289,7 @@ export function Team() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/40 bg-rose-950/30 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-900/50 hover:text-white"
                         >
-                          <span>Portafolio</span>
+                          <span>{t.team.portfolio}</span>
                           <ArrowUpRight size={13} />
                         </a>
                       </Magnetic>
@@ -311,7 +326,7 @@ export function Team() {
                   <div className="mt-5">
                     <h4 className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-zinc-400">
                       <Briefcase size={14} className="text-rose-400" />
-                      <span>Proyectos & Especialidad</span>
+                      <span>{t.team.projectsHeading}</span>
                     </h4>
 
                     <div className="mt-3 space-y-3">
@@ -353,7 +368,7 @@ export function Team() {
                         }}
                         className="rounded-xl border border-white/15 px-4 py-2 text-xs font-semibold text-zinc-300 transition hover:bg-white/10 hover:text-white cursor-pointer"
                       >
-                        Cerrar
+                        {t.common.close}
                       </button>
                     </Magnetic>
                   </div>

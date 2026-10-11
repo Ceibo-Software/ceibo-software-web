@@ -5,49 +5,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { Reveal } from '@/components/ui/Reveal'
 import { CEIBO_BRAND } from '@/lib/data'
+import { useI18n } from '@/components/i18n/I18nProvider'
 
-const FAQ_ITEMS = [
-  {
-    question: '¿Qué tipo de proyectos desarrollan?',
-    answer:
-      'Plataformas web y sistemas a medida, aplicaciones móviles para iOS y Android, diseño de producto UI/UX y automatizaciones con inteligencia artificial, como chatbots de atención y ventas conectados a WhatsApp o a tu CRM.',
-  },
-  {
-    question: '¿Pueden ayudarme si solo tengo una idea?',
-    answer:
-      'Sí. Te acompañamos de la idea al lanzamiento: definimos juntos qué necesitás, diseñamos la experiencia, desarrollamos el producto y lo dejamos funcionando en la nube.',
-  },
-  {
-    question: '¿Cuánto cuesta un proyecto?',
-    answer:
-      'Depende del alcance: no es lo mismo una web institucional que una app con pagos y panel de administración. Contanos tu idea y te enviamos un plan claro con presupuesto, sin compromiso.',
-  },
-  {
-    question: '¿Cuánto tarda en estar listo?',
-    answer:
-      'Los plazos se definen en el plan inicial según el alcance de cada proyecto, y los cumplimos: entregamos el 100% de nuestros proyectos a tiempo.',
-  },
-  {
-    question: '¿Con quién voy a hablar durante el proyecto?',
-    answer:
-      'Directamente con el equipo que diseña y desarrolla tu producto, sin intermediarios. Así las decisiones se toman rápido y siempre sabés en qué punto está el trabajo.',
-  },
-  {
-    question: '¿Trabajan con clientes fuera de Argentina?',
-    answer:
-      'Sí. Estamos en Buenos Aires (UTC-3) y trabajamos de forma remota con startups y empresas de cualquier país.',
-  },
-  {
-    question: '¿Qué pasa después del lanzamiento?',
-    answer:
-      'Podemos encargarnos de la infraestructura en la nube para que tu producto funcione de forma estable y seguir sumando mejoras a medida que tu negocio crece.',
-  },
-  {
-    question: '¿Cómo empezamos?',
-    answer:
-      `Escribinos desde el formulario o por email a ${CEIBO_BRAND.email} contándonos tu idea, tus objetivos y la fecha que tenés en mente. Te respondemos con un plan en menos de 24 horas.`,
-  },
-]
+const EMAIL_TOKEN = '{email}'
 
 function EmailLink() {
   return (
@@ -60,22 +20,30 @@ function EmailLink() {
   )
 }
 
+// Reemplaza {email} en el texto por el email de contacto con su link
 function withEmailLink(text: string) {
-  const parts = text.split(CEIBO_BRAND.email)
+  const parts = text.split(EMAIL_TOKEN)
   return parts.flatMap((part, i) => (i === 0 ? [part] : [<EmailLink key={i} />, part]))
 }
 
-const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: FAQ_ITEMS.map((item) => ({
-    '@type': 'Question',
-    name: item.question,
-    acceptedAnswer: { '@type': 'Answer', text: item.answer },
-  })),
-}
-
 export function FAQ() {
+  const { locale, t } = useI18n()
+  const FAQ_ITEMS = t.faq.items
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    inLanguage: locale,
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer.replaceAll(EMAIL_TOKEN, CEIBO_BRAND.email),
+      },
+    })),
+  }
+
   const [openIdx, setOpenIdx] = useState<number | null>(null)
   const baseId = useId()
 
@@ -91,14 +59,13 @@ export function FAQ() {
 
       <Reveal className="mx-auto max-w-2xl text-center">
         <span className="font-mono text-xs uppercase tracking-[0.2em] text-rose-400">
-          Preguntas frecuentes
+          {t.faq.eyebrow}
         </span>
         <h2 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-5xl">
-          Lo que nos suelen preguntar
+          {t.faq.title}
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-          Si tu duda no está acá, escribinos a <EmailLink /> y te respondemos en menos de 24
-          horas.
+          {t.faq.subtitleBefore} <EmailLink /> {t.faq.subtitleAfter}
         </p>
       </Reveal>
 
