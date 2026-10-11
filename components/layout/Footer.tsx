@@ -3,8 +3,11 @@
 import { ArrowUpRight, Terminal, Heart } from 'lucide-react'
 import { CEIBO_BRAND } from '@/lib/data'
 import { Reveal } from '@/components/ui/Reveal'
+import { useI18n } from '@/components/i18n/I18nProvider'
 
 export function Footer() {
+  const { t } = useI18n()
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -19,7 +22,7 @@ export function Footer() {
               <div className="relative size-7 overflow-hidden rounded-lg border border-white/20 bg-rose-950/40 p-0.5">
                 <img
                   src={CEIBO_BRAND.logoUrl}
-                  alt="Ceibo Software Logo"
+                  alt={t.common.logoAlt}
                   width={28}
                   height={28}
                   loading="lazy"
@@ -32,59 +35,34 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-3 max-w-sm text-xs leading-relaxed text-zinc-400">
-              Empresa de desarrollo de software y productos digitales. Diseñado y construido desde Argentina para el mundo.
+              {t.footer.description}
             </p>
             <div className="mt-4 flex items-center gap-2 font-mono text-xs text-zinc-400">
               <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Buenos Aires, Argentina</span>
+              <span>{t.footer.location}</span>
             </div>
           </div>
 
           {/* Navigation Links */}
           <div>
             <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-white">
-              Navegación
+              {t.footer.navHeading}
             </h4>
             <ul className="mt-3 space-y-2 text-xs">
-              <li>
-                <a
-                  href="#servicios"
-                  className="transition hover:text-rose-400"
-                >
-                  Servicios de Ingeniería
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#proyectos"
-                  className="transition hover:text-rose-400"
-                >
-                  Proyectos Destacados
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#contacto"
-                  className="transition hover:text-rose-400"
-                >
-                  Contacto
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#equipo"
-                  className="transition hover:text-rose-400"
-                >
-                  Staff
-                </a>
-              </li>
+              {t.footer.navLinks.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className="transition hover:text-rose-400">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contact and Status */}
           <div>
             <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-white">
-              Contacto Directo
+              {t.footer.contactHeading}
             </h4>
             <ul className="mt-3 space-y-2 font-mono text-xs">
               <li>
@@ -96,7 +74,7 @@ export function Footer() {
                 </a>
               </li>
               <li className="pt-2 text-emerald-400 text-xs">
-                ● Disponibilidad inmediata
+                {t.footer.availability}
               </li>
             </ul>
           </div>
@@ -104,16 +82,16 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 text-xs text-zinc-400 sm:flex-row">
-          <p>© {new Date().getFullYear()} Ceibo Software. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} Ceibo Software. {t.footer.rights}</p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
-              Forjado con precisión en <span className="text-zinc-300">Argentina</span>
+              {t.footer.madeIn} <span className="text-zinc-300">{t.footer.country}</span>
             </span>
             <button
               onClick={scrollToTop}
               className="flex items-center gap-1 font-mono text-zinc-400 transition hover:text-rose-400"
             >
-              <span>Volver arriba</span>
+              <span>{t.footer.backToTop}</span>
               <ArrowUpRight size={13} />
             </button>
           </div>

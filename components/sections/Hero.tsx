@@ -1,29 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, MessageSquare } from 'lucide-react'
 import { Magnetic } from '@/components/ui/Magnetic'
-
-const ROTATING_WORDS = [
-  'productos que lideran.',
-  'apps que enamoran.',
-  'software que escala.',
-  'soluciones sin vueltas.',
-]
-
-const ACTION_WORDS = [
-  'Construimos',
-  'Diseñamos',
-  'Creamos',
-  'Imaginamos',
-]
+import { useI18n } from '@/components/i18n/I18nProvider'
 
 interface HeroProps {
   onOpenChat?: () => void
 }
 
 export function Hero({ onOpenChat }: HeroProps) {
+  const { t } = useI18n()
+  const ACTION_WORDS = t.hero.actionWords
+  const ROTATING_WORDS = t.hero.rotatingWords
   const [actionIndex, setActionIndex] = useState(0)
   const [wordIndex, setWordIndex] = useState(0)
   const [displayText, setDisplayText] = useState('')
@@ -60,14 +50,14 @@ export function Hero({ onOpenChat }: HeroProps) {
     }
 
     return () => clearTimeout(timer)
-  }, [displayText, isDeleting, actionIndex])
+  }, [displayText, isDeleting, actionIndex, ACTION_WORDS])
 
   useEffect(() => {
     const timer = setInterval(() => {
       setWordIndex((prev) => (prev + 1) % ROTATING_WORDS.length)
     }, 3200)
     return () => clearInterval(timer)
-  }, [])
+  }, [ROTATING_WORDS.length])
 
   const handleScroll = (id: string) => {
     const el = document.getElementById(id)
@@ -93,7 +83,7 @@ export function Hero({ onOpenChat }: HeroProps) {
           transition={{ duration: 0.6 }}
           className="text-4xl font-extrabold tracking-[-0.035em] text-white sm:text-5xl md:text-6xl lg:text-7xl select-none"
         >
-          <span className="sr-only">Construimos, diseñamos y creamos software de alto impacto</span>
+          <span className="sr-only">{t.hero.srTitle}</span>
           <span aria-hidden="true" className="inline-flex items-baseline">
             <span>{displayText}</span>
             <motion.span
@@ -130,7 +120,7 @@ export function Hero({ onOpenChat }: HeroProps) {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mx-auto mt-4 sm:mt-5 md:mt-6 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg md:text-xl"
         >
-          Somos una empresa que acompaña a startups y empresas a diseñar y desarrollar aplicaciones web y móviles modernas, rápidas y hechas a medida.
+          {t.hero.subtitle}
         </motion.p>
 
         {/* Action buttons */}
@@ -145,7 +135,7 @@ export function Hero({ onOpenChat }: HeroProps) {
               onClick={() => handleScroll('contacto')}
               className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-r from-rose-600 via-rose-700 to-rose-800 px-7 py-3 text-sm font-semibold text-white shadow-[0_0_35px_rgba(225,29,72,0.4)] transition-all duration-300 hover:shadow-[0_0_50px_rgba(225,29,72,0.7)] hover:brightness-110 active:scale-95 cursor-pointer"
             >
-              <span>Iniciar mi proyecto</span>
+              <span>{t.hero.primaryCta}</span>
               <ArrowUpRight
                 size={16}
                 className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
@@ -161,7 +151,7 @@ export function Hero({ onOpenChat }: HeroProps) {
               className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.04] px-6 py-3 text-sm font-medium text-zinc-200 backdrop-blur-md transition-all duration-300 hover:border-rose-500/40 hover:bg-white/[0.08] hover:text-white active:scale-95 cursor-pointer"
             >
               <MessageSquare size={16} className="text-rose-400 transition-transform duration-300 group-hover:scale-110" />
-              <span>Chatear con el Asistente</span>
+              <span>{t.hero.secondaryCta}</span>
             </button>
           </Magnetic>
         </motion.div>
@@ -173,20 +163,21 @@ export function Hero({ onOpenChat }: HeroProps) {
           transition={{ duration: 0.7, delay: 0.4 }}
           className="mt-8 sm:mt-10 md:mt-12 flex flex-wrap items-center justify-center gap-6 sm:gap-12 md:gap-14 text-center text-xs text-zinc-400 sm:text-sm"
         >
-          <div>
-            <strong className="block text-2xl sm:text-3xl font-bold text-white">+40</strong>
-            <span>Proyectos lanzados</span>
-          </div>
-          <div className="hidden h-8 w-px bg-white/10 sm:block" />
-          <div>
-            <strong className="block text-2xl sm:text-3xl font-bold text-rose-400">100%</strong>
-            <span>Entregas a tiempo</span>
-          </div>
-          <div className="hidden h-8 w-px bg-white/10 sm:block" />
-          <div>
-            <strong className="block text-2xl sm:text-3xl font-bold text-white">Directo</strong>
-            <span>Con el equipo</span>
-          </div>
+          {t.hero.metrics.map((metric, idx) => (
+            <Fragment key={metric.label}>
+              {idx > 0 && <div className="hidden h-8 w-px bg-white/10 sm:block" />}
+              <div>
+                <strong
+                  className={`block text-2xl sm:text-3xl font-bold ${
+                    idx === 1 ? 'text-rose-400' : 'text-white'
+                  }`}
+                >
+                  {metric.value}
+                </strong>
+                <span>{metric.label}</span>
+              </div>
+            </Fragment>
+          ))}
         </motion.div>
       </div>
 

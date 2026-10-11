@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Mail, MapPin, Send, AlertCircle, CheckCircle2, ArrowUpRight, Sparkles, MessageSquare } from 'lucide-react'
 import { CEIBO_BRAND } from '@/lib/data'
 import { Reveal } from '@/components/ui/Reveal'
+import { useI18n } from '@/components/i18n/I18nProvider'
+import type { Dictionary } from '@/lib/i18n'
 
 interface ContactProps {
   initialMessage?: string
@@ -15,28 +17,31 @@ type FormErrors = Partial<Record<FieldName, string>>
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const MIN_MESSAGE_LENGTH = 10
 
-function validate(form: { name: string; email: string; message: string }): FormErrors {
+function validate(
+  form: { name: string; email: string; message: string },
+  messages: Dictionary['contact']['errors']
+): FormErrors {
   const errors: FormErrors = {}
   const name = form.name.trim()
   const email = form.email.trim()
   const message = form.message.trim()
 
   if (!name) {
-    errors.name = 'Escribí tu nombre así sabemos cómo llamarte.'
+    errors.name = messages.nameRequired
   } else if (name.length < 2) {
-    errors.name = 'El nombre parece incompleto.'
+    errors.name = messages.nameShort
   }
 
   if (!email) {
-    errors.email = 'Necesitamos tu email para poder responderte.'
+    errors.email = messages.emailRequired
   } else if (!EMAIL_PATTERN.test(email)) {
-    errors.email = 'Revisá el email, parece que falta algo. Ej: nombre@empresa.com'
+    errors.email = messages.emailInvalid
   }
 
   if (!message) {
-    errors.message = 'Contanos brevemente qué necesitás.'
+    errors.message = messages.messageRequired
   } else if (message.length < MIN_MESSAGE_LENGTH) {
-    errors.message = 'Contanos un poco más así podemos prepararte una propuesta.'
+    errors.message = messages.messageShort
   }
 
   return errors
@@ -62,6 +67,7 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 }
 
 export function Contact({ initialMessage = '' }: ContactProps) {
+  const { t } = useI18n()
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -74,7 +80,7 @@ export function Contact({ initialMessage = '' }: ContactProps) {
   const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({})
   const [submitAttempted, setSubmitAttempted] = useState(false)
 
-  const errors = validate(form)
+  const errors = validate(form, t.contact.errors)
   const visibleError = (field: FieldName) =>
     touched[field] || submitAttempted ? errors[field] : undefined
   const markTouched = (field: FieldName) => setTouched((prev) => ({ ...prev, [field]: true }))
@@ -97,11 +103,11 @@ export function Contact({ initialMessage = '' }: ContactProps) {
 
     setIsSubmitting(true)
 
-    const subject = `Nueva consulta de ${form.name}${form.company ? ` (${form.company})` : ''}`
+    const subject = t.contact.mail.subject(form.name, form.company)
     const body = [
-      `Nombre: ${form.name}`,
-      `Email: ${form.email}`,
-      form.company ? `Empresa: ${form.company}` : null,
+      `${t.contact.mail.name}: ${form.name}`,
+      `${t.contact.mail.email}: ${form.email}`,
+      form.company ? `${t.contact.mail.company}: ${form.company}` : null,
       '',
       form.message,
     ]
@@ -122,13 +128,13 @@ export function Contact({ initialMessage = '' }: ContactProps) {
           <div className="flex flex-col lg:col-span-5">
             <div className="flex h-full flex-col">
               <span className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-rose-400">
-                Canal Directo
+                {t.contact.eyebrow}
               </span>
               <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white md:text-5xl">
-                Hablemos de tu próximo producto digital.
+                {t.contact.title}
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-                Contanos sobre tu idea, objetivos o fecha estimada. Te respondemos con un plan claro y sin vueltas en menos de 24 horas.
+                {t.contact.subtitle}
               </p>
 
               <div className="mt-8 space-y-4 text-xs text-zinc-300 lg:mt-auto lg:pt-8">
@@ -140,7 +146,7 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                     <Mail size={16} />
                   </div>
                   <div>
-                    <span className="text-xs uppercase tracking-wider text-zinc-400">Email</span>
+                    <span className="text-xs uppercase tracking-wider text-zinc-400">{t.contact.emailLabel}</span>
                     <div className="font-mono font-semibold">{CEIBO_BRAND.email}</div>
                   </div>
                 </a>
@@ -151,7 +157,7 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                     <MapPin size={16} />
                   </div>
                   <div>
-                    <span className="text-xs uppercase tracking-wider text-zinc-400">Sede</span>
+                    <span className="text-xs uppercase tracking-wider text-zinc-400">{t.contact.locationLabel}</span>
                     <div className="font-medium text-white">{CEIBO_BRAND.location}</div>
                   </div>
                 </div>
@@ -166,9 +172,9 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                 <div className="grid size-16 place-items-center rounded-full bg-emerald-500/20 text-emerald-400">
                   <CheckCircle2 size={32} />
                 </div>
-                <h3 className="mt-4 text-2xl font-bold text-white">¡Ya casi está!</h3>
+                <h3 className="mt-4 text-2xl font-bold text-white">{t.contact.successTitle}</h3>
                 <p className="mx-auto mt-2 max-w-sm text-sm text-zinc-300">
-                  Se abrió tu correo con el mensaje listo. Envialo y te respondemos con un plan claro en menos de 24 horas.
+                  {t.contact.successText}
                 </p>
                 <button
                   onClick={() => {
@@ -179,7 +185,7 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                   }}
                   className="mt-6 rounded-xl border border-white/20 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-white/10 cursor-pointer"
                 >
-                  Enviar otra consulta
+                  {t.contact.sendAnother}
                 </button>
               </div>
             ) : (
@@ -187,13 +193,13 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="contact-name" className="text-xs font-semibold text-zinc-300">
-                      Tu nombre *
+                      {t.contact.fields.name}
                     </label>
                     <input
                       id="contact-name"
                       type="text"
                       autoComplete="name"
-                      placeholder="Ej: Tomás Fernández"
+                      placeholder={t.contact.fields.namePlaceholder}
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       onBlur={() => markTouched('name')}
@@ -206,14 +212,14 @@ export function Contact({ initialMessage = '' }: ContactProps) {
 
                   <div>
                     <label htmlFor="contact-email" className="text-xs font-semibold text-zinc-300">
-                      Email de contacto *
+                      {t.contact.fields.email}
                     </label>
                     <input
                       id="contact-email"
                       type="email"
                       autoComplete="email"
                       inputMode="email"
-                      placeholder="nombre@empresa.com"
+                      placeholder={t.contact.fields.emailPlaceholder}
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
                       onBlur={() => markTouched('email')}
@@ -227,13 +233,13 @@ export function Contact({ initialMessage = '' }: ContactProps) {
 
                 <div>
                   <label htmlFor="contact-company" className="text-xs font-semibold text-zinc-300">
-                    Empresa o Startup (opcional)
+                    {t.contact.fields.company}
                   </label>
                   <input
                     id="contact-company"
                     type="text"
                     autoComplete="organization"
-                    placeholder="Ej: Pampa Inc."
+                    placeholder={t.contact.fields.companyPlaceholder}
                     value={form.company}
                     onChange={(e) => setForm({ ...form, company: e.target.value })}
                     className={inputClass(false)}
@@ -242,12 +248,12 @@ export function Contact({ initialMessage = '' }: ContactProps) {
 
                 <div className="flex flex-1 flex-col">
                   <label htmlFor="contact-message" className="block text-xs font-semibold text-zinc-300">
-                    Mensaje *
+                    {t.contact.fields.message}
                   </label>
                   <textarea
                     id="contact-message"
                     rows={7}
-                    placeholder="Contanos sobre tu idea, qué tenés en mente o cómo podemos ayudarte..."
+                    placeholder={t.contact.fields.messagePlaceholder}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     onBlur={() => markTouched('message')}
@@ -264,10 +270,10 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                   className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 via-rose-700 to-rose-800 py-4 text-center text-xs font-bold uppercase tracking-wider text-white shadow-[0_0_30px_rgba(225,29,72,0.4)] transition hover:brightness-110 disabled:opacity-60"
                 >
                   {isSubmitting ? (
-                    <span>Procesando mensaje...</span>
+                    <span>{t.contact.submitting}</span>
                   ) : (
                     <>
-                      <span>Enviar mensaje al equipo</span>
+                      <span>{t.contact.submit}</span>
                       <Send size={14} className="transition-transform group-hover:translate-x-1" />
                     </>
                   )}
