@@ -8,6 +8,7 @@ import { Hero } from '@/components/sections/Hero'
 import { Services } from '@/components/sections/Services'
 import { Projects } from '@/components/sections/Projects'
 import { Team } from '@/components/sections/Team'
+import { FAQ } from '@/components/sections/FAQ'
 import { Contact } from '@/components/sections/Contact'
 import { CeiboRootsBackground } from '@/components/canvas/CeiboRootsBackground'
 import { MouseSpotlight } from '@/components/ui/Spotlight'
@@ -47,6 +48,7 @@ export default function Page() {
         <Services />
         <Projects />
         <Team />
+        <FAQ />
         <Contact />
       </main>
 

@@ -4,12 +4,15 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, Menu, X, MessageSquare } from 'lucide-react'
 import { CEIBO_BRAND } from '@/lib/data'
+import { useI18n } from '@/components/i18n/I18nProvider'
+import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher'
 
 interface NavbarProps {
   onOpenChat?: () => void
 }
 
 export function Navbar({ onOpenChat }: NavbarProps) {
+  const { t } = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -45,12 +48,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const navLinks = [
-    { label: 'Servicios', href: '#servicios' },
-    { label: 'Proyectos', href: '#proyectos' },
-    { label: 'Equipo', href: '#equipo' },
-    { label: 'Contacto', href: '#contacto' },
-  ]
+  const navLinks = t.nav.links
 
   return (
     <header
@@ -72,27 +70,27 @@ export function Navbar({ onOpenChat }: NavbarProps) {
         {/* Brand logo */}
         <a
           href="#top"
-          className="group flex shrink-0 items-center gap-3 text-sm font-semibold tracking-tight text-white"
+          className="group flex shrink-0 items-center gap-2.5 sm:gap-3 text-sm font-semibold tracking-tight text-white"
         >
-          <div className="relative size-11 overflow-hidden rounded-xl border border-white/20 bg-white p-1 shadow-md transition-transform duration-300 group-hover:scale-105 sm:size-12">
+          <div className="relative size-10 overflow-hidden rounded-xl border border-white/20 bg-white p-1 shadow-md transition-transform duration-300 group-hover:scale-105 sm:size-12">
             <img
               src={CEIBO_BRAND.logoUrl}
-              alt="Ceibo Software Logo"
+              alt={t.common.logoAlt}
               width={48}
               height={48}
               decoding="async"
               className="size-full object-contain"
             />
           </div>
-          <span className="flex items-center text-xl font-bold tracking-tight text-white sm:text-2xl">
+          <span className="flex items-center text-lg font-bold tracking-tight text-white sm:text-2xl">
             Ceibo<span className="text-rose-500">.</span>software
           </span>
         </a>
 
         {/* Desktop Links with generous separation */}
         <nav
-          className={`hidden items-center justify-center text-sm font-medium text-zinc-400 md:flex md:flex-1 transition-all duration-300 ${
-            isScrolled ? 'gap-8 px-8 lg:px-16' : 'gap-8 px-6 lg:px-10'
+          className={`hidden items-center justify-center whitespace-nowrap text-sm font-medium text-zinc-400 lg:flex lg:flex-1 transition-all duration-300 ${
+            isScrolled ? 'gap-4 px-3 xl:gap-8 xl:px-12' : 'gap-4 px-3 xl:gap-8 xl:px-10'
           }`}
         >
           {navLinks.map((link) => (
@@ -107,24 +105,29 @@ export function Navbar({ onOpenChat }: NavbarProps) {
         </nav>
 
         {/* Actions */}
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="hidden sm:block">
+            <LanguageSwitcher iconClassName="lg:hidden xl:block" />
+          </div>
+
           {/* Chatbot trigger */}
           <button
             onClick={() => {
               if (onOpenChat) onOpenChat()
             }}
+            aria-label={t.nav.openAssistant}
             className="flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-950/30 px-3.5 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-900/40 hover:text-white cursor-pointer"
           >
             <MessageSquare size={13} />
-            <span className="hidden sm:inline">Asistente IA</span>
+            <span className="hidden sm:inline lg:hidden xl:inline">{t.nav.assistant}</span>
           </button>
 
           {/* Primary CTA */}
           <a
             href="#contacto"
-            className="group hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-rose-600 to-rose-700 px-5 py-2 text-xs font-semibold text-white shadow-md transition-all duration-300 hover:brightness-110 md:inline-flex cursor-pointer"
+            className="group hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-rose-600 to-rose-700 px-5 py-2 text-xs font-semibold text-white shadow-md transition-all duration-300 hover:brightness-110 lg:inline-flex cursor-pointer"
           >
-            <span>Hablemos</span>
+            <span>{t.nav.cta}</span>
             <ArrowUpRight
               size={14}
               className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -136,8 +139,9 @@ export function Navbar({ onOpenChat }: NavbarProps) {
             onClick={() => {
               setMenuOpen(!menuOpen)
             }}
-            className="grid size-9 place-items-center rounded-full border border-white/10 text-zinc-300 transition hover:border-white/20 md:hidden cursor-pointer"
-            aria-label="Menú principal"
+            className="grid size-9 place-items-center rounded-full border border-white/10 text-zinc-300 transition hover:border-white/20 lg:hidden cursor-pointer"
+            aria-label={menuOpen ? t.nav.closeMenu : t.nav.openMenu}
+            aria-expanded={menuOpen}
           >
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -152,7 +156,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="mx-auto mt-2 max-w-md overflow-hidden rounded-3xl border border-white/15 bg-[#0c0c12]/95 p-6 shadow-2xl backdrop-blur-2xl md:hidden"
+            className="mx-auto mt-2 max-w-md overflow-hidden rounded-3xl border border-white/15 bg-[#0c0c12]/95 p-6 shadow-2xl backdrop-blur-2xl lg:hidden"
           >
             <div className="flex flex-col gap-4 text-base font-medium text-zinc-200">
               {navLinks.map((link) => (
@@ -169,6 +173,10 @@ export function Navbar({ onOpenChat }: NavbarProps) {
                 </a>
               ))}
 
+              <div className="flex justify-start border-t border-white/10 pt-4">
+                <LanguageSwitcher />
+              </div>
+
               <div className="pt-2">
                 <a
                   href="#contacto"
@@ -177,7 +185,7 @@ export function Navbar({ onOpenChat }: NavbarProps) {
                   }}
                   className="flex w-full items-center justify-center gap-2 rounded-full bg-rose-600 py-3 text-center text-sm font-semibold text-white shadow-lg"
                 >
-                  <span>Iniciar conversación</span>
+                  <span>{t.nav.mobileCta}</span>
                   <ArrowUpRight size={15} />
                 </a>
               </div>

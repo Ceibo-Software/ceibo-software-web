@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight, TrendingUp, X, Check } from 'lucide-react'
 import { Reveal } from '@/components/ui/Reveal'
 import { Magnetic } from '@/components/ui/Magnetic'
+import { useI18n } from '@/components/i18n/I18nProvider'
 
 interface MinimalProject {
   id: string
@@ -23,67 +24,46 @@ interface MinimalProject {
   }
 }
 
-const PROJECTS: MinimalProject[] = [
+// Datos fijos de cada proyecto. Los textos traducibles están en lib/i18n/dictionaries.
+const BASE_PROJECTS = [
   {
     id: 'pampa-finance',
     title: 'Pampa Finance',
-    category: 'Fintech & Pagos',
-    summary: 'Plataforma corporativa de cobros y tesorería multi-moneda de alta concurrencia.',
-    metric: '+$4.2M USD/mes',
     accentColor: '#f43f5e',
     glowColor: 'rgba(244, 63, 94, 0.25)',
     tags: ['Next.js 16', 'Go', 'Stripe API'],
-    details: {
-      description: 'Motor transaccional con conciliación bancaria automatizada en tiempo real y arquitectura de microservicios de alta concurrencia.',
-      specs: [
-        'Conciliación bancaria en <50ms',
-        'Cifrado AES-256 de extremo a extremo',
-        '99.98% de disponibilidad certificada',
-      ],
-      stack: ['Next.js 16', 'Go', 'PostgreSQL', 'Redis', 'Stripe API'],
-    },
+    stack: ['Next.js 16', 'Go', 'PostgreSQL', 'Redis', 'Stripe API'],
   },
   {
     id: 'marea-health',
     title: 'Marea Health',
-    category: 'Salud Digital',
-    summary: 'App móvil médica con agendamiento sincrónico y videoconsultas cifradas.',
-    metric: '15,000+ pacientes',
     accentColor: '#06b6d4',
     glowColor: 'rgba(6, 182, 212, 0.25)',
     tags: ['React Native', 'WebRTC', 'FastAPI'],
-    details: {
-      description: 'Ecosistema móvil diseñado para eliminar esperas y optimizar la gestión de consultas presenciales y remotas.',
-      specs: [
-        'Videollamadas peer-to-peer con WebRTC',
-        'Recordatorios sincronizados vía WhatsApp',
-        'Historias clínicas con cifrado médico HIPAA',
-      ],
-      stack: ['React Native', 'WebRTC', 'FastAPI', 'AWS', 'WhatsApp API'],
-    },
+    stack: ['React Native', 'WebRTC', 'FastAPI', 'AWS', 'WhatsApp API'],
   },
   {
     id: 'nexo-ops',
     title: 'Nexo Ops',
-    category: 'Cloud & SaaS',
-    summary: 'Centro de control y telemetría de microservicios e infraestructura en vivo.',
-    metric: '99.99% Uptime',
     accentColor: '#f59e0b',
     glowColor: 'rgba(245, 158, 11, 0.25)',
     tags: ['Kubernetes', 'Prometheus', 'TypeScript'],
-    details: {
-      description: 'Panel operativo en tiempo real para sincronización de equipos de ingeniería y monitoreo continuo de infraestructura.',
-      specs: [
-        'Streaming de eventos vía WebSockets',
-        'Autoescalado dinámico multi-región',
-        'Reducción del 60% en tiempos de gestión',
-      ],
-      stack: ['TypeScript', 'Kubernetes', 'Prometheus', 'GraphQL', 'Tailwind'],
-    },
+    stack: ['TypeScript', 'Kubernetes', 'Prometheus', 'GraphQL', 'Tailwind'],
   },
 ]
 
 export function Projects() {
+  const { t } = useI18n()
+  const PROJECTS: MinimalProject[] = BASE_PROJECTS.map(({ stack, ...project }) => {
+    const text = t.projects.items[project.id]
+    return {
+      ...project,
+      category: text.category,
+      summary: text.summary,
+      metric: text.metric,
+      details: { description: text.description, specs: text.specs, stack },
+    }
+  })
   const [activeProject, setActiveProject] = useState<MinimalProject | null>(null)
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const [mounted, setMounted] = useState(false)
@@ -116,13 +96,13 @@ export function Projects() {
       {/* Header */}
       <Reveal className="mx-auto max-w-2xl text-center">
         <span className="font-mono text-xs uppercase tracking-[0.2em] text-rose-400">
-          Casos Destacados · Frutos de Ceibo
+          {t.projects.eyebrow}
         </span>
         <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl">
-          Proyectos que dan frutos
+          {t.projects.title}
         </h2>
         <p className="mt-3 text-xs leading-relaxed text-zinc-400 sm:text-sm">
-          Soluciones de software y arquitectura digital nacidas de nuestra raíz. Pasa el cursor o toca cada flor para explorar la ficha técnica completa.
+          {t.projects.subtitle}
         </p>
       </Reveal>
 
@@ -285,12 +265,12 @@ export function Projects() {
                   <div>
                     {/* Header de tarjeta: Categoría y estado */}
                     <div className="flex items-center justify-between">
-                      <span className="rounded-full border border-rose-500/25 bg-rose-950/40 px-2.5 py-0.5 text-[11px] font-semibold text-rose-300">
+                      <span className="rounded-full border border-rose-500/25 bg-rose-950/40 px-2.5 py-0.5 text-xs font-semibold text-rose-300">
                         {project.category}
                       </span>
-                      <span className="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400">
+                      <span className="flex items-center gap-1.5 font-mono text-xs text-emerald-400">
                         <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        Producción
+                        {t.projects.status}
                       </span>
                     </div>
 
@@ -317,7 +297,7 @@ export function Projects() {
                       {project.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-zinc-400 transition-colors group-hover:text-zinc-200"
+                          className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 text-xs font-medium text-zinc-400 transition-colors group-hover:text-zinc-200"
                         >
                           {tag}
                         </span>
@@ -328,10 +308,10 @@ export function Projects() {
                   {/* Bottom Action Footer */}
                   <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-3">
                     <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 transition-all duration-200 group-hover:translate-x-1 group-hover:text-rose-300">
-                      <span>Ver ficha técnica</span>
+                      <span>{t.common.seeMore}</span>
                       <ArrowUpRight size={13} />
                     </span>
-                    <span className="font-mono text-[10px] text-zinc-500">
+                    <span className="font-mono text-xs text-zinc-400">
                       Ceibo #{idx + 1}
                     </span>
                   </div>
@@ -371,7 +351,7 @@ export function Projects() {
                         setActiveProject(null)
                       }}
                       className="grid size-8 place-items-center rounded-full border border-white/10 bg-white/5 text-zinc-400 transition hover:border-white/20 hover:text-white cursor-pointer"
-                      aria-label="Cerrar"
+                      aria-label={t.common.close}
                     >
                       <X size={16} />
                     </button>
@@ -419,7 +399,7 @@ export function Projects() {
                         }}
                         className="inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-5 py-2 text-xs font-bold text-white shadow-lg transition hover:bg-rose-500"
                       >
-                        <span>Consultar por un proyecto similar</span>
+                        <span>{t.projects.cta}</span>
                         <ArrowUpRight size={14} />
                       </a>
                     </Magnetic>
