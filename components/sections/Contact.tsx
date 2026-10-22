@@ -13,6 +13,7 @@ export function Contact({ initialMessage = '' }: ContactProps) {
   const [form, setForm] = useState({
     name: '',
     email: '',
+    phone: '',
     company: '',
     budget: '$1.000 - $3.000 USD',
     message: initialMessage,
@@ -20,6 +21,7 @@ export function Contact({ initialMessage = '' }: ContactProps) {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
     if (initialMessage) {
@@ -29,15 +31,32 @@ export function Contact({ initialMessage = '' }: ContactProps) {
 
   const budgets = ['< $1.000 USD', '$1.000 - $3.000 USD', '$3.000 - $6.000 USD', '+$6.000 USD']
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setErrorMessage(null)
 
-    // Simulate reliable dispatch
-    setTimeout(() => {
-      setIsSubmitting(false)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Ocurrió un error al enviar el formulario.')
+      }
+
       setSubmitted(true)
-    }, 900)
+    } catch (err: any) {
+      setErrorMessage(
+        err.message || 'No se pudo enviar el mensaje. Por favor intenta nuevamente o escríbenos por WhatsApp.'
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -111,7 +130,8 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                 <button
                   onClick={() => {
                     setSubmitted(false)
-                    setForm({ name: '', email: '', company: '', budget: '$1.000 - $3.000 USD', message: '' })
+                    setErrorMessage(null)
+                    setForm({ name: '', email: '', phone: '', company: '', budget: '$1.000 - $3.000 USD', message: '' })
                   }}
                   className="mt-6 rounded-xl border border-white/20 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-white/10 cursor-pointer"
                 >
@@ -146,15 +166,28 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-xs font-semibold text-zinc-300">Empresa o Startup (opcional)</label>
-                  <input
-                    type="text"
-                    placeholder="Ej: Pampa Inc."
-                    value={form.company}
-                    onChange={(e) => setForm({ ...form, company: e.target.value })}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none transition focus:border-rose-500"
-                  />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="text-xs font-semibold text-zinc-300">Empresa o Startup (opcional)</label>
+                    <input
+                      type="text"
+                      placeholder="Ej: Pampa Inc."
+                      value={form.company}
+                      onChange={(e) => setForm({ ...form, company: e.target.value })}
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none transition focus:border-rose-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-zinc-300">Teléfono Celular / WhatsApp (opcional)</label>
+                    <input
+                      type="tel"
+                      placeholder="Ej: +54 9 11 2345-6789"
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none transition focus:border-rose-500"
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -191,13 +224,22 @@ export function Contact({ initialMessage = '' }: ContactProps) {
                   />
                 </div>
 
+                {errorMessage && (
+                  <div className="rounded-xl border border-rose-500/40 bg-rose-950/30 p-3.5 text-xs text-rose-300">
+                    <p className="font-semibold">{errorMessage}</p>
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 via-rose-700 to-rose-800 py-4 text-center text-xs font-bold uppercase tracking-wider text-white shadow-[0_0_30px_rgba(225,29,72,0.4)] transition hover:brightness-110 disabled:opacity-60"
+                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 via-rose-700 to-rose-800 py-4 text-center text-xs font-bold uppercase tracking-wider text-white shadow-[0_0_30px_rgba(225,29,72,0.4)] transition hover:brightness-110 disabled:opacity-60 cursor-pointer"
                 >
                   {isSubmitting ? (
-                    <span>Procesando mensaje...</span>
+                    <span className="flex items-center gap-2">
+                      <span className="size-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                      Enviando mensaje...
+                    </span>
                   ) : (
                     <>
                       <span>Enviar mensaje al equipo</span>
