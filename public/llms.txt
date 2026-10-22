@@ -11,7 +11,7 @@ Datos clave:
 - Clientes: startups, pymes y empresas que necesitan un producto digital propio
 - Modalidad: trabajo remoto, comunicación directa con el equipo técnico
 - Alcance: desde la idea, el diseño y el desarrollo hasta el lanzamiento y la infraestructura en la nube
-- Contacto: hola@ceibo.software, respuesta con un plan de trabajo en menos de 24 horas
+- Contacto: ceibosoftware.ar@gmail.com, respuesta con un plan de trabajo en menos de 24 horas
 
 ## Servicios
 
@@ -61,12 +61,12 @@ Datos clave:
 - ¿Hacen chatbots o soluciones con IA? Sí, chatbots de atención y ventas 24/7 conectados con WhatsApp, CRMs y otras herramientas.
 - ¿Cuánto cuesta un proyecto? Depende del alcance; hay opciones desde menos de USD 1.000 hasta proyectos de más de USD 6.000.
 - ¿Cuánto tardan en responder? Menos de 24 horas, con un plan de trabajo concreto.
-- ¿Cómo los contacto? Por el formulario en https://ceibosoftware.com.ar/#contacto o por email a hola@ceibo.software.
+- ¿Cómo los contacto? Por el formulario en https://ceibosoftware.com.ar/#contacto o por email a ceibosoftware.ar@gmail.com.
 
 ## Contacto
 
 - [Formulario de contacto](https://ceibosoftware.com.ar/#contacto): para contar la idea, objetivos, fecha estimada y rango de inversión
-- Email: hola@ceibo.software
+- Email: ceibosoftware.ar@gmail.com
 - Ubicación: Buenos Aires, Argentina (UTC-3)
 - Idiomas: español e inglés
 
