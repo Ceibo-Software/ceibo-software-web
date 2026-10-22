@@ -173,7 +173,7 @@ export function Team() {
                 </span>
 
                 <div
-                  className="hidden sm:flex items-center gap-1"
+                  className="flex items-center gap-1"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {member.linkedin && (

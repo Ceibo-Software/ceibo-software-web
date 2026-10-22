@@ -58,9 +58,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     specialty: 'CI/CD · Docker · Cloud · Infra',
     bio: 'Automatización de infraestructura, despliegues continuos y estabilidad en la nube.',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Tom%C3%A1s%20Messineo-9dyCbNbDQEVLESyTKXzT6L0K9TUPMI.jpeg',
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    portfolio: 'https://github.com',
+    linkedin: 'https://www.linkedin.com/in/tomasmessineo/',
+    github: 'https://github.com/TomasMessineo',
+    portfolio: 'https://github.com/TomasMessineo',
     projects: [
       {
         title: 'Infraestructura Cloud Serverless',
@@ -82,9 +82,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     specialty: 'Architecture · Go · High Load',
     bio: 'Convierte desafíos complejos de concurrencia y datos en sistemas simples, confiables y escalables.',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Matias%20Caubet-uKlTYODfsSwzXmD7Y37boZwuROvOC2.jpeg',
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    portfolio: 'https://github.com',
+    linkedin: 'https://www.linkedin.com/in/matias-caubet/',
+    github: 'https://github.com/MatiasCaubet',
+    portfolio: 'https://github.com/MatiasCaubet',
     projects: [
       {
         title: 'Motor Transaccional Concurrente',
@@ -106,8 +106,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     specialty: 'UI/UX · Design Systems · Figma',
     bio: 'Diseña experiencias estéticas con sentido de negocio que los usuarios realmente disfrutan operar.',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Juana%20Zabaleta-VwyLPobxo84RoACOUKOirNBsYSEWXG.jpeg',
-    linkedin: 'https://linkedin.com',
-    portfolio: 'https://behance.net',
+    linkedin: 'https://www.linkedin.com/in/juanazabaleta/',
+    github: 'https://github.com/juaana',
+    portfolio: 'https://github.com/juaana',
     projects: [
       {
         title: 'Design System & Tokens Globales',
@@ -129,9 +130,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     specialty: 'Kubernetes · AWS · CI/CD · Terraform',
     bio: 'Lleva cada producto a la nube con automatizaciones que garantizan 99.99% de uptime y despliegues seguros.',
     image: '',
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    portfolio: 'https://github.com',
+    linkedin: 'https://www.linkedin.com/in/sebastian-varas-816b7b3b5/',
+    github: 'https://github.com/sebaacade',
+    portfolio: 'https://github.com/sebaacade',
     projects: [
       {
         title: 'Arquitectura Multi-Cloud & Failover',
@@ -153,9 +154,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     specialty: 'TypeScript · React · State & Perf',
     bio: 'Código preciso, pensamiento claro, algoritmos limpios y obsesión por el micro-detalle de rendimiento.',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Maximo%20Simonetti-UYyVbplCssfEICGuSvXVR7x37k1ufB.jpeg',
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    portfolio: 'https://github.com',
+    linkedin: 'https://www.linkedin.com/in/maximosimonetti/',
+    github: 'https://github.com/Maximonett',
+    portfolio: 'https://github.com/Maximonett',
     projects: [
       {
         title: 'Plataforma Web Next.js Ultrarrápida',
@@ -177,9 +178,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     specialty: 'React · Node.js · APIs · Cloud',
     bio: 'Desarrollo de punta a punta, enfocado en interfaces intuitivas y servicios backend robustos.',
     image: '',
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com',
-    portfolio: 'https://github.com',
+    linkedin: 'https://www.linkedin.com/in/gonzalo-gil-b8709b227/',
+    github: 'https://github.com/geonnn',
+    portfolio: 'https://github.com/geonnn',
     projects: [
       {
         title: 'Aplicación Web & APIs Integradas',
